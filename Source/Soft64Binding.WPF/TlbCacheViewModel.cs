@@ -15,6 +15,19 @@ namespace Soft64Binding.WPF
         public TlbCacheViewModel(MachineViewModel parentMachineModel) : base(parentMachineModel)
         {
             Refresh();
+            
+            for (Int32 i = 0; i < 48; i++)
+            {
+                TlbEntries.Add(new TlbModelEntry(i, 
+                    parentMachineModel.TargetMachine.CPU.VirtualMemoryStream.TLB.ElementAt(i).AssociatedEntry));
+            }
+
+            TlbEntries.CollectionChanged += TlbEntries_CollectionChanged;
+        }
+
+        void TlbEntries_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            
         }
 
         public void Refresh()
@@ -27,12 +40,18 @@ namespace Soft64Binding.WPF
         {
             TLBCache cache = ParentMachine.TargetMachine.CPU.VirtualMemoryStream.TLB;
 
+            PageMask = cache.PageMask;
+            EntryHi = cache.EntryHi;
+            EntryLo0 = cache.EntryLo0;
+            EntryLo1 = cache.EntryLo1;
+            Index = cache.Index;
+            Wired = cache.Wired;
+            Random = cache.Random;
+            BadVAddress = cache.BadVAddr;
         }
 
         private void ReadEntries()
         {
-            TlbEntries.Clear();
-
             TLBCache cache = ParentMachine.TargetMachine.CPU.VirtualMemoryStream.TLB;
 
 
@@ -59,8 +78,8 @@ namespace Soft64Binding.WPF
         }
 
         private static readonly DependencyPropertyKey TlbEntriesPropertyKey =
-        DependencyProperty.RegisterReadOnly("TlbEntries", typeof(ObservableCollection<TlbEntry>), typeof(TlbCacheViewModel),
-        new PropertyMetadata(new ObservableCollection<TlbEntry>()));
+        DependencyProperty.RegisterReadOnly("TlbEntries", typeof(ObservableCollection<TlbModelEntry>), typeof(TlbCacheViewModel),
+        new PropertyMetadata(new ObservableCollection<TlbModelEntry>()));
 
         public static readonly DependencyProperty TlbEntriesProperty =
             TlbEntriesPropertyKey.DependencyProperty;
@@ -85,9 +104,30 @@ namespace Soft64Binding.WPF
             DependencyProperty.Register("Index", typeof(UInt64), typeof(TlbCacheViewModel),
             new PropertyMetadata(UpdateRegister));
 
-        public ObservableCollection<TlbEntry> TlbEntries
+        private static readonly DependencyPropertyKey WiredPropertyKey =
+            DependencyProperty.RegisterReadOnly("Wired", typeof(UInt64), typeof(TlbCacheViewModel),
+            new PropertyMetadata());
+
+        public static readonly DependencyProperty WiredProperty =
+           WiredPropertyKey.DependencyProperty;
+
+        private static readonly DependencyPropertyKey RandomPropertyKey =
+            DependencyProperty.RegisterReadOnly("Random", typeof(UInt64), typeof(TlbCacheViewModel),
+            new PropertyMetadata());
+
+        public static readonly DependencyProperty RandomProperty =
+            RandomPropertyKey.DependencyProperty;
+
+        private static readonly DependencyPropertyKey BadVAddressPropertyKey =
+            DependencyProperty.RegisterReadOnly("BadVAddress", typeof(UInt64), typeof(TlbCacheViewModel),
+            new PropertyMetadata());
+
+        public static readonly DependencyProperty BadVAddressProperty =
+            BadVAddressPropertyKey.DependencyProperty;
+
+        public ObservableCollection<TlbModelEntry> TlbEntries
         {
-            get { return (ObservableCollection<TlbEntry>)GetValue(TlbEntriesProperty); }
+            get { return (ObservableCollection<TlbModelEntry>)GetValue(TlbEntriesProperty); }
             private set { SetValue(TlbEntriesPropertyKey, value); }
         }
 
@@ -120,10 +160,35 @@ namespace Soft64Binding.WPF
             get { return (UInt64)GetValue(IndexProperty); }
             set { SetValue(IndexProperty, value); }
         }
+
+        public UInt64 Wired
+        {
+            get { return (UInt64)GetValue(WiredProperty); }
+            private set { SetValue(WiredPropertyKey, value); }
+        }
+
+        public UInt64 Random
+        {
+            get { return (UInt64)GetValue(RandomProperty); }
+            private set { SetValue(RandomPropertyKey, value); }
+        }
+
+        public UInt64 BadVAddress
+        {
+            get { return (UInt64)GetValue(BadVAddressProperty); }
+            private set { SetValue(BadVAddressPropertyKey, value); }
+        }
     }
 
-    public sealed class TlbEntry
+    public sealed class TlbModelEntry
     {
         private Int32 m_EntryIndex;
+        private TLBEntry m_AssociatedEntry;
+
+        public TlbModelEntry(Int32 index, TLBEntry entry)
+        {
+            m_EntryIndex = index;
+            m_AssociatedEntry = entry;
+        }
     }
 }
