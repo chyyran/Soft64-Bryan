@@ -1,0 +1,1 @@
+This folder is used for loading ELF executables targetting the MIPS VR4300.

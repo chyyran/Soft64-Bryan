@@ -1,0 +1,5 @@
+Final GUI Developement Process (Polishing)
+- WPF Port
+- FreeType wrapped implementation for full control and optimization for rendering many characters at once
+- Skinning
+- LibArt for anti-alsiasing and special polishing effects

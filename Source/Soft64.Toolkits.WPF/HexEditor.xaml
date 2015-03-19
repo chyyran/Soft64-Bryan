@@ -1,0 +1,106 @@
+﻿<UserControl x:Class="Soft64.Toolkits.WPF.HexEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:root="clr-namespace:Soft64.Toolkits.WPF"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             x:Name="mainControl"
+             Focusable="True">
+    <UserControl.Resources>
+        <root:ByteToAsciiConverter x:Key="byteToAsciiConverter" />
+        <Storyboard x:Key="ByteTextChangedAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="(TextBlock.Opacity)" Duration="0.0:0:0.0" To="0.0" />
+            <DoubleAnimation Storyboard.TargetProperty="(TextBlock.Opacity)" Duration="0.0:0:0.5" To="1.0" />
+        </Storyboard>
+    </UserControl.Resources>
+    <Grid x:Name="xaml_rootGrid" Margin="12,7,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <ItemsControl ItemsSource="{Binding DataRows, ElementName=mainControl}" x:Name="dataRowItemsSource">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" x:Name="hexEditorRowsStackPanel" Width="Auto" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.Template>
+                <ControlTemplate>
+                    <Border BorderBrush="{Binding GridLineBrush, ElementName=mainControl}" BorderThickness="0,4,0,0">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </ItemsControl.Template>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border x:Name="hexEditorRowBorder" BorderBrush="{Binding GridLineBrush, ElementName=mainControl}" BorderThickness="0,0,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            
+                            <!-- Address -->
+                            <Border BorderBrush="{Binding GridLineBrush, ElementName=mainControl}" BorderThickness="0,0,4,0">
+                                <TextBlock Text="{Binding Address, StringFormat=X8}" x:Name="hexBlock" Margin="0,0,10,0" />
+                            </Border>
+                            
+                            <!-- Hexadecimal Blocks -->
+                            <ItemsControl ItemsSource="{Binding Bytes}" DataContext="{Binding .}" x:Name="itemsSourceHex">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <root:HexEditorTextBlock
+                                            ElementLUT="{Binding HexLUT, Mode=OneTime, ElementName=mainControl}"
+                                            Margin="2, 0, 1, 0"
+                                            Text="{Binding ByteValue, StringFormat=X2}"
+                                            Index="{Binding Index}"
+                                            BlockType="Hex">
+                                        </root:HexEditorTextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <!-- Ascii Blocks -->
+                            <ItemsControl ItemsSource="{Binding Bytes}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.Template>
+                                    <ControlTemplate>
+                                        <Border BorderBrush="{Binding GridLineBrush, ElementName=mainControl}" BorderThickness="4,0,0,0" Margin="30,0,0,0">
+                                            <ItemsPresenter />
+                                        </Border>
+                                    </ControlTemplate>
+                                </ItemsControl.Template>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <root:HexEditorTextBlock
+                                        ElementLUT="{Binding AsciiLUT, Mode=OneTime, ElementName=mainControl}"
+                                        Margin="2, 0, 1, 0"
+                                        BlockType="Ascii"
+                                        Text="{Binding ByteValue, Converter={StaticResource byteToAsciiConverter}}"
+                                        Index="{Binding Index}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Canvas x:Name="caretCanvas">
+            <Canvas.Resources>
+                <root:InvertColorEffect x:Key="invertColorEffect" />
+            </Canvas.Resources>
+            <root:HexCaret x:Name="xaml_CaretControl"
+                    Background="{Binding Background, ElementName=mainControl}"
+                    Effect="{StaticResource invertColorEffect}"
+                    Opacity="0.5" />
+        </Canvas>
+    </Grid>
+</UserControl>

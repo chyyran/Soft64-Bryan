@@ -1,0 +1,2 @@
+﻿The current fake OS was a huge hack, and has been cut for now.  We need an actual background SysV like runtime when executing an ELF, 
+instead of directly loading the ELF and making the CPU to handle kernel tasks.

@@ -1,0 +1,2 @@
+Copyright (C) 2013 Soft64 Poject @ Codeplex
+Copyright (C) 2013 Bryan Perris, Abystus

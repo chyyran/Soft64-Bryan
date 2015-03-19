@@ -1,0 +1,1 @@
+This folder is used for loading the N64 roms in .z64, .v64 and .n64 binary formats.

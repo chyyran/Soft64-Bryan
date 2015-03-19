@@ -1,0 +1,10 @@
+*.suo
+*.user
+Binary
+Source/packages
+Source/*/obj
+Source/*/bin
+*.~vsdx
+*.vsp
+*.etl
+*.vsps

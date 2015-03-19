@@ -1,0 +1,1 @@
+This folder is for system specific files of the N64.

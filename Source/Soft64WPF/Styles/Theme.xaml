@@ -1,0 +1,66 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:toolkit="clr-namespace:Soft64.Toolkits.WPF;assembly=Soft64.Toolkits.WPF">
+
+    <!-- Theme Accent Colors -->
+    <SolidColorBrush x:Key="Theme_LightAccentColor_1" Color="#FFC5FFF5" />
+    <SolidColorBrush x:Key="Theme_LightAccentColor_2" Color="#FFFFBC61" />
+    <SolidColorBrush x:Key="Theme_DarkAccentColor_1" Color="#FF00323A" />
+
+    <!-- Theme font families -->
+    <FontFamily x:Key="Theme_MonoFont_1">/Soft64WPF;component/Fonts/#Droid Sans Mono</FontFamily>
+    <FontFamily x:Key="Theme_InfoFont_1">/Soft64WPF;component/Fonts/#Emulogic</FontFamily>
+
+    <!-- Control Specific Styles -->
+    <Style TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource Theme_DarkAccentColor_1}" />
+    </Style>
+
+    <Style TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource Theme_LightAccentColor_1}" />
+        <Setter Property="Background" Value="{StaticResource Theme_DarkAccentColor_1}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border BorderBrush="{StaticResource Theme_LightAccentColor_1}" BorderThickness="2">
+                        <Grid Background="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Theme_LightAccentColor_2}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="toolkit:HexEditor">
+        <Setter Property="Foreground" Value="{StaticResource Theme_LightAccentColor_1}" />
+        <Setter Property="Background" Value="{StaticResource Theme_DarkAccentColor_1}" />
+        <Setter Property="FontFamily" Value="{StaticResource Theme_MonoFont_1}" />
+        <Setter Property="FontSize"  Value="17" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
+        <Setter Property="TextOptions.TextHintingMode" Value="Fixed" />
+        <Setter Property="GridLineBrush" Value="{StaticResource Theme_LightAccentColor_2}" />
+    </Style>
+
+    <!--<Style TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Theme_MonoFont_1}" />
+        <Setter Property="Background" Value="{StaticResource Theme_DarkAccentColor_1}" />
+        <Setter Property="Foreground" Value="{StaticResource Theme_LightAccentColor_1}" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="FontStretch" Value="Normal" />
+    </Style>-->
+
+    <Style TargetType="ListBox">
+        <Setter Property="Background" Value="{StaticResource Theme_DarkAccentColor_1}" />
+        <Setter Property="Foreground" Value="{StaticResource Theme_LightAccentColor_1}" />
+        <Setter Property="FontFamily" Value="{StaticResource Theme_MonoFont_1}" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="FontSize" Value="10" />
+    </Style>
+</ResourceDictionary>

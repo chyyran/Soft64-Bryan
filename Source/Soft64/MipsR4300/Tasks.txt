@@ -1,0 +1,17 @@
+﻿* Have the TLB mapper check the valid address ranged 
+  based on the ring mode since its not checked inside the TLB
+
+* Implement emulated MIPS cache system: Cache lines, tagging, I-Cache and D-Cache, Dirty/Invalid cache line bits
+
+* Implement exception handling, and interrupts
+
+* Implement some ring mode security by checking if address is accessable under conditions
+  of the selected ring mode
+
+* Implement FPU processor
+
+* Implement all CP0 functions and processor control
+
+* Implement the extensions used by the RCP processor: 128-bit vector regs (MMX stuff), RSP/RDP ops / functions)
+  - OpenCL could be used to accerate RSP / RDP vector operations
+  - Find an alternative MMX based vector acceleration

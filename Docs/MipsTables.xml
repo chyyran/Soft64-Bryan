@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<AssemblyMap>
+  <AssemblyMapInfo Version="1.0" Author="Bryan Perris" Copyright="2012" License="Lesser GNU Public License 2.0" >
+    MIPS VR4300 assembly table.
+  </AssemblyMapInfo>
+  <InstructionGroup Key="0" Name="Root" Range="0, 63">
+    
+    <!-- Special Instruction Group -->
+    <InstructionGroup Key="0" Name="Group0" Range="0, 63">
+      <Instruction Key="0" Name="SLL" Type="R" />
+      <Instruction Key="2" Name="SRL" Type="R" />
+      <Instruction Key="3" Name="SRA" Type="R" />
+      <Instruction Key="4" Name="SLLV" Type="R" />
+      <Instruction Key="6" Name="SRLV" Type="R" />
+      <Instruction Key="7" Name="SRAV" Type="R" />
+      <Instruction Key="8" Name="JR" Type="R" />
+      <Instruction Key="9" Name="JALR" Type="R" />
+      <Instruction Key="12" Name="SYSCALL" Type="R" />
+      <Instruction Key="13" Name="BREAK" Type="R" />
+      <Instruction Key="15" Name="SYNC" Type="R" />
+      <Instruction Key="16" Name="MFHI" Type="R" />
+      <Instruction Key="17" Name="MTHI" Type="R" />
+      <Instruction Key="18" Name="MFLO" Type="R" />
+      <Instruction Key="19" Name="MTLO" Type="R" />
+      <Instruction Key="20" Name="DSLLV" Type="R" />
+      <Instruction Key="22" Name="DSRLV" Type="R" />
+      <Instruction Key="23" Name="DSRAV" Type="R" />
+      <Instruction Key="24" Name="MULT" Type="R" />
+      <Instruction Key="25" Name="MULTU" Type="R" />
+      <Instruction Key="26" Name="DIV" Type="R" />
+      <Instruction Key="27" Name="DIVU" Type="R" />
+      <Instruction Key="28" Name="DMULT" Type="R" />
+      <Instruction Key="29" Name="DMULTU" Type="R" />
+      <Instruction Key="30" Name="DDIV" Type="R" />
+      <Instruction Key="31" Name="DDIVU" Type="R" />
+      <Instruction Key="32" Name="ADD" Type="R" />
+      <Instruction Key="33" Name="ADDU" Type="R" />
+      <Instruction Key="34" Name="SUB" Type="R" />
+      <Instruction Key="35" Name="SUBU" Type="R" />
+      <Instruction Key="36" Name="AND" Type="R" />
+      <Instruction Key="37" Name="OR" Type="R" />
+      <Instruction Key="38" Name="XOR" Type="R" />
+      <Instruction Key="39" Name="NOR" Type="R" />
+      <Instruction Key="42" Name="SLT" Type="R" />
+      <Instruction Key="43" Name="SLTU" Type="R" />
+      <Instruction Key="44" Name="DADD" Type="R" />
+      <Instruction Key="45" Name="DADDU" Type="R" />
+      <Instruction Key="46" Name="DSUB" Type="R" />
+      <Instruction Key="47" Name="DSUBU" Type="R" />
+      <Instruction Key="48" Name="TGE" Type="R" />
+      <Instruction Key="49" Name="TGEU" Type="R" />
+      <Instruction Key="50" Name="TLT" Type="R" />
+      <Instruction Key="51" Name="TLTU" Type="R" />
+      <Instruction Key="52" Name="TEQ" Type="R" />
+      <Instruction Key="54" Name="TNE" Type="R" />
+      <Instruction Key="56" Name="DSLL" Type="R" />
+      <Instruction Key="58" Name="DSRL" Type="R" />
+      <Instruction Key="59" Name="DSRA" Type="R" />
+      <Instruction Key="60" Name="DSLL32" Type="R" />
+      <Instruction Key="62" Name="DSRL32" Type="R" />
+      <Instruction Key="63" Name="DSRA32" Type="R" />
+    </InstructionGroup>
+    <InstructionGroup Key="1" Name="Group1" Range="0, 19" >
+      <Instruction Key="0" Name="BLTZ" Type="I" />
+      <Instruction Key="1" Name="BGEZ" Type="I" />
+      <Instruction Key="2" Name="BLTZL" Type="I" />
+      <Instruction Key="3" Name="BGEZL" Type="I" />
+      <Instruction Key="8" Name="TGEI" Type="I" />
+      <Instruction Key="9" Name="TGEIU" Type="I" />
+      <Instruction Key="10" Name="TLTI" Type="I" />
+      <Instruction Key="11" Name="TLTIU" Type="I" />
+      <Instruction Key="12" Name="TEQI" Type="I" />
+      <Instruction Key="16" Name="BLTZAL" Type="I" />
+      <Instruction Key="17" Name="BGEZAL" Type="I" />
+      <Instruction Key="18" Name="BLTZALL" Type="I" />
+      <Instruction Key="19" Name="BGEZALL" Type="I" />
+    </InstructionGroup>
+    <InstructionGroup Key="16" Name="Group16" Range="0, 24">
+      <Instruction Key="0" Name="MFC0" Type="R" />
+      <Instruction Key="1" Name="TLBR" Type="R" />
+      <Instruction Key="2" Name="TLBWI" Type="R" />
+      <Instruction Key="4" Name="MTC0" Type="R" />
+      <Instruction Key="6" Name="TLBWR" Type="R" />
+      <Instruction Key="8" Name="TLBP" Type="R" />
+      <Instruction Key="24" Name="ERET" Type="R" />
+    </InstructionGroup>
+    <InstructionGroup Key="17" Name="Group17" Range="0, 16">
+      <InstructionGroup Key="16" Name="Group17.fmt" Range="0, 37">
+        <Instruction Key="0" Name="ADD.fmt" Type="R" />
+        <Instruction Key="1" Name="SUB.fmt" Type="R" />
+        <Instruction Key="2" Name="MUL.fmt" Type="R" />
+        <Instruction Key="3" Name="DIV.fmt" Type="R" />
+        <Instruction Key="4" Name="SQRT.fmt" Type="R" />
+        <Instruction Key="5" Name="ABS.fmt" Type="R" />
+        <Instruction Key="6" Name="MOV.fmt" Type="R" />
+        <Instruction Key="7" Name="NEG.fmt" Type="R" />
+        <Instruction Key="8" Name="ROUND.L.fmt" Type="R" />
+        <Instruction Key="9" Name="TRUNC.W.fmt" Type="R" />
+        <Instruction Key="10" Name="CEIL.L.fmt" Type="R" />
+        <Instruction Key="11" Name="FLOOR.L.fmt" Type="R" />
+        <Instruction Key="15" Name="FLOOR.W.fmt" Type="R" />
+        <Instruction Key="20" Name="COND.fmt" Type="R" />
+      </InstructionGroup>
+      <Instruction Key="0" Name="MFC0" Type="R" />
+      <Instruction Key="1" Name="DMFC1" Type="R" />
+      <Instruction Key="2" Name="CFC1" Type="R" />
+      <Instruction Key="4" Name="MTC1" Type="R" />
+      <Instruction Key="5" Name="DMTC1" Type="R" />
+      <Instruction Key="6" Name="CTC1" Type="R" />
+      <Instruction Key="8" Name="BC1X" Type="R" />
+    </InstructionGroup>
+    <Instruction Key="2" Name="J" Type="J" />
+    <Instruction Key="3" Name="JAL" Type="J" />
+    <Instruction Key="4" Name="BEQL" Type="I" />
+    <Instruction Key="5" Name="BNE" Type="I" />
+    <Instruction Key="6" Name="BLEZ" Type="I" />
+    <Instruction Key="7" Name="BGTZ" Type="I" />
+    <Instruction Key="8" Name="ADDI" Type="I" />
+    <Instruction Key="9" Name="ADDIU" Type="I" />
+    <Instruction Key="10" Name="SLTI" Type="I" />
+    <Instruction Key="11" Name="SLTIU" Type="I" />
+    <Instruction Key="12" Name="ANDI" Type="I" />
+    <Instruction Key="13" Name="ORI" Type="I" />
+    <Instruction Key="14" Name="XORI" Type="I" />
+    <Instruction Key="15" Name="LUI" Type="I" />
+    <Instruction Key="20" Name="BEQL" Type="I" />
+    <Instruction Key="21" Name="BNEL" Type="I" />
+    <Instruction Key="23" Name="BGTZL" Type="I" />
+    <Instruction Key="24" Name="DADDI" Type="I" />
+    <Instruction Key="25" Name="DADDIU" Type="I" />
+    <Instruction Key="26" Name="LDL" Type="I" />
+    <Instruction Key="27" Name="LDR" Type="I" />
+    <Instruction Key="32" Name="LB" Type="I" />
+    <Instruction Key="33" Name="LH" Type="I" />
+    <Instruction Key="34" Name="LWL" Type="I" />
+    <Instruction Key="35" Name="LW" Type="I" />
+    <Instruction Key="36" Name="LBU" Type="I" />
+    <Instruction Key="37" Name="LHU" Type="I" />
+    <Instruction Key="38" Name="LWR" Type="I" />
+    <Instruction Key="39" Name="LWU" Type="I" />
+    <Instruction Key="40" Name="SB" Type="I" />
+    <Instruction Key="41" Name="SH" Type="I" />
+    <Instruction Key="42" Name="SWL" Type="I" />
+    <Instruction Key="43" Name="SW" Type="I" />
+    <Instruction Key="44" Name="SDL" Type="I" />
+    <Instruction Key="45" Name="SDR" Type="I" />
+    <Instruction Key="46" Name="SWR" Type="I" />
+    <Instruction Key="47" Name="CACHE" Type="I" />
+    <Instruction Key="48" Name="LL" Type="I" />
+    <Instruction Key="49" Name="LWC1" Type="I" />
+    <Instruction Key="52" Name="LLD" Type="I" />
+    <Instruction Key="53" Name="LDC1" Type="I" />
+    <Instruction Key="56" Name="SC" Type="I" />
+    <Instruction Key="57" Name="SWC1" Type="I" />
+    <Instruction Key="60" Name="SCD" Type="I" />
+    <Instruction Key="61" Name="SDC1" Type="I" />
+    <Instruction Key="63" Name="SD" Type="I" />
+  </InstructionGroup>
+</AssemblyMap>
+

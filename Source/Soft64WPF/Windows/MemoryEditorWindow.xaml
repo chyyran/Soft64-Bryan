@@ -1,0 +1,53 @@
+﻿<RibbonWindow x:Class="Soft64WPF.Windows.MemoryEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:Soft64WPF"
+        xmlns:rb="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
+        xmlns:conv="clr-namespace:Soft64WPF.Converters"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:toolkit="clr-namespace:Soft64.Toolkits.WPF;assembly=Soft64.Toolkits.WPF"
+        Title="Soft64 Memory Viewer" Height="656" Width="715"
+        DataContext="{Binding Source={StaticResource machineVM}}"
+        x:Name="window">
+    <RibbonWindow.Resources>
+        <conv:StringToInt64Converter x:Key="stringToInt64Converter" />
+        <sys:String x:Key="tlbCaption">TLB Cache Viewer</sys:String>
+        <conv:StringToCollectionConverter x:Key="strToCollectionConverter" />
+    </RibbonWindow.Resources>
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <Ribbon DockPanel.Dock="Top">
+                <Ribbon.ApplicationMenu>
+                    <RibbonApplicationMenu SmallImageSource="/Soft64WPF;component/Images/s64logo.png">
+                        <RibbonApplicationMenuItem Header="Close" />
+                    </RibbonApplicationMenu>
+                </Ribbon.ApplicationMenu>
+                <RibbonTab Header="View">
+                    <RibbonGroup Header="Actions">
+                        <RibbonButton Click="xaml_BtnRefreshHex_Click" Label="Refresh" LargeImageSource="/Soft64WPF;component/Images/arrow_refresh.png" />
+                    </RibbonGroup>
+                    <RibbonGroup Header="Data Options">
+                        <RibbonTextBox Label="Address" Text="04000040" Name="txtBoxBaseAddress" />
+                        <RibbonCheckBox Label="Virtual Addressing" x:Name="xaml_ChkboxVAdressMode" />
+                    </RibbonGroup>
+                </RibbonTab>
+            </Ribbon>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <ScrollBar x:Name="xaml_HexScrollBar"  Minimum="0" Maximum="10" Value="5" SmallChange="1" ViewportSize="3" />
+                <Expander ExpandDirection="Right" Background="Azure">
+                    <Expander.Header>
+                        <ItemsControl ItemsSource="{Binding Source={StaticResource tlbCaption}, Mode=OneTime, Converter={StaticResource strToCollectionConverter}}" />
+                    </Expander.Header>
+                    <StackPanel Orientation="Vertical" Width="200">
+                        <TreeView />
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+            <toolkit:HexEditor x:Name="xaml_HexEditor" Grid.Row="1" Margin="0,5,0,0"
+                     BaseAddress="{Binding Text, ElementName=txtBoxBaseAddress, Converter={StaticResource stringToInt64Converter}}"
+                     StreamSource="{Binding CurrentMemoryStream, ElementName=window}"
+                     Grid.RowSpan="2"
+                     TextOptions.TextFormattingMode="Display" />
+        </DockPanel>
+    </Grid>
+</RibbonWindow>

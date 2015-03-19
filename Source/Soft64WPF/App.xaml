@@ -1,0 +1,15 @@
+﻿<Application x:Class="Soft64WPF.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:soft64binding="clr-namespace:Soft64Binding.WPF;assembly=Soft64Binding.WPF" >
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Soft64WPF;component/Styles/Theme.xaml" />
+                <ResourceDictionary>
+                    <soft64binding:MachineViewModel x:Key="machineVM" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

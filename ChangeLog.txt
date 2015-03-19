@@ -1,0 +1,7 @@
+Version 1.0
+------------------------------------------------------
+- Memory hex editor
+- Simple rom list
+- Log system
+- Emulated RCP memory bus
+- Frontend
