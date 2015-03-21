@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,7 +28,10 @@ namespace Soft64Binding.WPF
 
         void TlbEntries_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            
+            if (e.Action == NotifyCollectionChangedAction.Replace)
+            {
+                /* Update the real TLB cache */
+            }
         }
 
         public void Refresh()
@@ -189,6 +193,11 @@ namespace Soft64Binding.WPF
         {
             m_EntryIndex = index;
             m_AssociatedEntry = entry;
+        }
+
+        public TLBEntry AssociatedEntry
+        {
+            get { return m_AssociatedEntry; }
         }
     }
 }
