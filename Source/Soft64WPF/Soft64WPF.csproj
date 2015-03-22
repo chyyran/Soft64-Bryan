@@ -79,6 +79,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\StringToCollectionConverter.cs" />
+    <Compile Include="Windows\JSWindow.xaml.cs">
+      <DependentUpon>JSWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MemoryEditorWindow.xaml.cs">
       <DependentUpon>MemoryEditorWindow.xaml</DependentUpon>
     </Compile>
@@ -89,6 +92,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\Theme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\JSWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

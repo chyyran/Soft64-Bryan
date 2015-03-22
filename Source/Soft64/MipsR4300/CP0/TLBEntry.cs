@@ -143,5 +143,21 @@ namespace Soft64.MipsR4300.CP0
         {
             get { return (Int64)VPN2.Vpn2; }
         }
+
+        public Int64 MappedN64PhysicalAddressEven
+        {
+            get
+            {
+                return 0x80000000 | m_EntryEven.MapPhysical(m_PageSize, 0);
+            }
+        }
+
+        public Int64 MappedN64PhysicalAddressOdd
+        {
+            get
+            {
+                return 0x8000000 | m_EntryOdd.MapPhysical(m_PageSize, 0);
+            }
+        }
     }
 }

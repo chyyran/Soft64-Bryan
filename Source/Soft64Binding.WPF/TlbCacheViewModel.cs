@@ -199,5 +199,10 @@ namespace Soft64Binding.WPF
         {
             get { return m_AssociatedEntry; }
         }
+
+        public Int32 EntryIndex
+        {
+            get { return m_EntryIndex; }
+        }
     }
 }

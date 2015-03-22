@@ -13,6 +13,15 @@ namespace Soft64Binding.WPF
 {
     public class CpuViewModel : MachineComponentViewModel
     {
+        public CpuViewModel(MachineViewModel machineViewModel) : base(machineViewModel)
+        {
+            var cpu = machineViewModel.TargetMachine.CPU;
+
+            VirtualMemory = StreamViewModel.NewModelFromStream(cpu.VirtualMemoryStream);
+            DebugVirtualMemory = StreamViewModel.NewModelFromStream(new VMemViewStream());
+            TlbCache = new TlbCacheViewModel(machineViewModel);
+        }
+
         private static readonly DependencyPropertyKey VirtualMemoryPropertyKey =
             DependencyProperty.RegisterReadOnly("VirtualMemory", typeof(StreamViewModel), typeof(CpuViewModel),
             new PropertyMetadata());
@@ -27,14 +36,17 @@ namespace Soft64Binding.WPF
         public static readonly DependencyProperty DebugVirtualMemoryProperty
             = DebugVirtualMemoryPropertyKey.DependencyProperty;
 
-        /* TODO: Make view model of TLB cache */
+        private static readonly DependencyPropertyKey TlbCachePropertyKey =
+            DependencyProperty.RegisterReadOnly("TlbCache", typeof(TlbCacheViewModel), typeof(CpuViewModel),
+            new PropertyMetadata());
 
-        public CpuViewModel(MachineViewModel machineViewModel) : base(machineViewModel)
+        public static readonly DependencyProperty TlbCacheProperty =
+            TlbCachePropertyKey.DependencyProperty;
+
+        public TlbCacheViewModel TlbCache
         {
-            var cpu = machineViewModel.TargetMachine.CPU;
-
-            VirtualMemory = StreamViewModel.NewModelFromStream(cpu.VirtualMemoryStream);
-            DebugVirtualMemory = StreamViewModel.NewModelFromStream(new VMemViewStream());
+            get { return (TlbCacheViewModel)GetValue(TlbCacheProperty); }
+            private set { SetValue(TlbCachePropertyKey, value); }
         }
 
         public StreamViewModel VirtualMemory
