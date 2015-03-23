@@ -21,10 +21,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+/* TODO: Ditch the entyr info class and use raw TLB entries ? */
+/* TODO: Improve the event so its clear it only fires when the CPU calls TLB write instructions */
+
 namespace Soft64.MipsR4300.CP0
 {
     [CLSCompliant(false)]
-    public class TLBCache : IEnumerable<TLBEntryInfo>
+    public class TLBCache : IEnumerable<TLBEntryInfo>, IList<TLBEntry>
     {
         private WordSize m_WordSize;
         private CP0Registers m_Cp0Regs;
@@ -295,6 +298,7 @@ namespace Soft64.MipsR4300.CP0
             }
         }
 
+
         public UInt64 PageMask
         {
             get { return m_PageMask; }
@@ -353,5 +357,91 @@ namespace Soft64.MipsR4300.CP0
             if (e != null)
                 e(this, new EventArgs());
         }
+
+        #region IList<TLBEntry> Members
+
+        public int IndexOf(TLBEntry item)
+        {
+            for(Int32 i = 0; i < m_Entries.Length; i++)
+            {
+                if (Object.Equals(item, m_Entries[i]))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public void Insert(int index, TLBEntry item)
+        {
+            m_Entries[index] = item;
+        }
+
+        public void RemoveAt(int index)
+        {
+            m_Entries[index] = null;
+        }
+
+        public TLBEntry this[int index]
+        {
+            get
+            {
+                return m_Entries[index];
+            }
+            set
+            {
+                m_Entries[index] = value;
+            }
+        }
+
+        #endregion
+
+        #region ICollection<TLBEntry> Members
+
+        public void Add(TLBEntry item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Clear()
+        {
+            throw new NotSupportedException();
+        }
+
+        public bool Contains(TLBEntry item)
+        {
+            return m_Entries.Contains(item);
+        }
+
+        public void CopyTo(TLBEntry[] array, int arrayIndex)
+        {
+            throw new NotSupportedException();
+        }
+
+        public int Count
+        {
+            get { return m_Entries.Length; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
+
+        public bool Remove(TLBEntry item)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IEnumerable<TLBEntry> Members
+
+        IEnumerator<TLBEntry> IEnumerable<TLBEntry>.GetEnumerator()
+        {
+            foreach (var entry in m_Entries)
+                yield return entry;
+        }
+
+        #endregion
     }
 }

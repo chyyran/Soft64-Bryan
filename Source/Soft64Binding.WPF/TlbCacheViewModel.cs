@@ -16,12 +16,11 @@ namespace Soft64Binding.WPF
         public TlbCacheViewModel(MachineViewModel parentMachineModel) : base(parentMachineModel)
         {
             Refresh();
-            
-            for (Int32 i = 0; i < 48; i++)
-            {
-                TlbEntries.Add(new TlbModelEntry(i, 
-                    parentMachineModel.TargetMachine.CPU.VirtualMemoryStream.TLB.ElementAt(i).AssociatedEntry));
-            }
+
+            WeakEventManager<TLBCache, EventArgs>.AddHandler(
+                parentMachineModel.TargetMachine.CPU.VirtualMemoryStream.TLB, 
+                "CacheChanged", 
+                TlbChange);
 
             TlbEntries.CollectionChanged += TlbEntries_CollectionChanged;
         }
@@ -38,6 +37,23 @@ namespace Soft64Binding.WPF
         {
             ReadRegs();
             ReadEntries();
+        }
+
+        private void TlbChange(Object sender, EventArgs a)
+        {
+            TLBCache cache = (TLBCache)sender;
+
+            Int32 index = (Int32)cache.Index;
+
+            if (cache[index] != null)
+            {
+                TlbEntries.Add(new TlbModelEntry(index, cache[index]));
+            }
+            else
+            {
+                TlbEntries.RemoveAt(index);
+            }
+
         }
 
         private void ReadRegs()

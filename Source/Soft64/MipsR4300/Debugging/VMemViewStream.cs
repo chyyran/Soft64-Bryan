@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using Soft64.Debugging;
 using Soft64.IO;
+using Soft64.MipsR4300.CP0;
 using Soft64.MipsR4300.IO;
 
 namespace Soft64.MipsR4300.Debugging
@@ -43,7 +44,7 @@ namespace Soft64.MipsR4300.Debugging
 
             /* Query all the valid entries in the TLB */
             var entries =
-                    from entryInfo in Machine.Current.CPU.VirtualMemoryStream.TLB
+                    from entryInfo in Machine.Current.CPU.VirtualMemoryStream.TLB.AsQueryable<TLBEntryInfo>()
                     let tlbEntry = entryInfo.AssociatedEntry
                     select entryInfo;
 
