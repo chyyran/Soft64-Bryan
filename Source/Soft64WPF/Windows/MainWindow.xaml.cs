@@ -43,6 +43,12 @@ namespace Soft64WPF.Windows
 
             xamlControl_EmuRunButton.Click += xamlControl_EmuRunButton_Click;
             xamlControl_MainCartBrowseFileButton.Click += xamlControl_MainCartBrowseFileButton_Click;
+            xaml_ButtonJSConsole.Click += xaml_ButtonJSConsole_Click;
+        }
+
+        void xaml_ButtonJSConsole_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void xamlControl_MainCartBrowseFileButton_Click(object sender, RoutedEventArgs e)

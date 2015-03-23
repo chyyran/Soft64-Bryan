@@ -47,6 +47,7 @@
             <Button x:Name="xamlControl_EmuStopButton" Margin="0,4,4,0" Content="Stop" HorizontalAlignment="Left" VerticalAlignment="Top" Width="47" Height="22" />
             <Button x:Name="xamlControl_MainCartBrowseFileButton" Content="Insert Cartridge" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="123" RenderTransformOrigin="0.5,0.5" Margin="0,4,4,0" />
             <Button x:Name="xaml_ButtonEjectCartridge" Content="Eject Cartridge" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="123" RenderTransformOrigin="0.5,0.5" Margin="0,4,4,0" Click="xaml_ButtonEjectCartridge_Click" />
+            <Button x:Name="xaml_ButtonJSConsole" Content="JS Console" />
         </StackPanel>
         <TabControl Grid.Row="1">
             <TabItem Header="Log">
