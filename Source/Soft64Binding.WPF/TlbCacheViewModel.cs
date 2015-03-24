@@ -51,7 +51,13 @@ namespace Soft64Binding.WPF
             }
             else
             {
-                TlbEntries.RemoveAt(index);
+                foreach (var entry in TlbEntries)
+                {
+                    if (entry.EntryIndex == index)
+                    {
+                        TlbEntries.Remove(entry);
+                    }
+                }
             }
 
         }

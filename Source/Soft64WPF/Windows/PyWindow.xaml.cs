@@ -11,20 +11,17 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Noesis.Javascript;
 
 namespace Soft64WPF.Windows
 {
     /// <summary>
-    /// Interaction logic for JSWindow.xaml
+    /// Interaction logic for PyWindow.xaml
     /// </summary>
-    public partial class JSWindow : Window
+    public partial class PyWindow : Window
     {
-        public JSWindow()
+        public PyWindow()
         {
             InitializeComponent();
-
-            JavascriptContext context = new JavascriptContext();
         }
     }
 }

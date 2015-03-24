@@ -44,11 +44,17 @@ namespace Soft64WPF.Windows
             xamlControl_EmuRunButton.Click += xamlControl_EmuRunButton_Click;
             xamlControl_MainCartBrowseFileButton.Click += xamlControl_MainCartBrowseFileButton_Click;
             xaml_ButtonJSConsole.Click += xaml_ButtonJSConsole_Click;
+
+            Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+        }
+
+        void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(e.Exception.Message, "Runtime Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         void xaml_ButtonJSConsole_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
         }
 
         private void xamlControl_MainCartBrowseFileButton_Click(object sender, RoutedEventArgs e)
