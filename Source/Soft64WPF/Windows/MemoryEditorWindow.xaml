@@ -34,24 +34,30 @@
             </Ribbon>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                 <ScrollBar x:Name="xaml_HexScrollBar"  Minimum="0" Maximum="10" Value="5" SmallChange="1" ViewportSize="3" />
-                <Expander ExpandDirection="Right" Background="Azure">
+                <Expander ExpandDirection="Right" Background="Azure" IsExpanded="False">
                     <Expander.Header>
                         <ItemsControl ItemsSource="{Binding Source={StaticResource tlbCaption}, Mode=OneTime, Converter={StaticResource strToCollectionConverter}}" />
                     </Expander.Header>
-                    <StackPanel Orientation="Vertical" Width="200">
-                        <TreeView ItemsSource="{Binding Cpu.TlbCache}" >
+                    <Grid Width="270" DataContext="{Binding Cpu.TlbCache}">
+                        <TreeView ItemsSource="{Binding TlbEntries}" >
                             <TreeView.ItemTemplate>
-                                <DataTemplate>
-                                    <TreeViewItem Header="{Binding AssociatedEntry.Size, StringFormat=Entry: {0}}">
+                                <HierarchicalDataTemplate>
+                                    <TreeViewItem>
+                                        <TreeViewItem.Header>
+                                            <TextBlock Text="{Binding AssociatedEntry.Size, StringFormat=Entry: {0}}" />
+                                        </TreeViewItem.Header>
                                         <StackPanel Orientation="Vertical">
-                                            <TextBlock Text="{Binding MappedN64PhysicalAddressEven, StringFormat=PhysicalEvenStart: {0}}" />
+                                            <TextBlock Text="{Binding AssociatedEntry.VPN2.Vpn2, StringFormat=VPN2: {0:X8}}" />
+                                            <TextBlock Text="{Binding AssociatedEntry.PfnEven.IsValid, StringFormat=Even Valid: {0}}" />
+                                            <TextBlock Text="{Binding AssociatedEntry.MappedN64PhysicalAddressEven, StringFormat=PhysicalEvenStart: {0:X8}}" />
+                                            <TextBlock Text="{Binding AssociatedEntry.PfnOdd.IsValid, StringFormat=Odd Valid: {0}}" />
+                                            <TextBlock Text="{Binding AssociatedEntry.MappedN64PhysicalAddressOdd, StringFormat=PhysicalOddStart: {0:X8}}" />
                                         </StackPanel>
                                     </TreeViewItem>
-
-                                </DataTemplate>
+                                </HierarchicalDataTemplate>
                             </TreeView.ItemTemplate>
                         </TreeView>
-                    </StackPanel>
+                    </Grid>
                 </Expander>
             </StackPanel>
             <toolkit:HexEditor x:Name="xaml_HexEditor" Grid.Row="1" Margin="0,5,0,0"

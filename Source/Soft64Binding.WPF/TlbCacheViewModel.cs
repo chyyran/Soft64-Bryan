@@ -17,7 +17,7 @@ namespace Soft64Binding.WPF
         {
             Refresh();
 
-            WeakEventManager<TLBCache, EventArgs>.AddHandler(
+            WeakEventManager<TLBCache, TLBCacheChangeEventArgs>.AddHandler(
                 parentMachineModel.TargetMachine.CPU.VirtualMemoryStream.TLB, 
                 "CacheChanged", 
                 TlbChange);
@@ -39,21 +39,19 @@ namespace Soft64Binding.WPF
             ReadEntries();
         }
 
-        private void TlbChange(Object sender, EventArgs a)
+        private void TlbChange(Object sender, TLBCacheChangeEventArgs a)
         {
             TLBCache cache = (TLBCache)sender;
 
-            Int32 index = (Int32)cache.Index;
-
-            if (cache[index] != null)
+            if (cache[a.Index] != null)
             {
-                TlbEntries.Add(new TlbModelEntry(index, cache[index]));
+                TlbEntries.Add(new TlbModelEntry(a.Index, cache[a.Index]));
             }
             else
             {
                 foreach (var entry in TlbEntries)
                 {
-                    if (entry.EntryIndex == index)
+                    if (entry.EntryIndex == a.Index)
                     {
                         TlbEntries.Remove(entry);
                     }

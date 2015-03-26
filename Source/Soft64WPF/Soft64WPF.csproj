@@ -219,6 +219,9 @@
     <Folder Include="Effects\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\Resources\BinaryFiles\Tests\Tests_TLB.py">
+      <Link>Tests\Tests_TLB.py</Link>
+    </Content>
     <Content Include="IronPythonConsole.py" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

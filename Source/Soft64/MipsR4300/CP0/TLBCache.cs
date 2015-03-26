@@ -47,7 +47,7 @@ namespace Soft64.MipsR4300.CP0
 
         /* Debug Events */
 
-        public event EventHandler CacheChanged;
+        public event EventHandler<TLBCacheChangeEventArgs> CacheChanged;
 
         public TLBCache(CP0Registers cp0Regs)
         {
@@ -116,7 +116,7 @@ namespace Soft64.MipsR4300.CP0
                 throw new TLBException(TLBExceptionType.Mod);
             }
 
-            OnCacheChanged();
+            OnCacheChanged((Int32)m_Index);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace Soft64.MipsR4300.CP0
             if (m_DisableTLB) return;
             UpdateRandom();
             AddEntry((Int32)m_Random, CreateEntryFromRegs());
-            OnCacheChanged();
+            OnCacheChanged((Int32)m_Index);
         }
 
         public virtual void Read()
@@ -158,7 +158,7 @@ namespace Soft64.MipsR4300.CP0
         {
             m_VPN2Dictionary.Remove(m_Entries[index].VPN2);
             m_Entries[index] = null;
-            OnCacheChanged();
+            OnCacheChanged(index);
         }
 
         public IEnumerator<TLBEntryInfo> GetEnumerator()
@@ -227,7 +227,7 @@ namespace Soft64.MipsR4300.CP0
             }
 
             UpdateRandom();
-            OnCacheChanged();
+            OnCacheChanged(index);
         }
 
         private void ClearEntries()
@@ -235,7 +235,7 @@ namespace Soft64.MipsR4300.CP0
             Array.Clear(m_Entries, 0, m_Entries.Length);
             m_VPN2Dictionary.Clear();
             m_GlobalVPN2Dictionary.Clear();
-            OnCacheChanged();
+            OnCacheChanged(-1);
         }
 
         private void SetWired(Int32 wired)
@@ -350,12 +350,12 @@ namespace Soft64.MipsR4300.CP0
             get { return m_WordSize; }
         }
 
-        private void OnCacheChanged()
+        private void OnCacheChanged(Int32 index)
         {
             var e = CacheChanged;
 
             if (e != null)
-                e(this, new EventArgs());
+                e(this, new TLBCacheChangeEventArgs(index));
         }
 
         #region IList<TLBEntry> Members

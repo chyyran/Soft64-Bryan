@@ -43,9 +43,13 @@ namespace Soft64.MipsR4300.CP0
             m_PageSize = size;
         }
 
-        public TLBEntry(WordSize addressingMode)
+        public TLBEntry(WordSize addressingMode = WordSize.MIPS32)
         {
             m_AddressingMode = addressingMode;
+            m_PageSize = new PageSize(NamedPageSize.Size4KB);
+            m_Vpn2 = new VirtualPageNumber2();
+            m_EntryEven = new PageFrameNumber();
+            m_EntryOdd = new PageFrameNumber();
         }
 
         /// <summary>

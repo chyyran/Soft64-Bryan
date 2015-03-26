@@ -53,6 +53,7 @@
     <Compile Include="Debugger.cs" />
     <Compile Include="Debugging\PMemMirrorStream.cs" />
     <Compile Include="MipsR4300\Cache.cs" />
+    <Compile Include="MipsR4300\CP0\TLBCacheChangeEventArgs.cs" />
     <Compile Include="MipsR4300\Debugging\VMemViewStream.cs" />
     <Compile Include="DeviceMemory\N64MemoryStream.cs" />
     <Compile Include="Machine.cs" />
