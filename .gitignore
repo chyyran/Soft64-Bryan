@@ -8,3 +8,4 @@ Source/*/bin
 *.vsp
 *.etl
 *.vsps
+/Resources/BinaryFiles/Tests/Tests_TLB.py

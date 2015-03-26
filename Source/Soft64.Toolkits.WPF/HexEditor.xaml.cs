@@ -398,7 +398,9 @@ namespace Soft64.Toolkits.WPF
                 Int32 rowIndex = e.NewStartingIndex / m_GridWidth;
                 Int32 colIndex = e.NewStartingIndex % m_GridWidth;
 
-                DataRows[rowIndex].Bytes[colIndex] = new IndexedByte { ByteValue = (Byte)e.NewItems[0], Index = e.NewStartingIndex };
+                if (rowIndex < DataRows.Count && colIndex < DataRows[rowIndex].Bytes.Count)
+                    DataRows[rowIndex].Bytes[colIndex] = 
+                        new IndexedByte { ByteValue = (Byte)e.NewItems[0], Index = e.NewStartingIndex };
             }
         }
 
