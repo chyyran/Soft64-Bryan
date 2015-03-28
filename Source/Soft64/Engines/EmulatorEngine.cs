@@ -24,7 +24,10 @@ namespace Soft64.Engines
             }
         }
 
-        protected abstract void BeginLoop();
+        private void CreateTickThread(EngineTick tickEvent)
+        {
+
+        }
 
 
         #region ILifetimeTrackable Members

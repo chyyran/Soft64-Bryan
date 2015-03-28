@@ -23,3 +23,27 @@ CPU Execution Loop
 * init interrupt logic
 * CPU interpreter loop
 	* Deocode and excute next instruction
+
+
+
+
+TODO: We need to fit new things into this
+* Real RCP core emulator
+* Debugging events
+* Hardware ticks outside the CPU for more accurate simulation such as the DMA engines
+
+
+Instead of hardcoding these function calls in a method, we can use tables to bind together components
+that will be called inside the engine thread.  The ordering is based on a type of key, and the engine only knows
+how to call these functions by a key.  Also instead of directly calling the functions, we can execute ticks such as
+the CPU does not loop itself, it relies on ticks firing off.  When we have ticks goinug off, the CPU and RCP can beunaware of which
+threads they belong too and enable like Dual core, so ticks are performed on differe thread/cores.
+
+
+Build a EmuTaskScheduler, which supports the debugging events, and machine stop/run events.
+
+SingleThread and DualThread shcedules based on emuTaskScheduelr
+
+the emulator engine is a base which uses some kind of given task scheduler, a class should inherit it so the 
+how components are schedules are customized.  For instacen the default main one, just throws CPU and RCP into tasks, and maybe other hardware
+events.  Maybe when HLE plugins are supported, an engine imnplements calls tot he pluygins instead of RCP core.
