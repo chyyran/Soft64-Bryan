@@ -8,6 +8,24 @@ namespace Soft64.Engines
 {
     public abstract class EmulatorEngine : ILifetimeTrackable
     {
+        private EngineTick m_CPUTick;
+
+
+        public event EngineTick CPUTick
+        {
+            add
+            {
+                m_CPUTick = value;
+            }
+
+            remove
+            {
+                m_CPUTick = null;
+            }
+        }
+
+        protected abstract void BeginLoop();
+
 
         #region ILifetimeTrackable Members
 

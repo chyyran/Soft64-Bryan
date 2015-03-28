@@ -1,0 +1,12 @@
+﻿This is based on other emulators to break down the order of things executed on the emulator loop
+
+* Load Configurations
+* Swap bytes when copying rom to memory
+* Init emu memory
+* Send "ROM opened" notification to plugins
+* start the input backend event loop
+* start the video graphics backend thread
+* bind audio backend stuff
+* init and connnect controllert stuff
+* init fake eeprom code
+* 
