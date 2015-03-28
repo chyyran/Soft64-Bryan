@@ -9,4 +9,17 @@
 * bind audio backend stuff
 * init and connnect controllert stuff
 * init fake eeprom code
-* 
+* init fake flashram
+* init fake sram
+* init CPU hard
+* init CPU soft
+* Do CPU execute loop
+
+CPU Execution Loop
+* Clear delay slot
+* Clear instruction counter (profiler)
+* start instruction address at PC
+* set next interrupt var to 624999 (bitmap, so 8 different interrupts)
+* init interrupt logic
+* CPU interpreter loop
+	* Deocode and excute next instruction
