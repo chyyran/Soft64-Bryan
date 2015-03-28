@@ -22,32 +22,32 @@ using System.Threading.Tasks;
 
 namespace Soft64
 {
-    public enum RuntimeState
+    public enum LifetimeState
     {
         Created, Initialized, Running, Stopped, Disposed
     }
 
-    public enum RequestRunState
+    public enum RequestState
     {
         Initialize, Run, Stop, Dispose
     }
 
-    public sealed class RuntimeStateChangedArgs : EventArgs
+    public sealed class LifeStateChangedArgs : EventArgs
     {
-        public RuntimeState NewState { get; private set; }
+        public LifetimeState NewState { get; private set; }
 
-        public RuntimeState OldState { get; private set; }
+        public LifetimeState OldState { get; private set; }
 
-        public RuntimeStateChangedArgs(RuntimeState newState, RuntimeState oldState)
+        public LifeStateChangedArgs(LifetimeState newState, LifetimeState oldState)
         {
             NewState = newState;
             OldState = oldState;
         }
     }
 
-    public interface IRuntimeModel : IDisposable
+    public interface ILifetimeTrackable : IDisposable
     {
-        event EventHandler<RuntimeStateChangedArgs> RuntimeStateChanged;
+        event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
 
         void Initialize();
 
@@ -55,22 +55,18 @@ namespace Soft64
 
         Task<Boolean> Stop();
 
-        RuntimeState CurrentRuntimeState { get; }
-
-        //void AppendMetrics(ICollection<MetricCounter> metricCollection);
-
-        //void SetDebugger(IDebugger currentDebugger);
+        LifetimeState CurrentRuntimeState { get; }
     }
 
     public static class RuntimeModelExtensions
     {
-        public static Boolean CheckStateRequestInvalid(this IRuntimeModel runtimeModel, RequestRunState request)
+        public static Boolean CheckStateRequestInvalid(this ILifetimeTrackable lifetimeObject, RequestState request)
         {
             switch (request)
             {
-                case RequestRunState.Initialize:
+                case RequestState.Initialize:
                     {
-                        if (runtimeModel.CurrentRuntimeState < RuntimeState.Initialized)
+                        if (lifetimeObject.CurrentRuntimeState < LifetimeState.Initialized)
                         {
                             return false;
                         }
@@ -78,19 +74,19 @@ namespace Soft64
                         break;
                     }
 
-                case RequestRunState.Dispose:
+                case RequestState.Dispose:
                     {
-                        if (runtimeModel.CurrentRuntimeState > RuntimeState.Created &&
-                            runtimeModel.CurrentRuntimeState < RuntimeState.Disposed)
+                        if (lifetimeObject.CurrentRuntimeState > LifetimeState.Created &&
+                            lifetimeObject.CurrentRuntimeState < LifetimeState.Disposed)
                             return false;
 
                         break;
                     }
 
-                case RequestRunState.Run:
+                case RequestState.Run:
                     {
-                        if (runtimeModel.CurrentRuntimeState > RuntimeState.Created &&
-                            runtimeModel.CurrentRuntimeState < RuntimeState.Disposed)
+                        if (lifetimeObject.CurrentRuntimeState > LifetimeState.Created &&
+                            lifetimeObject.CurrentRuntimeState < LifetimeState.Disposed)
                         {
                             return false;
                         }
@@ -98,10 +94,10 @@ namespace Soft64
                         break;
                     }
 
-                case RequestRunState.Stop:
+                case RequestState.Stop:
                     {
-                        if (runtimeModel.CurrentRuntimeState > RuntimeState.Running &&
-                            runtimeModel.CurrentRuntimeState < RuntimeState.Stopped)
+                        if (lifetimeObject.CurrentRuntimeState > LifetimeState.Running &&
+                            lifetimeObject.CurrentRuntimeState < LifetimeState.Stopped)
                         {
                             return false;
                         }
@@ -114,7 +110,7 @@ namespace Soft64
             return true;
         }
 
-        public static Exception CreateInvalidStateException(this IRuntimeModel runtimeModel, RequestRunState invalidRequestState)
+        public static Exception CreateInvalidStateException(this ILifetimeTrackable runtimeModel, RequestState invalidRequestState)
         {
             String format = "Illegal runtime state {0} requested on type {1}";
             return new InvalidOperationException(

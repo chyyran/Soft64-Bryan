@@ -10,7 +10,7 @@ namespace Soft64Binding.WPF
             new PropertyMetadata());
 
         private static readonly DependencyPropertyKey MachineRunStatePropertyKey =
-            DependencyProperty.RegisterReadOnly("MachineRunState", typeof(RuntimeState), typeof(MachineViewModel),
+            DependencyProperty.RegisterReadOnly("MachineRunState", typeof(LifetimeState), typeof(MachineViewModel),
             new PropertyMetadata());
 
         private static readonly DependencyPropertyKey CartridgePropertyKey =
@@ -51,7 +51,7 @@ namespace Soft64Binding.WPF
             if (Machine.Current == null)
                 return;
 
-            WeakEventManager<Machine, RuntimeStateChangedArgs>
+            WeakEventManager<Machine, LifeStateChangedArgs>
                 .AddHandler(Machine.Current, "RuntimeStateChanged", RuntimeStateChangedHandler);
 
             SetValue(CurrentMachinePropertyKey, Machine.Current);
@@ -61,7 +61,7 @@ namespace Soft64Binding.WPF
             SetValue(CpuPropertyKey, new CpuViewModel(this));
         }
 
-        private void RuntimeStateChangedHandler(object sender, RuntimeStateChangedArgs e)
+        private void RuntimeStateChangedHandler(object sender, LifeStateChangedArgs e)
         {
             SetValue(MachineRunStatePropertyKey, e.NewState);
         }
@@ -71,9 +71,9 @@ namespace Soft64Binding.WPF
             get { return (Machine)GetValue(CurrentMachineProperty); }
         }
 
-        public RuntimeState MachineRunState
+        public LifetimeState MachineRunState
         {
-            get { return (RuntimeState)GetValue(MachineRunStateProperty); }
+            get { return (LifetimeState)GetValue(MachineRunStateProperty); }
         }
 
         public CartridgeViewModel Cartridge

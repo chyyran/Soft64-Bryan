@@ -26,20 +26,20 @@ using Soft64.RCP;
 
 namespace Soft64
 {
-    public class Machine : IRuntimeModel
+    public class Machine : ILifetimeTrackable
     {
         private Boolean m_Booted = false;
         private BootMode m_SysBootMode = BootMode.HLE_IPL;
 
-        private RuntimeState m_RunState =
-            RuntimeState.Created;
+        private LifetimeState m_RunState =
+            LifetimeState.Created;
 
         private static Logger logger =
             LogManager.GetCurrentClassLogger();
 
         private Boolean m_RunWithDebugger = false;
 
-        public event EventHandler<RuntimeStateChangedArgs> RuntimeStateChanged;
+        public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
 
         //private VMTaskScheduler m_VMTaskScheduler =
         //    new VMTaskScheduler();
@@ -56,7 +56,7 @@ namespace Soft64
 
         public void Initialize()
         {
-            if (this.CheckStateRequestInvalid(RequestRunState.Initialize))
+            if (this.CheckStateRequestInvalid(RequestState.Initialize))
                 throw new MachineException("Failed to call Initialize on machine instance");
 
             logger.Trace("Initializing machine");
@@ -82,7 +82,7 @@ namespace Soft64
                 /* Setup the task scheduler */
                 //m_VMTaskScheduler.Initialize();
 
-                m_RunState = RuntimeState.Initialized;
+                m_RunState = LifetimeState.Initialized;
             }
             catch (Exception e)
             {
@@ -90,7 +90,7 @@ namespace Soft64
             }
         }
 
-        protected void SetNewRuntimeState(RuntimeState newState)
+        protected void SetNewRuntimeState(LifetimeState newState)
         {
             OnRuntimeStateChanged(newState, CurrentRuntimeState);
             m_RunState = newState;
@@ -98,7 +98,7 @@ namespace Soft64
 
         public void Run()
         {
-            if (this.CheckStateRequestInvalid(RequestRunState.Run))
+            if (this.CheckStateRequestInvalid(RequestState.Run))
                 throw new MachineException("Failed to call Run on machine instance");
 
             logger.Trace("Running machine");
@@ -121,7 +121,7 @@ namespace Soft64
 
                 logger.Trace("Machine is now running ... ");
 
-                SetNewRuntimeState(RuntimeState.Running);
+                SetNewRuntimeState(LifetimeState.Running);
             }
             catch (Exception e)
             {
@@ -138,13 +138,13 @@ namespace Soft64
              * CPU
              * RCP */
 
-            SetNewRuntimeState(RuntimeState.Stopped);
+            SetNewRuntimeState(LifetimeState.Stopped);
 
             /* TODO: Implement */
             return new Task<bool>(() => false);
         }
 
-        public RuntimeState CurrentRuntimeState
+        public LifetimeState CurrentRuntimeState
         {
             get { return m_RunState; }
         }
@@ -157,7 +157,7 @@ namespace Soft64
 
         protected virtual void Dispose(Boolean disposing)
         {
-            if (this.CheckStateRequestInvalid(RequestRunState.Dispose))
+            if (this.CheckStateRequestInvalid(RequestState.Dispose))
                 return;
 
             if (disposing)
@@ -172,7 +172,7 @@ namespace Soft64
                 //RCP.Dispose();
             }
 
-            SetNewRuntimeState(RuntimeState.Disposed);
+            SetNewRuntimeState(LifetimeState.Disposed);
         }
 
         protected virtual void OnProperyChanged(String propertyName)
@@ -191,12 +191,12 @@ namespace Soft64
 
         public Boolean IsRunning
         {
-            get { return CurrentRuntimeState == RuntimeState.Running; }
+            get { return CurrentRuntimeState == LifetimeState.Running; }
         }
 
         public Boolean IsStopped
         {
-            get { return CurrentRuntimeState == RuntimeState.Stopped; }
+            get { return CurrentRuntimeState == LifetimeState.Stopped; }
         }
 
         public Boolean StartWithDebugger
@@ -259,17 +259,17 @@ namespace Soft64
 
         private void ThrowOnIllegalModifiy()
         {
-            if (CurrentRuntimeState > RuntimeState.Created)
+            if (CurrentRuntimeState > LifetimeState.Created)
                 throw new MachineException("Cannot modify this property state of machine after initialization");
         }
 
-        protected virtual void OnRuntimeStateChanged(RuntimeState newState, RuntimeState oldState)
+        protected virtual void OnRuntimeStateChanged(LifetimeState newState, LifetimeState oldState)
         {
-            var e = RuntimeStateChanged;
+            var e = LifetimeStateChanged;
 
             if (e != null)
             {
-                e(this, new RuntimeStateChangedArgs(newState, oldState));
+                e(this, new LifeStateChangedArgs(newState, oldState));
             }
         }
     }

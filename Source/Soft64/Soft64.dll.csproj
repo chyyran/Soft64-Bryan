@@ -52,6 +52,7 @@
     <Compile Include="CPUProcessor.cs" />
     <Compile Include="Debugger.cs" />
     <Compile Include="Debugging\PMemMirrorStream.cs" />
+    <Compile Include="Engines\EmulatorEngine.cs" />
     <Compile Include="MipsR4300\Cache.cs" />
     <Compile Include="MipsR4300\CP0\TLBCacheChangeEventArgs.cs" />
     <Compile Include="MipsR4300\Debugging\VMemViewStream.cs" />
@@ -78,7 +79,7 @@
     <Compile Include="IO\_StreamIOCompiler.cs" />
     <Compile Include="IO\_IORequest.cs" />
     <Compile Include="IO\UnifiedStream.cs" />
-    <Compile Include="IRuntimeModel.cs" />
+    <Compile Include="ILifetimeTrackable.cs" />
     <Compile Include="MipsR4300\Analyzing\BytecodeCache.cs" />
     <Compile Include="MipsR4300\Analyzing\CodeAnalyzer.cs" />
     <Compile Include="MipsR4300\Analyzing\InstructionMap.cs" />

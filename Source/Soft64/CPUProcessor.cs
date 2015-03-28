@@ -25,7 +25,7 @@ using Soft64.MipsR4300;
 
 namespace Soft64
 {
-    public sealed class CPUProcessor : MipsR4300Core, IRuntimeModel
+    public sealed class CPUProcessor : MipsR4300Core, ILifetimeTrackable
     {
         private CancellationTokenSource m_CPUCancellationTokenSource;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -45,7 +45,7 @@ namespace Soft64
             throw new NotImplementedException();
         }
 
-        public RuntimeState CurrentRuntimeState
+        public LifetimeState CurrentRuntimeState
         {
             get { throw new NotImplementedException(); }
         }
@@ -75,7 +75,7 @@ namespace Soft64
 
         #region IRuntimeModel Members
 
-        public event EventHandler<RuntimeStateChangedArgs> RuntimeStateChanged;
+        public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
 
         #endregion IRuntimeModel Members
     }
