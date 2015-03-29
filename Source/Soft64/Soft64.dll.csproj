@@ -53,8 +53,10 @@
     <Compile Include="Debugger.cs" />
     <Compile Include="Debugging\PMemMirrorStream.cs" />
     <Compile Include="Engines\EmulatorEngine.cs" />
-    <Compile Include="Engines\SingleThreadTaskScheduler.cs" />
+    <Compile Include="Engines\SimpleEngine.cs" />
     <Compile Include="Engines\EngineTick.cs" />
+    <Compile Include="Engines\SingleCoreScheduler.cs" />
+    <Compile Include="Engines\CoreTaskScheduler.cs" />
     <Compile Include="MipsR4300\Cache.cs" />
     <Compile Include="MipsR4300\CP0\TLBCacheChangeEventArgs.cs" />
     <Compile Include="MipsR4300\Debugging\VMemViewStream.cs" />

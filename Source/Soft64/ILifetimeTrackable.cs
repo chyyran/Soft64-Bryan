@@ -53,7 +53,7 @@ namespace Soft64
 
         void Run();
 
-        Task<Boolean> Stop();
+        void Stop();
 
         LifetimeState CurrentRuntimeState { get; }
     }

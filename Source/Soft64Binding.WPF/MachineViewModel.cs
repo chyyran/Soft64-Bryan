@@ -52,7 +52,7 @@ namespace Soft64Binding.WPF
                 return;
 
             WeakEventManager<Machine, LifeStateChangedArgs>
-                .AddHandler(Machine.Current, "RuntimeStateChanged", RuntimeStateChangedHandler);
+                .AddHandler(Machine.Current, "LifetimeStateChanged", RuntimeStateChangedHandler);
 
             SetValue(CurrentMachinePropertyKey, Machine.Current);
             SetValue(CartridgePropertyKey, new CartridgeViewModel(this));

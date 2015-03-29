@@ -43,6 +43,13 @@ namespace Soft64Binding.WPF
         {
             TLBCache cache = (TLBCache)sender;
 
+            if (a.Index < 0)
+            {
+                /* Do a full reload */
+                ReadEntries();
+                return;
+            }
+
             if (cache[a.Index] != null)
             {
                 TlbEntries.Add(new TlbModelEntry(a.Index, cache[a.Index]));

@@ -21,6 +21,7 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using NLog;
+using Soft64.Engines;
 using Soft64.PIF;
 using Soft64.RCP;
 
@@ -30,20 +31,12 @@ namespace Soft64
     {
         private Boolean m_Booted = false;
         private BootMode m_SysBootMode = BootMode.HLE_IPL;
-
-        private LifetimeState m_RunState =
-            LifetimeState.Created;
-
-        private static Logger logger =
-            LogManager.GetCurrentClassLogger();
-
+        private LifetimeState m_RunState =LifetimeState.Created;
+        private static Logger logger =LogManager.GetCurrentClassLogger();
         private Boolean m_RunWithDebugger = false;
+        private EmulatorEngine m_CurrentEngine;
 
         public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
-
-        //private VMTaskScheduler m_VMTaskScheduler =
-        //    new VMTaskScheduler();
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Machine()
@@ -52,6 +45,9 @@ namespace Soft64
             RCP = new RcpProcessor();
             CPU = new CPUProcessor();
             PIF = new PIFModule();
+
+            /* Default hack for now */
+            m_CurrentEngine = new SimpleEngine();
         }
 
         public void Initialize()
@@ -79,13 +75,15 @@ namespace Soft64
                  * Controller Plugin
                  * ----------------------------*/
 
-                /* Setup the task scheduler */
-                //m_VMTaskScheduler.Initialize();
+                /* Initilaize the runtime engine */
+                m_CurrentEngine.Initialize();
 
                 m_RunState = LifetimeState.Initialized;
             }
             catch (Exception e)
             {
+                logger.Trace("Exception trace", e);
+
                 throw new MachineException("Exception occurred during Initialization, see inner exception for details.", e);
             }
         }
@@ -117,7 +115,7 @@ namespace Soft64
 
                 /* TODO: Do a global backend initialize, to get video, and audio ready */
 
-                CPU.Run();
+                m_CurrentEngine.Run();
 
                 logger.Trace("Machine is now running ... ");
 
@@ -129,7 +127,7 @@ namespace Soft64
             }
         }
 
-        public Task<bool> Stop()
+        public void Stop()
         {
             /* TODO: Stop order
              * Controller
@@ -139,9 +137,6 @@ namespace Soft64
              * RCP */
 
             SetNewRuntimeState(LifetimeState.Stopped);
-
-            /* TODO: Implement */
-            return new Task<bool>(() => false);
         }
 
         public LifetimeState CurrentRuntimeState

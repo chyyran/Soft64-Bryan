@@ -25,58 +25,21 @@ using Soft64.MipsR4300;
 
 namespace Soft64
 {
-    public sealed class CPUProcessor : MipsR4300Core, ILifetimeTrackable
+    public sealed class CPUProcessor : MipsR4300Core
     {
-        private CancellationTokenSource m_CPUCancellationTokenSource;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public void Run()
         {
-            m_CPUCancellationTokenSource = new CancellationTokenSource();
-
-            Task cpuTask =
-                new Task(() => ExecuteCPU(), m_CPUCancellationTokenSource.Token, TaskCreationOptions.LongRunning);
-
-            cpuTask.Start();
-        }
-
-        public Task<bool> Stop()
-        {
-            throw new NotImplementedException();
-        }
-
-        public LifetimeState CurrentRuntimeState
-        {
-            get { throw new NotImplementedException(); }
+            while (true)
+            {
+                Engine.Step();
+            }
         }
 
         public void Dispose()
         {
             throw new NotImplementedException();
         }
-
-        public void ExecuteCPU()
-        {
-            while (!m_CPUCancellationTokenSource.Token.IsCancellationRequested)
-            {
-                /* Prefetch: When we support the real cache */
-
-                /* TODO: Debug check */
-
-                /* Interrupt and service */
-
-                /* Execute code / branch delay slot / interrupt/exception processing */
-
-                //logger.Trace("cpu work");
-
-                Thread.Sleep(100);
-            }
-        }
-
-        #region IRuntimeModel Members
-
-        public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
-
-        #endregion IRuntimeModel Members
     }
 }
