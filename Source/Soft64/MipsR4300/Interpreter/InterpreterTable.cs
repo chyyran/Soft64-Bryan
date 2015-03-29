@@ -19,13 +19,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 using System.Runtime.CompilerServices;
-
+using NLog;
 using MipsOp = System.Action<Soft64.MipsR4300.MipsInstruction>;
 
 namespace Soft64.MipsR4300.Interpreter
 {
     public sealed class InterpreterTable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private Int32 m_OpcodeErrorCount = 0;
 
         private MipsOp m_SubSpecial;
@@ -148,6 +150,9 @@ namespace Soft64.MipsR4300.Interpreter
             try
             {
                 MipsOp e = callTable[index];
+
+                if (logger.IsDebugEnabled)
+                    logger.Debug("{0:X8} {1:X8} {2}", Machine.Current.CPU.State.PC, inst.Instruction, inst.ToString());
 
                 if (e != null)
                     e(inst);
