@@ -50,6 +50,7 @@ namespace Soft64WPF.Windows
             m_PyEngine = Python.CreateEngine();
             m_PyEngine.Runtime.LoadAssembly(typeof(Machine).Assembly);
             m_PyEngine.Runtime.LoadAssembly(typeof(Console).Assembly);
+            m_PyEngine.Runtime.LoadAssembly(typeof(MessageBox).Assembly);
         }
 
         void xaml_BtnRunScript_Click(object sender, RoutedEventArgs e)

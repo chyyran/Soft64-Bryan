@@ -78,6 +78,11 @@ namespace Soft64.Engines
             throw new NotImplementedException();
         }
 
+        public CoreTaskScheduler CurrentScheduler
+        {
+            get { return m_CoreScheduler; }
+        }
+
         protected virtual void OnLifetimeStateChange(LifetimeState old, LifetimeState newState)
         {
             var e = LifetimeStateChanged;

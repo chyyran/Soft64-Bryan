@@ -194,6 +194,22 @@ namespace Soft64
             get { return CurrentRuntimeState == LifetimeState.Stopped; }
         }
 
+        public EmulatorEngine CurrentEngine
+        {
+            get { return m_CurrentEngine; }
+            set
+            {
+                if (m_RunState < LifetimeState.Initialized)
+                {
+                    m_CurrentEngine = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Machine is already past initialization");
+                }
+            }
+        }
+
         public Boolean StartWithDebugger
         {
             get { return m_RunWithDebugger; }

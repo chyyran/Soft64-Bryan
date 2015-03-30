@@ -109,6 +109,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\StringToCollectionConverter.cs" />
+    <Compile Include="Windows\CPUDebugger.xaml.cs">
+      <DependentUpon>CPUDebugger.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MemoryEditorWindow.xaml.cs">
       <DependentUpon>MemoryEditorWindow.xaml</DependentUpon>
     </Compile>
@@ -122,6 +125,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\Theme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\CPUDebugger.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -221,6 +228,9 @@
   <ItemGroup>
     <Content Include="..\..\Resources\BinaryFiles\Tests\Tests_TLB.py">
       <Link>Tests\Tests_TLB.py</Link>
+    </Content>
+    <Content Include="..\..\Resources\BinaryFiles\Tests\TheadPeek.py">
+      <Link>Tests\TheadPeek.py</Link>
     </Content>
     <Content Include="IronPythonConsole.py" />
   </ItemGroup>

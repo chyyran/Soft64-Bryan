@@ -71,6 +71,11 @@ namespace Soft64.Engines
             ResumeThreads();
         }
 
+        public IEnumerable<Thread> GetThreads()
+        {
+            return m_ThreadList.AsReadOnly();
+        }
+
         protected override IEnumerable<Task> GetScheduledTasks()
         {
             return m_ScheduledTasks;
