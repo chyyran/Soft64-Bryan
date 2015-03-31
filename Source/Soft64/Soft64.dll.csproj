@@ -51,6 +51,7 @@
     <Compile Include="CartridgeInfo.cs" />
     <Compile Include="CPUProcessor.cs" />
     <Compile Include="Debugger.cs" />
+    <Compile Include="Debugging\Debugger.cs" />
     <Compile Include="Debugging\PMemMirrorStream.cs" />
     <Compile Include="Engines\EmulatorEngine.cs" />
     <Compile Include="Engines\SimpleEngine.cs" />
