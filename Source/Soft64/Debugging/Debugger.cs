@@ -22,17 +22,29 @@ namespace Soft64.Debugging
         StepOver
     }
 
-    public class Debugger
+    public class Debugger : IDisposable
     {
-        public event DebuggerEvent Break;
-        public event DebuggerEvent Resume;
-        public event DebuggerEvent Pause;
+        public event DebuggerEvent DebugBreak;
+        public event DebuggerEvent DebugResume;
+        public event DebuggerEvent DebugPause;
         public event DebuggerEvent StepOnce;
         public event DebuggerEvent StepIn;
         public event DebuggerEvent StepOut;
         public event DebuggerEvent StepOver;
 
         private DebuggerEngineEvent m_EngineHook;
+        private static Debugger s_CurrentDebugger;
+        private Boolean m_Disposed;
+
+        public Debugger()
+        {
+            if (s_CurrentDebugger != null)
+            {
+                s_CurrentDebugger.Dispose();
+            }
+
+            s_CurrentDebugger = this;
+        }
 
         public void RegisterEngineHook(DebuggerEngineEvent hook)
         {
@@ -50,19 +62,39 @@ namespace Soft64.Debugging
             }
         }
 
+        public static Debugger Current
+        {
+            get { return s_CurrentDebugger; }
+        }
+
+        public void Pause()
+        {
+            OnPause();
+        }
+
+        public void Resume()
+        {
+            OnResume();
+        }
+
+        public void Break()
+        {
+            OnBreak();
+        }
+
         protected virtual void OnBreak()
         {
-            OnEvent(DebuggerEventType.Break, Break);
+            OnEvent(DebuggerEventType.Break, DebugBreak);
         }
 
         protected virtual void OnResume()
         {
-            OnEvent(DebuggerEventType.Resume, Resume);
+            OnEvent(DebuggerEventType.Resume, DebugResume);
         }
 
         protected virtual void OnPause()
         {
-            OnEvent(DebuggerEventType.Pause, Pause);
+            OnEvent(DebuggerEventType.Pause, DebugPause);
         }
 
         protected virtual void OnStepOnce()
@@ -83,6 +115,20 @@ namespace Soft64.Debugging
         protected virtual void OnStepOver()
         {
             OnEvent(DebuggerEventType.StepOver, StepOver);
+        }
+
+        protected void Dispose(Boolean disposing)
+        {
+            if (!m_Disposed)
+            {
+                m_Disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            Dispose(true);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Soft64.Engines
 
         protected override void StartTasks(System.Threading.CancellationToken token, TaskFactory factory)
         {
-            factory.StartNew(Machine.Current.CPU.Run);
+            factory.StartNew(Machine.Current.CPU.StepOnce, token);
         }
     }
 }

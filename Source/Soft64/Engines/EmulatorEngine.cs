@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
+using Soft64.Debugging;
 
 namespace Soft64.Engines
 {
@@ -22,6 +23,11 @@ namespace Soft64.Engines
         {
             m_TokenSource = new CancellationTokenSource();
             m_CoreScheduler = new SingleCoreScheduler();
+
+            if (Debugger.Current != null)
+            {
+                /* TODO: Attach engine hooks into the debugger context */
+            }
             
         }
 
@@ -68,6 +74,22 @@ namespace Soft64.Engines
             m_LifeState = LifetimeState.Stopped;
         }
 
+        public void PauseThreads()
+        {
+            if (m_CoreScheduler != null)
+            {
+                m_CoreScheduler.PauseThreads();
+            }
+        }
+
+        public void ResumeThreads()
+        {
+            if (m_CoreScheduler != null)
+            {
+                m_CoreScheduler.ResumeThreads();
+            }
+        }
+
         public LifetimeState CurrentRuntimeState
         {
             get { return m_LifeState; }
@@ -91,6 +113,11 @@ namespace Soft64.Engines
             {
                 e(this, new LifeStateChangedArgs(newState, old));
             }
+        }
+
+        public Boolean IsPaused
+        {
+            get { return m_CoreScheduler.IsPaused; }
         }
     }
 }

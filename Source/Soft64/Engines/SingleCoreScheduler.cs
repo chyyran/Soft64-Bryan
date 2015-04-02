@@ -17,7 +17,7 @@ namespace Soft64.Engines
 
         }
 
-        protected override System.Threading.Thread GetTaskThread(Task task, System.Threading.EventWaitHandle pauseEvent)
+        protected override System.Threading.Thread GetTaskThread(Task task)
         {
             Action taskAction = new Action(() => this.TryExecuteTask(task));
 
@@ -35,12 +35,8 @@ namespace Soft64.Engines
                 m_SingleThread = new Thread((o) => {
                     while (true)
                     {
-                        /* If the lock is on the event, wait until its released */
-                        if (Monitor.IsEntered(pauseEvent))
-                            Monitor.Wait(pauseEvent);
-
-                        /* Thread will be paused here until notified */
-                        pauseEvent.WaitOne();
+                        /* Thread will be paused here if set */
+                        PauseWait();
 
                         /* Call the chained tasks */
                         m_CallChain();

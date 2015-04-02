@@ -216,12 +216,6 @@ namespace Soft64
             set { m_RunWithDebugger = value; }
         }
 
-        public Debugger CurrentDebugger
-        {
-            get;
-            set;
-        }
-
         public static Machine Current
         {
             get;

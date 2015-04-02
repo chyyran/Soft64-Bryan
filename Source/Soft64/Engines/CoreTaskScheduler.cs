@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Soft64.Engines
 {
+    [Synchronization]
     public abstract class CoreTaskScheduler : TaskScheduler
     {
         private List<Task> m_ScheduledTasks;
         private List<Thread> m_ThreadList;
-        private EventWaitHandle m_PauseEvent;
+        private Object m_ThreadLock;
+        private Int32 m_PauseState;
+        private const Int32 NOTSET = 0;
+        private const Int32 SET = 1;
+        private AutoResetEvent m_PauseEvent;
 
         protected CoreTaskScheduler()
         {
             m_ScheduledTasks = new List<Task>();
             m_ThreadList = new List<Thread>();
-            m_PauseEvent = new EventWaitHandle(true, EventResetMode.ManualReset);
+            m_PauseEvent = new AutoResetEvent(false);
         }
 
         public void CleanThreads()
@@ -35,20 +41,26 @@ namespace Soft64.Engines
             GC.Collect();
         }
 
+        private Boolean CheckAndSetPause()
+        {
+            return Interlocked.Exchange(ref m_PauseState, SET) == NOTSET;
+        }
+
         public void PauseThreads()
         {
-            lock (m_PauseEvent)
+            m_PauseEvent.Reset();
+
+            if (!CheckAndSetPause())
             {
-                m_PauseEvent.Reset();
+                /* When the atomic operation has failed */
+                throw new InvalidOperationException("Cannot pause the scheduler safely");
             }
         }
 
         public void ResumeThreads()
         {
-            lock (m_PauseEvent)
-            {
-                m_PauseEvent.Set();
-            }
+            m_PauseState = NOTSET;
+            m_PauseEvent.Set();
         }
 
         public void RunThreads()
@@ -57,7 +69,7 @@ namespace Soft64.Engines
 
             foreach (var task in m_ScheduledTasks)
             {
-                var thread = GetTaskThread(task, m_PauseEvent);
+                var thread = GetTaskThread(task);
 
                 if (thread != null && !thread.IsAlive && thread.ThreadState != ThreadState.Running)
                 {
@@ -69,6 +81,14 @@ namespace Soft64.Engines
             }
 
             ResumeThreads();
+        }
+
+        protected void PauseWait()
+        {
+            if (m_PauseState == SET)
+            {
+                m_PauseEvent.WaitOne();
+            }
         }
 
         public IEnumerable<Thread> GetThreads()
@@ -91,6 +111,11 @@ namespace Soft64.Engines
             throw new NotImplementedException();
         }
 
-        protected abstract Thread GetTaskThread(Task task, EventWaitHandle pauseEvent);
+        protected abstract Thread GetTaskThread(Task task);
+
+        public Boolean IsPaused
+        {
+            get { return m_PauseState == SET; }
+        }
     }
 }

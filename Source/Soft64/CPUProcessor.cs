@@ -29,12 +29,9 @@ namespace Soft64
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public void Run()
+        public void StepOnce()
         {
-            while (true)
-            {
-                Engine.Step();
-            }
+            Engine.Step();
         }
 
         public void Dispose()
