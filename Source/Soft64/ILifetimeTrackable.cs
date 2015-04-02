@@ -55,7 +55,7 @@ namespace Soft64
 
         void Stop();
 
-        LifetimeState CurrentRuntimeState { get; }
+        LifetimeState CurrentLifeState { get; }
     }
 
     public static class RuntimeModelExtensions
@@ -66,7 +66,7 @@ namespace Soft64
             {
                 case RequestState.Initialize:
                     {
-                        if (lifetimeObject.CurrentRuntimeState < LifetimeState.Initialized)
+                        if (lifetimeObject.CurrentLifeState < LifetimeState.Initialized)
                         {
                             return false;
                         }
@@ -76,8 +76,8 @@ namespace Soft64
 
                 case RequestState.Dispose:
                     {
-                        if (lifetimeObject.CurrentRuntimeState > LifetimeState.Created &&
-                            lifetimeObject.CurrentRuntimeState < LifetimeState.Disposed)
+                        if (lifetimeObject.CurrentLifeState > LifetimeState.Created &&
+                            lifetimeObject.CurrentLifeState < LifetimeState.Disposed)
                             return false;
 
                         break;
@@ -85,8 +85,8 @@ namespace Soft64
 
                 case RequestState.Run:
                     {
-                        if (lifetimeObject.CurrentRuntimeState > LifetimeState.Created &&
-                            lifetimeObject.CurrentRuntimeState < LifetimeState.Disposed)
+                        if (lifetimeObject.CurrentLifeState > LifetimeState.Created &&
+                            lifetimeObject.CurrentLifeState < LifetimeState.Disposed)
                         {
                             return false;
                         }
@@ -96,8 +96,8 @@ namespace Soft64
 
                 case RequestState.Stop:
                     {
-                        if (lifetimeObject.CurrentRuntimeState > LifetimeState.Running &&
-                            lifetimeObject.CurrentRuntimeState < LifetimeState.Stopped)
+                        if (lifetimeObject.CurrentLifeState > LifetimeState.Running &&
+                            lifetimeObject.CurrentLifeState < LifetimeState.Stopped)
                         {
                             return false;
                         }
@@ -110,11 +110,17 @@ namespace Soft64
             return true;
         }
 
-        public static Exception CreateInvalidStateException(this ILifetimeTrackable runtimeModel, RequestState invalidRequestState)
+        public static Exception CreateInvalidStateException(this ILifetimeTrackable trackable, RequestState invalidRequestState)
         {
             String format = "Illegal runtime state {0} requested on type {1}";
             return new InvalidOperationException(
-                String.Format(format, invalidRequestState, runtimeModel.GetType().Name));
+                String.Format(format, invalidRequestState, trackable.GetType().Name));
+        }
+
+        public static void TestPropertyChange(this ILifetimeTrackable trackable, String propertyName)
+        {
+            if (trackable.CurrentLifeState >= LifetimeState.Initialized)
+                throw new InvalidOperationException("Cannot set property after lifetime object has been initialized: " + propertyName);
         }
     }
 }

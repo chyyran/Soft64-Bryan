@@ -56,7 +56,7 @@ namespace Soft64Binding.WPF
 
             SetValue(CurrentMachinePropertyKey, Machine.Current);
             SetValue(CartridgePropertyKey, new CartridgeViewModel(this));
-            SetValue(MachineRunStatePropertyKey, Machine.Current.CurrentRuntimeState);
+            SetValue(MachineRunStatePropertyKey, Machine.Current.CurrentLifeState);
             SetValue(RcpPropertyKey, new RcpViewModel(this));
             SetValue(CpuPropertyKey, new CpuViewModel(this));
         }

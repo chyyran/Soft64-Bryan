@@ -90,7 +90,7 @@ namespace Soft64.Engines
             }
         }
 
-        public LifetimeState CurrentRuntimeState
+        public LifetimeState CurrentLifeState
         {
             get { return m_LifeState; }
         }

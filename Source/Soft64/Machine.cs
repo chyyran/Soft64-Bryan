@@ -32,7 +32,7 @@ namespace Soft64
         private Boolean m_Booted = false;
         private BootMode m_SysBootMode = BootMode.HLE_IPL;
         private LifetimeState m_RunState =LifetimeState.Created;
-        private static Logger logger =LogManager.GetCurrentClassLogger();
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private Boolean m_RunWithDebugger = false;
         private EmulatorEngine m_CurrentEngine;
 
@@ -90,7 +90,7 @@ namespace Soft64
 
         protected void SetNewRuntimeState(LifetimeState newState)
         {
-            OnRuntimeStateChanged(newState, CurrentRuntimeState);
+            OnRuntimeStateChanged(newState, CurrentLifeState);
             m_RunState = newState;
         }
 
@@ -139,7 +139,7 @@ namespace Soft64
             SetNewRuntimeState(LifetimeState.Stopped);
         }
 
-        public LifetimeState CurrentRuntimeState
+        public LifetimeState CurrentLifeState
         {
             get { return m_RunState; }
         }
@@ -186,28 +186,24 @@ namespace Soft64
 
         public Boolean IsRunning
         {
-            get { return CurrentRuntimeState == LifetimeState.Running; }
+            get { return CurrentLifeState == LifetimeState.Running; }
         }
 
         public Boolean IsStopped
         {
-            get { return CurrentRuntimeState == LifetimeState.Stopped; }
+            get { return CurrentLifeState == LifetimeState.Stopped; }
+        }
+
+        public void SetEngine(EmulatorEngine engine)
+        {
+            this.TestPropertyChange("Engine");
+
+            m_CurrentEngine = engine;
         }
 
         public EmulatorEngine CurrentEngine
         {
             get { return m_CurrentEngine; }
-            set
-            {
-                if (m_RunState < LifetimeState.Initialized)
-                {
-                    m_CurrentEngine = value;
-                }
-                else
-                {
-                    throw new ArgumentException("Machine is already past initialization");
-                }
-            }
         }
 
         public Boolean StartWithDebugger
@@ -260,12 +256,6 @@ namespace Soft64
             {
                 throw new InvalidOperationException("An exception occuring during the boot process, see inner exception for details", e);
             }
-        }
-
-        private void ThrowOnIllegalModifiy()
-        {
-            if (CurrentRuntimeState > LifetimeState.Created)
-                throw new MachineException("Cannot modify this property state of machine after initialization");
         }
 
         protected virtual void OnRuntimeStateChanged(LifetimeState newState, LifetimeState oldState)

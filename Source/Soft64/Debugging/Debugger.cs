@@ -35,6 +35,7 @@ namespace Soft64.Debugging
         private DebuggerEngineEvent m_EngineHook;
         private static Debugger s_CurrentDebugger;
         private Boolean m_Disposed;
+        private Boolean m_BreakOnStart;
 
         public Debugger()
         {
@@ -44,6 +45,20 @@ namespace Soft64.Debugging
             }
 
             s_CurrentDebugger = this;
+
+            if (Machine.Current != null)
+            {
+                Machine.Current.LifetimeStateChanged += Current_LifetimeStateChanged;
+            }
+        }
+
+        void Current_LifetimeStateChanged(object sender, LifeStateChangedArgs e)
+        {
+            if (m_BreakOnStart && e.NewState == LifetimeState.Running)
+            {
+                /* Break right away */
+                Break();
+            }
         }
 
         public void RegisterEngineHook(DebuggerEngineEvent hook)
@@ -60,6 +75,12 @@ namespace Soft64.Debugging
             {
                 e();
             }
+        }
+
+        public Boolean BreakOnMachineStart
+        {
+            get { return m_BreakOnStart; }
+            set { m_BreakOnStart = value; }
         }
 
         public static Debugger Current
