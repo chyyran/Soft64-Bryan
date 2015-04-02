@@ -88,7 +88,7 @@ namespace Soft64.Engines
             ResumeThreads();
         }
 
-        protected void PauseWait()
+        internal void PauseWait()
         {
             if (m_PauseState == SET)
             {

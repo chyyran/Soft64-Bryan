@@ -22,7 +22,6 @@ namespace Soft64.Engines
         protected EmulatorEngine()
         {
             m_TokenSource = new CancellationTokenSource();
-            m_CoreScheduler = new SingleCoreScheduler();
         }
 
         private void HookIntoDebugger()
@@ -65,7 +64,7 @@ namespace Soft64.Engines
             m_LifeState = LifetimeState.Initialized;
         }
 
-        protected abstract void StartTasks(CancellationToken token, TaskFactory factory);
+        protected abstract void StartTasks(CancellationToken token, TaskFactory factory, Action pauseWaitAction);
 
         public void SetCoreScheduler(CoreTaskScheduler scheduler)
         {
@@ -85,7 +84,7 @@ namespace Soft64.Engines
 
             TaskFactory factory = new TaskFactory(m_CoreScheduler);
 
-            StartTasks(m_TokenSource.Token, factory);
+            StartTasks(m_TokenSource.Token, factory, m_CoreScheduler.PauseWait);
             m_CoreScheduler.RunThreads();
 
             OnLifetimeStateChange(m_LifeState, LifetimeState.Running);

@@ -19,7 +19,10 @@ namespace Soft64.Engines
 
         protected override System.Threading.Thread GetTaskThread(Task task)
         {
-            Action taskAction = new Action(() => this.TryExecuteTask(task));
+            Action taskAction = new Action(() =>
+            {
+                this.TryExecuteTask(task);
+            });
 
             if (m_CallChain == null)
             {
@@ -33,14 +36,8 @@ namespace Soft64.Engines
             if (m_SingleThread == null)
             {
                 m_SingleThread = new Thread((o) => {
-                    while (true)
-                    {
-                        /* Thread will be paused here if set */
-                        PauseWait();
-
-                        /* Call the chained tasks */
-                        m_CallChain();
-                    }
+                    /* Call the chained tasks */
+                    m_CallChain();
                 });
             }
 
