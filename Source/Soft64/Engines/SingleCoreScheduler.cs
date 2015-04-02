@@ -7,6 +7,16 @@ using System.Threading.Tasks;
 
 namespace Soft64.Engines
 {
+    /// <summary>
+    /// Runs all tasks on a single thread
+    /// </summary>
+    /// <remarks>
+    /// Warning: There should be just one self looping task after other tasks have finished, otherwise 
+    /// there is no way to ensure the loop will ever end and execute the tasks after it.  The core
+    /// scheduler expects the engine to instantly kill all tasks when stopping the machine.  No resources
+    /// need to be cleaned up inside the scheduler because the machine the machine already implements a clean
+    /// disposal pattern.
+    /// </remarks>
     public sealed class SingleCoreScheduler : CoreTaskScheduler
     {
         private Thread m_SingleThread;

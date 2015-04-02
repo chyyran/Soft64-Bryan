@@ -22,6 +22,9 @@ namespace Soft64.Engines
             {
                 while (true)
                 {
+                    /* If cancellation invoked, then throw exception */
+                    token.ThrowIfCancellationRequested();
+
                     /* This pause event comes from the core scheduler to pause this task when enabled */
                     pauseWaitAction();
 

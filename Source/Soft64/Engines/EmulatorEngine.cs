@@ -93,6 +93,12 @@ namespace Soft64.Engines
 
         public void Stop()
         {
+            /* We cancel all tasks */
+            m_TokenSource.Cancel();
+        }
+
+        public void Stop()
+        {
             if (m_CoreScheduler != null)
             {
                 m_TokenSource.Cancel(false);
