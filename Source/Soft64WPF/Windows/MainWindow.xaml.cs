@@ -80,7 +80,7 @@ namespace Soft64WPF.Windows
 
         private void xamlControl_EmuRunButton_Click(object sender, RoutedEventArgs e)
         {
-            logger.Trace("# Begin N64 Execution #");
+            logger.Trace("----- N64 Emulation Started -----");
 
             /* For now we are using default crap */
             Machine.Current.RCP.Engine = new PureInterpreter();
@@ -88,10 +88,6 @@ namespace Soft64WPF.Windows
             Machine.Current.SystemBootType = BootMode.HLE_IPL;
             Machine.Current.Initialize();
             Machine.Current.Run();
-        }
-
-        private void xaml_MemRefresh_Click(object sender, RoutedEventArgs e)
-        {
         }
 
         private void xaml_ButtonEjectCartridge_Click(object sender, RoutedEventArgs e)
@@ -103,6 +99,12 @@ namespace Soft64WPF.Windows
         {
             MemoryEditorWindow window = new MemoryEditorWindow();
             window.Show();
+        }
+
+        private void xaml_ButtonToolCPUDebugger_Click(object sender, RoutedEventArgs e)
+        {
+            CPUDebugger win = new CPUDebugger();
+            win.Show();
         }
     }
 }

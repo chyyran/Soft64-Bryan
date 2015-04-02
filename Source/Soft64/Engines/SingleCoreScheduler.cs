@@ -46,5 +46,20 @@ namespace Soft64.Engines
 
             return m_SingleThread;
         }
+
+        public override void ExecuteNext()
+        {
+            if (m_CallChain != null)
+            {
+                m_CallChain();
+            }
+        }
+
+        public override void Initialize()
+        {
+
+
+            base.Initialize();
+        }
     }
 }

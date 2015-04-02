@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using Soft64;
+using Soft64.Debugging;
 using Soft64WPF.Windows;
 
 namespace Soft64WPF
@@ -66,6 +67,9 @@ namespace Soft64WPF
         {
             /* Create an instance of the emulator machine */
             Machine machine = new Machine();
+
+            /* Debugger */
+            Debugger debugger = new Debugger();
 
             App app = new App();
             app.InitializeComponent();

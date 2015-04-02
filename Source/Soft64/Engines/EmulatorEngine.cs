@@ -23,16 +23,45 @@ namespace Soft64.Engines
         {
             m_TokenSource = new CancellationTokenSource();
             m_CoreScheduler = new SingleCoreScheduler();
+        }
 
+        private void HookIntoDebugger()
+        {
             if (Debugger.Current != null)
             {
-                /* TODO: Attach engine hooks into the debugger context */
+                Debugger.Current.RegisterEngineHook((t) =>
+                {
+                    switch (t)
+                    {
+                        default: break;
+
+                        case DebuggerEventType.Pause:
+                            {
+                                PauseThreads();
+                                break;
+                            };
+
+                        case DebuggerEventType.Break: /* high level CPU break to pause whole emulator */
+                        case DebuggerEventType.Resume:
+                            {
+                                ResumeThreads();
+                                break;
+                            };
+
+                        case DebuggerEventType.StepOnce:
+                            {
+                                m_CoreScheduler.ExecuteNext();
+                                break;
+                            };
+                    }
+                });
             }
-            
         }
 
         public virtual void Initialize()
         {
+            HookIntoDebugger();
+
             m_LifeState = LifetimeState.Initialized;
         }
 

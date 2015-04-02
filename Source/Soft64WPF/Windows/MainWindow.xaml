@@ -66,6 +66,7 @@
         </TabControl>
         <Grid Grid.Row="2">
             <Button x:Name="xaml_ButtonToolMemoryEditor" Content="Memory" Margin="10,10,0,0" Height="31" VerticalAlignment="Top" HorizontalAlignment="Left" Width="65" Click="xaml_ButtonToolMemoryEditor_Click" />
+            <Button x:Name="xaml_ButtonToolCPUDebugger" Content="CPU Debug" Margin="80,10,0,0" Height="31" VerticalAlignment="Top" HorizontalAlignment="Left" Width="65" Click="xaml_ButtonToolCPUDebugger_Click" />
         </Grid>
     </Grid>
 </Window>

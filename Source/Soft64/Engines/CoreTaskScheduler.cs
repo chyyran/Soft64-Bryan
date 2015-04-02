@@ -26,6 +26,11 @@ namespace Soft64.Engines
             m_PauseEvent = new AutoResetEvent(false);
         }
 
+        public virtual void Initialize()
+        {
+
+        }
+
         public void CleanThreads()
         {
             foreach (var thread in m_ThreadList)
@@ -112,6 +117,8 @@ namespace Soft64.Engines
         }
 
         protected abstract Thread GetTaskThread(Task task);
+
+        public abstract void ExecuteNext();
 
         public Boolean IsPaused
         {
