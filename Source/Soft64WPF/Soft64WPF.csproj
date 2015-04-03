@@ -232,6 +232,8 @@
     <Content Include="..\..\Resources\BinaryFiles\Tests\TheadPeek.py">
       <Link>Tests\TheadPeek.py</Link>
     </Content>
+    <Resource Include="Images\control_pause.png" />
+    <Resource Include="Images\control_play.png" />
     <Content Include="IronPythonConsole.py" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
