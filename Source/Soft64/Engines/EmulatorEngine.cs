@@ -9,6 +9,37 @@ using Soft64.Debugging;
 
 namespace Soft64.Engines
 {
+    public enum EngineStatus
+    {
+        Created,
+        WaitingForTasks,
+        Running,
+        Paused,
+        Disposed
+    }
+
+    public class EngineStatusChangedArgs : EventArgs
+    {
+        private EngineStatus m_OldStatus;
+        private EngineStatus m_NewStatus;
+
+        public EngineStatusChangedArgs(EngineStatus oldStatus, EngineStatus newStatus)
+        {
+            m_OldStatus = oldStatus;
+            m_NewStatus = newStatus;
+        }
+
+        public EngineStatus OldStatus
+        {
+            get { return m_OldStatus; }
+        }
+
+        public EngineStatus NewStatus
+        {
+            get { return m_NewStatus; }
+        }
+    }
+
     public abstract class EmulatorEngine : ILifetimeTrackable
     {
         private LifetimeState m_LifeState = LifetimeState.Created;
@@ -16,8 +47,10 @@ namespace Soft64.Engines
         private CancellationTokenSource m_TokenSource;
         protected List<Task> m_TaskList = new List<Task>();
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private EngineStatus m_Status = EngineStatus.Created;
 
         public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
+        public event EventHandler<EngineStatusChangedArgs> EngineStatusChanged;
 
         protected EmulatorEngine()
         {
@@ -62,6 +95,7 @@ namespace Soft64.Engines
             HookIntoDebugger();
 
             m_LifeState = LifetimeState.Initialized;
+            m_Status = EngineStatus.WaitingForTasks;
         }
 
         protected abstract void StartTasks(CancellationToken token, TaskFactory factory, Action pauseWaitAction);
@@ -89,6 +123,7 @@ namespace Soft64.Engines
 
             OnLifetimeStateChange(m_LifeState, LifetimeState.Running);
             m_LifeState = LifetimeState.Running;
+         
         }
 
         public void Stop()
@@ -149,9 +184,24 @@ namespace Soft64.Engines
             }
         }
 
+        protected virtual void OnStatusChange(EngineStatus oldStatus, EngineStatus newStatus)
+        {
+            var e = EngineStatusChanged;
+
+            if (e != null)
+            {
+                EngineStatusChanged(this, new EngineStatusChangedArgs(oldStatus, newStatus));
+            }
+        }
+
         public Boolean IsPaused
         {
             get { return m_CoreScheduler.IsPaused; }
+        }
+
+        public EngineStatus Status
+        {
+            get { return m_Status; }
         }
     }
 }
