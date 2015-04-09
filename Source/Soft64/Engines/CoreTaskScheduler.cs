@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Contexts;
+using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,6 +70,7 @@ namespace Soft64.Engines
             m_PauseEvent.Set();
         }
 
+        [SecurityCritical]
         public void RunThreads()
         {
             PauseThreads();

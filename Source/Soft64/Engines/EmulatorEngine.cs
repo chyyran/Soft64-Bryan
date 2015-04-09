@@ -15,7 +15,7 @@ namespace Soft64.Engines
         WaitingForTasks,
         Running,
         Paused,
-        Disposed
+        Stopped
     }
 
     public class EngineStatusChangedArgs : EventArgs
@@ -94,7 +94,10 @@ namespace Soft64.Engines
         {
             HookIntoDebugger();
 
+            OnLifetimeStateChange(m_LifeState, LifetimeState.Initialized);
             m_LifeState = LifetimeState.Initialized;
+
+            OnStatusChange(m_Status, EngineStatus.WaitingForTasks);
             m_Status = EngineStatus.WaitingForTasks;
         }
 
@@ -123,13 +126,9 @@ namespace Soft64.Engines
 
             OnLifetimeStateChange(m_LifeState, LifetimeState.Running);
             m_LifeState = LifetimeState.Running;
-         
-        }
 
-        public void Stop()
-        {
-            /* We cancel all tasks */
-            m_TokenSource.Cancel();
+            OnStatusChange(m_Status, EngineStatus.Running);
+            m_Status = EngineStatus.Running;
         }
 
         public void Stop()
@@ -141,6 +140,9 @@ namespace Soft64.Engines
 
             OnLifetimeStateChange(m_LifeState, LifetimeState.Stopped);
             m_LifeState = LifetimeState.Stopped;
+
+            OnStatusChange(m_Status, EngineStatus.Stopped);
+            m_Status = EngineStatus.Stopped;
         }
 
         public void PauseThreads()
@@ -148,6 +150,9 @@ namespace Soft64.Engines
             if (m_CoreScheduler != null)
             {
                 m_CoreScheduler.PauseThreads();
+
+                OnStatusChange(m_Status, EngineStatus.Paused);
+                m_Status = EngineStatus.Paused;
             }
         }
 
@@ -156,6 +161,9 @@ namespace Soft64.Engines
             if (m_CoreScheduler != null)
             {
                 m_CoreScheduler.ResumeThreads();
+
+                OnStatusChange(m_Status, EngineStatus.Running);
+                m_Status = EngineStatus.Running;
             }
         }
 

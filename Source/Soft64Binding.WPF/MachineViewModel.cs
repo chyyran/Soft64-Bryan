@@ -25,10 +25,9 @@ namespace Soft64Binding.WPF
             DependencyProperty.RegisterReadOnly("Cpu", typeof(CpuViewModel), typeof(MachineViewModel),
             new PropertyMetadata());
 
-        /* TODO List:
-         *  PIF View Model
-         *  CPU View Model
-         */
+        private static readonly DependencyPropertyKey EnginePropertyKey =
+            DependencyProperty.RegisterReadOnly("Engine", typeof(EmulatorEngineViewModel), typeof(MachineViewModel),
+            new PropertyMetadata());
 
         public static readonly DependencyProperty CurrentMachineProperty =
             CurrentMachinePropertyKey.DependencyProperty;
@@ -45,6 +44,9 @@ namespace Soft64Binding.WPF
         public static readonly DependencyProperty CpuProperty =
             CpuPropertyKey.DependencyProperty;
 
+        public static readonly DependencyProperty EngineProperty =
+            EnginePropertyKey.DependencyProperty;
+
         public MachineViewModel()
         {
             /* Important: Prevent crashes if the machine hasn't been created yet */
@@ -59,6 +61,7 @@ namespace Soft64Binding.WPF
             SetValue(MachineRunStatePropertyKey, Machine.Current.CurrentLifeState);
             SetValue(RcpPropertyKey, new RcpViewModel(this));
             SetValue(CpuPropertyKey, new CpuViewModel(this));
+            SetValue(EnginePropertyKey, new EmulatorEngineViewModel(this));
         }
 
         private void RuntimeStateChangedHandler(object sender, LifeStateChangedArgs e)
@@ -89,6 +92,11 @@ namespace Soft64Binding.WPF
         public CpuViewModel Cpu
         {
             get { return (CpuViewModel)GetValue(CpuProperty); }
+        }
+
+        public EmulatorEngineViewModel Engine
+        {
+            get { return (EmulatorEngineViewModel)GetValue(EngineProperty); }
         }
     }
 }

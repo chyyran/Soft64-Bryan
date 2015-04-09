@@ -16,7 +16,7 @@
         <Setter Property="Background" Value="{StaticResource Theme_DarkAccentColor_1}" />
     </Style>
 
-    <Style TargetType="Button">
+    <!--<Style TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource Theme_LightAccentColor_1}" />
         <Setter Property="Background" Value="{StaticResource Theme_DarkAccentColor_1}" />
         <Setter Property="Template">
@@ -35,7 +35,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
     <Style TargetType="toolkit:HexEditor">
         <Setter Property="Foreground" Value="{StaticResource Theme_LightAccentColor_1}" />

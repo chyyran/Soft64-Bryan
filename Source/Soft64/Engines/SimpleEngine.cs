@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,8 +18,7 @@ namespace Soft64.Engines
         protected override void StartTasks(System.Threading.CancellationToken token, TaskFactory factory, Action pauseWaitAction)
         {
             /* Create a single loop on the thread */
-
-            factory.StartNew(() =>
+            Action singleLoop = () =>
             {
                 while (true)
                 {
@@ -31,8 +31,11 @@ namespace Soft64.Engines
                     /* Execute a step in the CPU */
                     Machine.Current.CPU.StepOnce();
                 }
+            };
 
-            }, token);
+            RuntimeHelpers.PrepareDelegate(singleLoop);
+
+            factory.StartNew(singleLoop, token);
         }
     }
 }

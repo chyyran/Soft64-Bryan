@@ -7,7 +7,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="29"/>
         </Grid.RowDefinitions>
         <Ribbon>
             <RibbonTab Header="Debug">
@@ -28,6 +28,8 @@
         <StatusBar x:Name="xaml_StatusBar" Grid.Row="2">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding MachineRunState, StringFormat=Machine State: {0}}" />
+                <TextBlock Text=" | " />
+                <TextBlock Text="{Binding Engine.Status, StringFormat=Engine State: {0}}" />
             </StackPanel>
         </StatusBar>
     </Grid>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,13 +46,21 @@ namespace Soft64.Engines
 
             if (m_SingleThread == null)
             {
-                m_SingleThread = new Thread((o) => {
-                    /* Call the chained tasks */
-                    m_CallChain();
-                });
+                RuntimeHelpers.PrepareMethod(this.GetType().GetMethod(
+                    "ThreadCall", 
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic
+                    ).MethodHandle);
+
+                m_SingleThread = new Thread(ThreadCall);
             }
 
             return m_SingleThread;
+        }
+        
+        [STAThread]
+        private void ThreadCall(Object obj)
+        {
+            m_CallChain();
         }
 
         public override void ExecuteNext()
