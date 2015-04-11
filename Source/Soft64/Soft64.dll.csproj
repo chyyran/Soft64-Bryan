@@ -153,8 +153,6 @@
     <Compile Include="PI\RomChecksum.cs" />
     <Compile Include="HLE_OS\ELFExecutable.cs" />
     <Compile Include="HLE_OS\ELFProgramHeaderEntry.cs" />
-    <Compile Include="HLE_OS\HLEKernel.cs" />
-    <Compile Include="HLE_OS\KernelInterop.cs" />
     <Compile Include="SoftBootManager.cs" />
     <Compile Include="VirtualCartridge.cs" />
     <Compile Include="RomFormat.cs" />

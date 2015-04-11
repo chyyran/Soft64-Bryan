@@ -183,6 +183,14 @@ namespace Soft64.MipsR4300.CP0
             PageSize pageSize = new PageSize(m_PageMask);
             TLBEntry entry = null;
 
+            /* Note: 
+             * We are assuming the software set ASID and VPN in the EntryHi when comparing
+             * the virtual address with the TLB cache.  Without a real test of this, 
+             * we don't know truly know if we rely on EntryHi every time there is a translation
+             * to be performed.  I do not understand how the TLB is really even used on the N64
+             * system, virtual memory is useless without having some kind of pagefile.
+             */
+
             if (m_DuplicateEntryError)
             {
                 // TODO: Set the TS bit in the status register

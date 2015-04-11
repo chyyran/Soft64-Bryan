@@ -106,5 +106,10 @@ namespace Soft64WPF.Windows
             CPUDebugger win = new CPUDebugger();
             win.Show();
         }
+
+        private void xaml_ButtonElfRun_Click(object sender, RoutedEventArgs e)
+        {
+            /* TODO: Load elf file and run directly */
+        }
     }
 }

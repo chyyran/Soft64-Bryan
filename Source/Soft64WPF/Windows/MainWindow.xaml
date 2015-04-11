@@ -48,6 +48,7 @@
             <Button x:Name="xamlControl_MainCartBrowseFileButton" Content="Insert Cartridge" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="123" RenderTransformOrigin="0.5,0.5" Margin="0,4,4,0" />
             <Button x:Name="xaml_ButtonEjectCartridge" Content="Eject Cartridge" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="123" RenderTransformOrigin="0.5,0.5" Margin="0,4,4,0" Click="xaml_ButtonEjectCartridge_Click" />
             <Button x:Name="xaml_ButtonScript" Content="Script Runner" Margin="0,4" Width="93" />
+            <Button x:Name="xaml_ButtonElfRun" Content="Run Elf" Margin="4,4,0,4" Width="62" Click="xaml_ButtonElfRun_Click" />
         </StackPanel>
         <TabControl Grid.Row="1">
             <TabItem Header="Log">

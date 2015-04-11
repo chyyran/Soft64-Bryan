@@ -51,7 +51,6 @@ namespace Soft64
     {
         private static Stream s_ElfStream;
         private static String s_ElfName;
-        private static HLEKernel s_Kernel = new HLEKernel();
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public static void SetupExecutionState(BootMode bootMode)
@@ -85,7 +84,6 @@ namespace Soft64
                 ELFExecutable executable = new ELFExecutable(s_ElfName, s_ElfStream);
                 logger.Debug("Creating fake ELF process");
                 logger.Debug("ELF Entry Point: " + executable.EntryPointAddress.ToString("X16"));
-                s_Kernel.CreateProcess(executable);
             }
             else
             {
@@ -273,11 +271,6 @@ namespace Soft64
 
             state.GPRRegs64[23] = 0x0000000000000006;
             state.GPRRegs64[31] = 0xFFFFFFFFA4001554;
-        }
-
-        public static HLEKernel Kernel
-        {
-            get { return SoftBootManager.s_Kernel; }
         }
     }
 }
