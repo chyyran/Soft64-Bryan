@@ -38,7 +38,6 @@ namespace Soft64.HLE_OS
 
         private static void LoadSegments(ELFExecutable executable)
         {
-            /* Make a list of virtual pages to setup into the TLB */
             var entries = executable.ProgramHeaderEntries;
 
             for (Int32 i = 0; i < entries.Length; i++)
@@ -58,7 +57,7 @@ namespace Soft64.HLE_OS
                     nextEntry = entries[i + 1];
                 }
 
-                executable.CopySegment(entry, nextEntryValid, nextEntry, Machine.Current.CPU.VirtualMemoryStream);
+                executable.CopyProgramSegment(entry, nextEntryValid, nextEntry, Machine.Current.CPU.VirtualMemoryStream);
             }
         }
     }
