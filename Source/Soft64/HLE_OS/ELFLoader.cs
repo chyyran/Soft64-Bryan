@@ -57,7 +57,12 @@ namespace Soft64.HLE_OS
                     nextEntry = entries[i + 1];
                 }
 
-                executable.CopyProgramSegment(entry, nextEntryValid, nextEntry, Machine.Current.CPU.VirtualMemoryStream);
+                executable.CopyProgramSegment(
+                    entry, 
+                    nextEntryValid, 
+                    nextEntry, 
+                    Machine.Current.CPU.VirtualMemoryStream, 
+                    0xA0000000);
             }
         }
     }

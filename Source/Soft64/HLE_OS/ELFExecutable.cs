@@ -127,12 +127,17 @@ namespace Soft64.HLE_OS
             return entries;
         }
 
-        public void CopyProgramSegment(ELFProgramHeaderEntry entry, Boolean nextSegmentValid, ELFProgramHeaderEntry nextSegment, Stream destStream)
+        public void CopyProgramSegment(
+            ELFProgramHeaderEntry entry, 
+            Boolean nextSegmentValid, 
+            ELFProgramHeaderEntry nextSegment, 
+            Stream destStream,
+            Int64 destPosition)
         {
             Int32 prefixPadSize = entry.VAddress % entry.Align;
 
             /* Write to the physical memory directly */
-            destStream.Position = (Int64)(0xA00000000 | (Int32)(entry.VAddress - prefixPadSize));
+            destStream.Position = destPosition + (entry.VAddress - prefixPadSize);
 
             /* Write 0 padding before the segment */
             Byte[] padding = new Byte[prefixPadSize];
