@@ -57,6 +57,8 @@
     <Compile Include="Engines\SingleCoreScheduler.cs" />
     <Compile Include="Engines\CoreTaskScheduler.cs" />
     <Compile Include="HLE_OS\ELFLoader.cs" />
+    <Compile Include="MipsR4300\Analyzing\MemoryEnitityType.cs" />
+    <Compile Include="MipsR4300\Analyzing\MemoryScan.cs" />
     <Compile Include="MipsR4300\Cache.cs" />
     <Compile Include="MipsR4300\CP0\TLBCacheChangeEventArgs.cs" />
     <Compile Include="MipsR4300\Debugging\VMemViewStream.cs" />
@@ -84,13 +86,9 @@
     <Compile Include="IO\_IORequest.cs" />
     <Compile Include="IO\UnifiedStream.cs" />
     <Compile Include="ILifetimeTrackable.cs" />
-    <Compile Include="MipsR4300\Analyzing\BytecodeCache.cs" />
-    <Compile Include="MipsR4300\Analyzing\CodeAnalyzer.cs" />
     <Compile Include="MipsR4300\Analyzing\InstructionMap.cs" />
-    <Compile Include="MipsR4300\Analyzing\InstructionMetadata.cs" />
     <Compile Include="MipsR4300\Analyzing\OpcodeType.cs" />
     <Compile Include="MipsR4300\Analyzing\OperandFormat.cs" />
-    <Compile Include="MipsR4300\Analyzing\StaticAnalyzer.cs" />
     <Compile Include="MipsR4300\CP0\CP0Registers.cs" />
     <Compile Include="MipsR4300\CP0\ExceptionTable.cs" />
     <Compile Include="MipsR4300\CP0\PageCoherencyMode.cs" />
