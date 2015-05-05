@@ -22,6 +22,12 @@ namespace Soft64.Debugging
         StepOver
     }
 
+    public enum DebuggerBootEvent
+    {
+        PreBoot,
+        PostBoot,
+    }
+
     public class Debugger : IDisposable
     {
         public event DebuggerEvent DebugBreak;
@@ -50,6 +56,11 @@ namespace Soft64.Debugging
             {
                 Machine.Current.LifetimeStateChanged += Current_LifetimeStateChanged;
             }
+        }
+
+        public void NotifyBootEvent(DebuggerBootEvent eventType)
+        {
+            /* TODO: Notify debugger boot events */
         }
 
         void Current_LifetimeStateChanged(object sender, LifeStateChangedArgs e)
