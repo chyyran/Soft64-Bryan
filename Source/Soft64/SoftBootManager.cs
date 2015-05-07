@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 using System;
 using System.IO;
 using NLog;
-using Soft64.HLE_OS;
 using Soft64.MipsR4300;
 using Soft64.RCP;
 
@@ -57,11 +56,14 @@ namespace Soft64
         {
             if (bootMode == BootMode.IPL_ROM)
             {
-                throw new InvalidOperationException("Low-level IPL booting not supported");
+                throw new InvalidOperationException("Low-level IPL booting not supported yet");
 
-                Machine.Current.RCP.State.PC = 0x1FC00000;
+                //Machine.Current.RCP.State.PC = 0x1FC00000;
 
-                /* RCP begins executing the PIF rom, both CPU/RCP need to be scheduled to run on threads */
+                /* TODO:
+                 * Schedule CPU and RCP threads to execute MIPS Interpreter
+                 * Have CPU sit idle, and RCP execute the PIF Rom
+                 * */
             }
             else if (bootMode == BootMode.HLE_IPL)
             {
@@ -76,14 +78,16 @@ namespace Soft64
 
                 Machine.Current.CPU.State.PC = 0xA4000040;
 
-                logger.Debug("PC is set to: " + Machine.Current.CPU.State.PC.ToString("X8"));
+                logger.Debug("ROM Entry Point: " + Machine.Current.CPU.State.PC.ToString("X8"));
             }
             else if (bootMode == BootMode.MIPS_ELF)
             {
-                /* TODO: Load the elf from stream and copy into memory */
                 ELFExecutable executable = new ELFExecutable(s_ElfName, s_ElfStream);
-                logger.Debug("Creating fake ELF process");
                 logger.Debug("ELF Entry Point: " + executable.EntryPointAddress.ToString("X16"));
+
+
+                ELFLoader.LoadElf(executable);
+                logger.Trace("ELF loaded");
             }
             else
             {

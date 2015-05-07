@@ -22,7 +22,7 @@ using System.IO;
 using System.Linq;
 using Soft64.IO;
 
-namespace Soft64.HLE_OS
+namespace Soft64
 {
     public sealed class ELFExecutable : IDisposable
     {
@@ -161,16 +161,6 @@ namespace Soft64.HLE_OS
                 Byte[] buffer = new Byte[vaddress - destStream.Position];
                 destStream.Write(buffer, 0, buffer.Length);
             }
-        }
-
-        public Int64 GetBaseVirtualAddress()
-        {
-            var results =
-                from progEntry in m_ProgramHeaderEntries
-                orderby progEntry.VAddress descending
-                select progEntry;
-
-            return results.First().VAddress;
         }
 
         public void Dispose()

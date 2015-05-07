@@ -7,54 +7,49 @@ using System.Threading.Tasks;
 using Soft64.MipsR4300;
 using Soft64.MipsR4300.CP0;
 
-namespace Soft64.HLE_OS
+namespace Soft64
 {
+    /// <summary>
+    /// Loads elf into RDRAM and puts stack in IMEM.
+    /// </summary>
     public static class ELFLoader
     {
-        private static List<Int32> m_Indicies = new List<int>();
-
         public static void LoadElf(ELFExecutable executable)
         {
-            /* Very simple loader for elf */
+            /* Get the current processor instance */
             CPUProcessor cpu = Machine.Current.CPU;
 
-            /* Setup the CPU register state */
-            /* Setup 64-bit kernel mode */
-            cpu.State.CP0Regs.HLStatusRegister.KSUMode = RingMode.Kernel;
-            cpu.State.CP0Regs.HLStatusRegister.KernelX = true;
-            cpu.State.GPRRegs64[29] = 0x00000000A4001000; // Setup Stack Pointer to point in IMEM
+            /* Setup the CPU for the executable */
+            cpu.State.CP0Regs.HLStatusRegister.KSUMode = RingMode.Kernel; /* Running whole program in lowest ring mode */
+            cpu.State.CP0Regs.HLStatusRegister.KernelX = true;            /* We want to enforce kernel address range   */
+            cpu.State.GPRRegs64[29] = 0x00000000A4001000;                 /* Create a stack pointer pointing into IMEM */
 
             /* Set the entry point */
             Machine.Current.CPU.State.PC = (Int64)executable.EntryPointAddress;
 
             /* Load sections into memory and setup TLB entries */
             LoadSegments(executable);
-
-            /* Set the TLB index to the first section that will be used */
-            
-            /* Prepare first entry */
-
         }
 
         private static void LoadSegments(ELFExecutable executable)
         {
-            var entries = executable.ProgramHeaderEntries;
+            var progEntries = executable.ProgramHeaderEntries;
 
-            for (Int32 i = 0; i < entries.Length; i++)
+            for (Int32 i = 0; i < progEntries.Length; i++)
             {
-                var entry = entries[i];
+                var entry = progEntries[i];
 
-                /* Skip- non loadable segments */
+                /* Skip non loadable segments */
                 if (entry.Type != 1)
                     continue;
 
                 /* Write the segment into virtual memory */
-                Boolean nextEntryValid = i + 1 < entries.Length;
+                Boolean nextEntryValid = i + 1 < progEntries.Length;
                 ELFProgramHeaderEntry nextEntry = default(ELFProgramHeaderEntry);
 
                 if (nextEntryValid)
                 {
-                    nextEntry = entries[i + 1];
+                    nextEntry = progEntries[i + 1];
                 }
 
                 executable.CopyProgramSegment(

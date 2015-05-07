@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 using System;
 using System.IO;
 
-namespace Soft64.HLE_OS
+namespace Soft64
 {
     public struct ELFProgramHeaderEntry
     {

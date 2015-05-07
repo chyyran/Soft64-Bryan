@@ -21,6 +21,7 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using NLog;
+using Soft64.Debugging;
 using Soft64.Engines;
 using Soft64.PIF;
 using Soft64.RCP;
@@ -240,17 +241,16 @@ namespace Soft64
         {
             try
             {
+                /* Notify debugger before booting */
+                if (Debugger.Current != null) Debugger.Current.NotifyBootEvent(DebuggerBootEvent.PreBoot);
+
                 /* Use the boot manager to propertly setup the software state on the processors */
-                if (m_SysBootMode == BootMode.MIPS_ELF)
-                {
-                    throw new NotSupportedException("ELFs are not supported yet.");
-                }
-                else
-                {
-                    logger.Trace("Booting from PIF: Flag=" + m_SysBootMode.ToString());
-                }
+                logger.Trace("Booting: " + m_SysBootMode.GetFriendlyName());
 
                 SoftBootManager.SetupExecutionState(m_SysBootMode);
+
+                /* Notify debugger after booting */
+                if (Debugger.Current != null) Debugger.Current.NotifyBootEvent(DebuggerBootEvent.PostBoot);
             }
             catch (Exception e)
             {
