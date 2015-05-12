@@ -33,12 +33,23 @@ namespace Soft64
     public abstract class Cartridge : IDisposable
     {
         private Boolean m_Diposed;
+        private static Cartridge s_Current;
 
         /* Cartridge Interrupts */
 
         public event EventHandler VideoClockTick;
 
         public event EventHandler Tick;
+
+        public static Cartridge Current
+        {
+            get { return s_Current; }
+        }
+
+        protected Cartridge()
+        {
+            s_Current = this;
+        }
 
         #region Cartrige API
 

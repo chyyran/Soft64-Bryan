@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitExtractor.cs" />
+    <Compile Include="BootSnapReader.cs" />
     <Compile Include="Cartridge.cs" />
     <Compile Include="CartridgeInfo.cs" />
     <Compile Include="CPUProcessor.cs" />
@@ -163,6 +164,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <EmbeddedResource Include="BootStateSnapshots.xml" />
     <Content Include="Engines\N64EmuExecutionLoop.txt" />
     <Content Include="MipsR4300\Tasks.txt" />
   </ItemGroup>

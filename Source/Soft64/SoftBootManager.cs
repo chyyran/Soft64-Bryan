@@ -104,10 +104,18 @@ namespace Soft64
             Machine.Current.RCP.SafeN64Memory.Position = N64MemRegions.SPDMem.ToRegionAddress() + 0x40;
             Machine.Current.RCP.DevicePI.InsertedCartridge.RomImage.BootRomInformation.CopyCode(Machine.Current.RCP.SafeN64Memory);
 
+            using (Stream stream = typeof(SoftBootManager).Assembly.GetManifestResourceStream("Soft64.BootStateSnapshots.xml")) 
+            {
+                CartridgeInfo info = Cartridge.Current.GetCartridgeInfo();
+                CICKeyType cic = Cartridge.Current.RomImage.BootRomInformation.CIC;
+                BootSnapReader bootsnap = new BootSnapReader(stream);
+                bootsnap.LoadBootSnap(cic, info.RegionCode);
+            }
+
             /* Setup execution state */
-            PIFRegInit(Machine.Current.CPU.State,
-                       Machine.Current.RCP,
-                       Machine.Current.RCP.DevicePI.InsertedCartridge);
+            //PIFRegInit(Machine.Current.CPU.State,
+            //           Machine.Current.RCP,
+            //           Machine.Current.RCP.DevicePI.InsertedCartridge);
         }
 
         public static void SetElfExecutable(FileStream inStream)

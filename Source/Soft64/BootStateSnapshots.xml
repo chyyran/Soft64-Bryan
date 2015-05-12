@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<BootSnaps>
+  <BootSnap>
+    <GPRRegSet Index="06">0xFFFFFFFFA4001F0C</GPRRegSet>
+    <GPRRegSet Index="07">0xFFFFFFFFA4001F08</GPRRegSet>
+    <GPRRegSet Index="08">0x00000000000000C0</GPRRegSet>
+    <GPRRegSet Index="10">0x0000000000000040</GPRRegSet>
+    <GPRRegSet Index="11">0xFFFFFFFFA4000040</GPRRegSet>
+    <GPRRegSet Index="29">0xFFFFFFFFA4001FF0</GPRRegSet>
+    <GPRRegSet Index="20">0x0000000000000001</GPRRegSet>
+    <GPRRegSet Index="24">0x0000000000000003</GPRRegSet>
+    <GPRRegSet Index="31">0xFFFFFFFFA4001550</GPRRegSet>
+  </BootSnap>
+
+  <BootSnap Condition="CIC" Value="6101">
+    <GPRRegSet Index="22">0x000000000000003F</GPRRegSet>
+  </BootSnap>
+
+  <BootSnap Condition="CIC" Value="6102">
+    <GPRRegSet Index="01">0x0000000000000001</GPRRegSet>
+    <GPRRegSet Index="02">0x000000000EBDA536</GPRRegSet>
+    <GPRRegSet Index="03">0x000000000EBDA536</GPRRegSet>
+    <GPRRegSet Index="04">0x000000000000A536</GPRRegSet>
+    <GPRRegSet Index="12">0xFFFFFFFFED10D0B3</GPRRegSet>
+    <GPRRegSet Index="13">0x000000001402A4CC</GPRRegSet>
+    <GPRRegSet Index="15">0x000000003103E121</GPRRegSet>
+    <GPRRegSet Index="22">0x000000000000003F</GPRRegSet>
+    <GPRRegSet Index="25">0xFFFFFFFF9DEBB54F</GPRRegSet>
+  </BootSnap>
+
+  <BootSnap Condition="CIC" Value="6103">
+    <GPRRegSet Index="01">0x0000000000000001</GPRRegSet>
+    <GPRRegSet Index="02">0x0000000049A5EE96</GPRRegSet>
+    <GPRRegSet Index="03">0x0000000049A5EE96</GPRRegSet>
+    <GPRRegSet Index="04">0x000000000000EE96</GPRRegSet>
+    <GPRRegSet Index="12">0xFFFFFFFFCE9DFBF7</GPRRegSet>
+    <GPRRegSet Index="13">0xFFFFFFFFCE9DFBF7</GPRRegSet>
+    <GPRRegSet Index="15">0x0000000018B63D28</GPRRegSet>
+    <GPRRegSet Index="22">0x0000000000000078</GPRRegSet>
+    <GPRRegSet Index="25">0xFFFFFFFF825B21C9</GPRRegSet>
+  </BootSnap>
+
+  <BootSnap Condition="CIC" Value="6105">
+    <GPRRegSet Index="02">0xFFFFFFFFF58B0FBF</GPRRegSet>
+    <GPRRegSet Index="03">0xFFFFFFFFF58B0FBF</GPRRegSet>
+    <GPRRegSet Index="04">0x0000000000000FBF</GPRRegSet>
+    <GPRRegSet Index="12">0xFFFFFFFF9651F81E</GPRRegSet>
+    <GPRRegSet Index="13">0x000000002D42AAC5</GPRRegSet>
+    <GPRRegSet Index="15">0x0000000056584D60</GPRRegSet>
+    <GPRRegSet Index="22">0x0000000000000091</GPRRegSet>
+    <GPRRegSet Index="25">0xFFFFFFFFCDCE565F</GPRRegSet>
+    <Mem32 Offset="0x04001000" Index="0">0x3C0DBFC0</Mem32>
+    <Mem32 Offset="0x04001000" Index="2">0x25AD07C0</Mem32>
+    <Mem32 Offset="0x04001000" Index="3">0x31080080</Mem32>
+    <Mem32 Offset="0x04001000" Index="4">0x5500FFFC</Mem32>
+    <Mem32 Offset="0x04001000" Index="5">0x3C0DBFC0</Mem32>
+    <Mem32 Offset="0x04001000" Index="6">0x8DA80024</Mem32>
+    <Mem32 Offset="0x04001000" Index="7">0x3C0BB000</Mem32>
+  </BootSnap>
+
+  <BootSnap Condition="CIC" Value="6106">
+    <GPRRegSet Index="02">0xFFFFFFFFA95930A4</GPRRegSet>
+    <GPRRegSet Index="03">0xFFFFFFFFA95930A4</GPRRegSet>
+    <GPRRegSet Index="04">0x00000000000030A4</GPRRegSet>
+    <GPRRegSet Index="12">0xFFFFFFFFBCB59510</GPRRegSet>
+    <GPRRegSet Index="13">0xFFFFFFFFBCB59510</GPRRegSet>
+    <GPRRegSet Index="15">0x000000007A3C07F4</GPRRegSet>
+    <GPRRegSet Index="22">0x0000000000000085</GPRRegSet>
+    <GPRRegSet Index="25">0x00000000465E3F72</GPRRegSet>
+  </BootSnap>
+
+  <BootSnap Condition="Region" Value="NTSC">
+    <BootSnap Condition="CIC" Value="6102">
+      <GPRRegSet Index="05">0xFFFFFFFFC95973D5</GPRRegSet>
+      <GPRRegSet Index="14">0x000000002449A366</GPRRegSet>
+    </BootSnap>
+    <BootSnap Condition="CIC" Value="6103">
+      <GPRRegSet Index="05">0xFFFFFFFF95315A28</GPRRegSet>
+      <GPRRegSet Index="14">0x000000005BACA1DF</GPRRegSet>
+    </BootSnap>
+    <BootSnap Condition="CIC" Value="6105">
+      <GPRRegSet Index="05">0x000000005493FB9A</GPRRegSet>
+      <GPRRegSet Index="14">0xFFFFFFFFC2C20384</GPRRegSet>
+      <Mem32 Offset="0x04001000" Index="1">0x8DA807FC</Mem32>
+    </BootSnap>
+    <BootSnap Condition="CIC" Value="6106">
+      <GPRRegSet Index="05">0xFFFFFFFFE067221F</GPRRegSet>
+      <GPRRegSet Index="14">0x000000005CD2B70F</GPRRegSet>
+    </BootSnap>
+  </BootSnap>
+
+  <BootSnap Condition="Region" Value="PAL">
+    <GPRRegSet Index="23">0x0000000000000006</GPRRegSet>
+    <GPRRegSet Index="31">0xFFFFFFFFA4001554</GPRRegSet>
+    <BootSnap Condition="CIC" Value="6102">
+      <GPRRegSet Index="05">0xFFFFFFFFC0F1D859</GPRRegSet>
+      <GPRRegSet Index="14">0x000000002DE108EA</GPRRegSet>
+    </BootSnap>
+    <BootSnap Condition="CIC" Value="6103">
+      <GPRRegSet Index="05">0xFFFFFFFFD4646273</GPRRegSet>
+      <GPRRegSet Index="14">0x000000001AF99984</GPRRegSet>
+    </BootSnap>
+    <BootSnap Condition="CIC" Value="6105">
+      <GPRRegSet Index="05">0xFFFFFFFFDECAAAD1</GPRRegSet>
+      <GPRRegSet Index="14">0x000000000CF85C13</GPRRegSet>
+      <GPRRegSet Index="24">0x0000000000000002</GPRRegSet>
+      <Mem32 Offset="0x04001000" Index="1">0xBDA807FC</Mem32>
+    </BootSnap>
+    <BootSnap Condition="CIC" Value="6106">
+      <GPRRegSet Index="05">0xFFFFFFFFB04DC903</GPRRegSet>
+      <GPRRegSet Index="14">0x000000001AF99984</GPRRegSet>
+      <GPRRegSet Index="24">0x0000000000000002</GPRRegSet>
+    </BootSnap>
+  </BootSnap>
+</BootSnaps>
