@@ -21,7 +21,7 @@ using System;
 using System.IO;
 using Soft64.PI;
 
-namespace Soft64.Media
+namespace Soft64
 {
     public sealed class VirtualCartridge : Cartridge
     {

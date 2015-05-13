@@ -33,6 +33,16 @@ namespace Soft64
             m_BootSnapStream = xmlSource;
         }
 
+        private String HexFix(String hex)
+        {
+            if (hex.StartsWith("0x"))
+            {
+                return hex.Substring(2, hex.Length - 2);
+            }
+
+            return hex;
+        }
+
         public void LoadBootSnap(CICKeyType cic, RegionType region)
         {
             List<GprRegWrite> regs = new List<GprRegWrite>();
@@ -53,7 +63,7 @@ namespace Soft64
                         new GprRegWrite
                         {
                             index = Int32.Parse(result.Attribute("Index").Value),
-                            value = UInt64.Parse(result.Value, NumberStyles.AllowHexSpecifier)
+                            value = UInt64.Parse(HexFix(result.Value), NumberStyles.AllowHexSpecifier)
                         });
                 }
 
@@ -63,8 +73,8 @@ namespace Soft64
                         new Mem32Write
                         {
                             index = Int32.Parse(result.Attribute("Index").Value),
-                            position = Int64.Parse(result.Attribute("Offset").Value, NumberStyles.AllowHexSpecifier),
-                            value = UInt32.Parse(result.Value, NumberStyles.AllowHexSpecifier),
+                            position = Int64.Parse(HexFix(result.Attribute("Offset").Value), NumberStyles.AllowHexSpecifier),
+                            value = UInt32.Parse(HexFix(result.Value), NumberStyles.AllowHexSpecifier),
                         });
                 }
             }
@@ -111,20 +121,13 @@ namespace Soft64
                     return Enumerable.Empty<XElement>();
             }
 
-            var results = from element in snap.Elements()
-                            where element.Name == "GPRRegSet"
-                            where element.Name == "Mem32"
-                                select element;
+            List<XElement> writes = new List<XElement>();
 
-            foreach (var element in snap.Elements())
-            {
-                if (element.Name == "BootSnap")
-                {
-                    results = results.Concat(GetSnapElements(element, cic, region));
-                }
-            }
+            writes.AddRange(snap.Elements("GPRRegSet"));
+            writes.AddRange(snap.Elements("Mem32"));
+            writes.AddRange(snap.Elements("BootSnap").SelectMany(s => GetSnapElements(s, cic, region)));
 
-            return results;
+            return writes;
         }
 
         private void Dispose(Boolean disposing)
