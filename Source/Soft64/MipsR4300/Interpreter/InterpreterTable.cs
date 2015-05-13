@@ -151,9 +151,6 @@ namespace Soft64.MipsR4300.Interpreter
             {
                 MipsOp e = callTable[index];
 
-                if (logger.IsDebugEnabled)
-                    logger.Debug("{0:X8} {1:X8} {2}", Machine.Current.CPU.State.PC, inst.Instruction, inst.ToString());
-
                 if (e != null)
                     e(inst);
                 else

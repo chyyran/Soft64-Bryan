@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 using System;
 using System.Linq;
 using System.Reflection;
+using NLog;
 
 namespace Soft64.MipsR4300.Interpreter
 {
@@ -28,6 +29,7 @@ namespace Soft64.MipsR4300.Interpreter
         private InterpreterTable m_OpTable;
         private Action m_BranchDelaySlotAction;
         private Boolean m_NullifiedInstruction;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         internal sealed class OpcodeHookAttribute : Attribute
         {
@@ -54,6 +56,12 @@ namespace Soft64.MipsR4300.Interpreter
             try
             {
                 MipsInstruction inst = FetchInstruction();
+
+#if !FAST_UNSAFE_BUILD
+
+                if (logger.IsDebugEnabled)
+                    logger.Debug("{0:X8} {1:X8} {2}", Machine.Current.CPU.State.PC, inst.Instruction, inst.ToString());
+#endif
 
                 /* Check if we are executing a branch delay slot */
                 Boolean doBranchDelay = m_BranchDelaySlotAction != null;
