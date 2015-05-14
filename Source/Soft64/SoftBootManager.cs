@@ -69,14 +69,14 @@ namespace Soft64
             {
                 if (Machine.Current.RCP.DevicePI.InsertedCartridge != null)
                 {
+                    Machine.Current.CPU.State.PC = 0xA4000040;
                     SimulatePIF();
                 }
                 else
                 {
                     logger.Warn("No cartridge inserted, skipping IPL boot");
+                    Machine.Current.CPU.State.PC = 0xBFC00000;
                 }
-
-                Machine.Current.CPU.State.PC = 0xA4000040;
 
                 logger.Debug("ROM Entry Point: " + Machine.Current.CPU.State.PC.ToString("X8"));
             }
