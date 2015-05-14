@@ -74,8 +74,6 @@ namespace Soft64.MipsR4300
             m_State.Fpr.Clear();
             m_State.GPRRegs64.Clear();
 
-            /* TODO: Initialize the TLB Cache */
-
             m_State.LLBit = false;
             m_State.Hi = 0;
             m_State.Lo = 0;
@@ -83,13 +81,16 @@ namespace Soft64.MipsR4300
             m_State.FCR31 = 0;
 
             /* Setup Cop0 Registers */
+            m_State.CP0Regs[CP0RegName.Cause] = 0x5C;
             m_State.CP0Regs[CP0RegName.SR] = 0x34000000;
-            m_State.CP0Regs[CP0RegName.Config] = 0x6E463;
+            m_State.CP0Regs[CP0RegName.Config] = 0x0006E463;
             m_State.CP0Regs[CP0RegName.PRId] = 0xB00;
             m_State.CP0Regs[CP0RegName.Count] = 0x5000;
             m_State.CP0Regs[CP0RegName.Context] = 0x7FFFF0;
             m_State.CP0Regs[CP0RegName.EPC] = 0xFFFFFFFF;
             m_State.CP0Regs[CP0RegName.ErrorEPC] = 0xFFFFFFFF;
+
+            /* TODO: Setup Cop1 Registers */
 
             /* Initialize the execution engine */
             m_ExecEngine.SetParent(this);

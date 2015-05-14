@@ -47,7 +47,7 @@ namespace Tests.PJ64
             Assert.Equal(state.CP0Regs[CP0RegName.EPC], 0xFFFFFFFFUL);
             Assert.Equal(state.CP0Regs[CP0RegName.BadVAddr], 0xFFFFFFFFUL);
             Assert.Equal(state.CP0Regs[CP0RegName.ErrorEPC], 0xFFFFFFFFUL);
-            Assert.Equal(state.CP0Regs[CP0RegName.Config], 0x0006E4632UL);
+            Assert.Equal(state.CP0Regs[CP0RegName.Config], 0x0006E463UL);
             Assert.Equal(state.CP0Regs[CP0RegName.SR], 0x34000000UL);
             /* TODO: */
         }
