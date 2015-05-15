@@ -60,7 +60,7 @@ namespace Soft64.MipsR4300.Interpreter
 #if !FAST_UNSAFE_BUILD
 
                 if (logger.IsDebugEnabled)
-                    logger.Debug("{0:X8} {1:X8} {2}", Machine.Current.CPU.State.PC, inst.Instruction, inst.ToString());
+                    logger.Debug("{0:X8} {1:X4} {2:X4} {3}", Machine.Current.CPU.State.PC, inst.Instruction >> 16, inst.Instruction & 0xFFFF, inst.ToString());
 #endif
 
                 /* Check if we are executing a branch delay slot */

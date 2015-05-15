@@ -143,6 +143,8 @@
     <Compile Include="PI\CICKey.cs" />
     <Compile Include="CICKeyType.cs" />
     <Compile Include="PI\FlashMemory.cs" />
+    <Compile Include="PI\IBootRom.cs" />
+    <Compile Include="PI\ICartRom.cs" />
     <Compile Include="PI\PiBusSpeedConfig.cs" />
     <Compile Include="PI\_RomBlockStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

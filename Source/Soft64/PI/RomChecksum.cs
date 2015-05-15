@@ -48,11 +48,11 @@ namespace Soft64.PI
 
             switch (m_CicType)
             {
-                case CICKeyType.CIC_NUS_6101:
-                case CICKeyType.CIC_NUS_6102: seed = 0xF8CA4DDC; break;
-                case CICKeyType.CIC_NUS_6103: seed = 0xA3886759; break;
-                case CICKeyType.CIC_NUS_6105: seed = 0xDF26F436; break;
-                case CICKeyType.CIC_NUS_6106: seed = 0x1FEA617A; break;
+                case CICKeyType.CIC_X101:
+                case CICKeyType.CIC_X102: seed = 0xF8CA4DDC; break;
+                case CICKeyType.CIC_X103: seed = 0xA3886759; break;
+                case CICKeyType.CIC_X105: seed = 0xDF26F436; break;
+                case CICKeyType.CIC_X106: seed = 0x1FEA617A; break;
                 default: return;
             }
 
@@ -78,7 +78,7 @@ namespace Soft64.PI
                 if (t2 > read) t2 ^= r;
                 else t2 ^= t6 ^ read;
 
-                if (m_CicType == CICKeyType.CIC_NUS_6105)
+                if (m_CicType == CICKeyType.CIC_X105)
                 {
                     long oldPos = arrayReader.BaseStream.Position;
                     arrayReader.BaseStream.Position = 0x40 + 0x0710 + (i & 0xFF);
@@ -91,12 +91,12 @@ namespace Soft64.PI
                 }
             }
 
-            if (m_CicType == CICKeyType.CIC_NUS_6103)
+            if (m_CicType == CICKeyType.CIC_X103)
             {
                 hashWriter.Write((UInt32)((t6 ^ t4) + t3));
                 hashWriter.Write((UInt32)((t5 ^ t2) + t1));
             }
-            else if (m_CicType == CICKeyType.CIC_NUS_6106)
+            else if (m_CicType == CICKeyType.CIC_X106)
             {
                 hashWriter.Write((UInt32)((t6 * t4) + t3));
                 hashWriter.Write((UInt32)((t5 * t2) + t1));

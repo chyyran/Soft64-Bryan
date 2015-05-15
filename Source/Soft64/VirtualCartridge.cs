@@ -50,12 +50,12 @@ namespace Soft64
             IsOpened = true;
         }
 
-        public override void RaiseColdReset()
+        public override void ColdReset()
         {
             PiCartridgeStream.Position = 0;
         }
 
-        public override void RaiseNMI4300()
+        public override void NMIReset()
         {
             PiCartridgeStream.Position = 0;
         }

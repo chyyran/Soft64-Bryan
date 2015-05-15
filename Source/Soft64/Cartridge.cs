@@ -65,13 +65,13 @@ namespace Soft64
             return new CartridgeInfo(this);
         }
 
-        public CartRom RomImage { get; protected set; }
+        public virtual ICartRom RomImage { get; protected set; }
 
         public abstract Stream PiCartridgeStream { get; }
 
         public Boolean IsReal { get; protected set; }
 
-        public Boolean IsOpened { get; protected set; }
+        public virtual Boolean IsOpened { get; protected set; }
 
         #endregion Cartrige API
 
@@ -83,9 +83,9 @@ namespace Soft64
 
         #region Reset API
 
-        public abstract void RaiseColdReset();
+        public abstract void ColdReset();
 
-        public abstract void RaiseNMI4300();
+        public abstract void NMIReset();
 
         #endregion Reset API
 

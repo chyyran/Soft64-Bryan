@@ -25,7 +25,7 @@ using System.Text;
 
 namespace Soft64.PI
 {
-    public sealed class BootRom
+    public sealed class BootRom : Soft64.PI.IBootRom
     {
         public const Int32 Size = 4032;
 
@@ -54,11 +54,11 @@ namespace Soft64.PI
 
             switch (alg.CrcValue)
             {
-                case 0x6170A4A1: m_CICType = CICKeyType.CIC_NUS_6101; break;
-                case 0x90BB6CB5: m_CICType = CICKeyType.CIC_NUS_6102; break;
-                case 0x0B050EE0: m_CICType = CICKeyType.CIC_NUS_6103; break;
-                case 0x98BC2C86: m_CICType = CICKeyType.CIC_NUS_6105; break;
-                case 0xACC8580A: m_CICType = CICKeyType.CIC_NUS_6106; break;
+                case 0x6170A4A1: m_CICType = CICKeyType.CIC_X101; break;
+                case 0x90BB6CB5: m_CICType = CICKeyType.CIC_X102; break;
+                case 0x0B050EE0: m_CICType = CICKeyType.CIC_X103; break;
+                case 0x98BC2C86: m_CICType = CICKeyType.CIC_X105; break;
+                case 0xACC8580A: m_CICType = CICKeyType.CIC_X106; break;
                 default: m_CICType = CICKeyType.Unknown; break;
             }
 

@@ -44,7 +44,7 @@ using System.Text;
 
 namespace Soft64.PI
 {
-    public class CartRom
+    public class CartRom : ICartRom
     {
         public const Int32 HeaderSize = 64;
 
@@ -157,7 +157,7 @@ namespace Soft64.PI
 
         public Boolean IsHeaderOnly { get { return m_HeaderOnly; } }
 
-        public BootRom BootRomInformation { get { return m_BootRom; } }
+        public IBootRom BootRomInformation { get { return m_BootRom; } }
 
         public RegionType Region { get { return m_Region; } }
 

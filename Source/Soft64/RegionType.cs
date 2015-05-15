@@ -19,11 +19,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 namespace Soft64
 {
-    public enum RegionType
+    public enum RegionType : int
     {
         Unknown,
-        NTSC,
         PAL,
+        NTSC,
         MPAL
     }
 }

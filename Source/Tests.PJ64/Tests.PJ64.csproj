@@ -65,9 +65,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\Resources\BinaryFiles\Roms\m64p_test_rom.v64">
-      <Link>m64p_test_rom.v64</Link>
-    </EmbeddedResource>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

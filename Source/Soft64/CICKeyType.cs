@@ -24,11 +24,11 @@ namespace Soft64
     public enum CICKeyType
     {
         Unknown,
-        CIC_NUS_6101,
-        CIC_NUS_6102,
-        CIC_NUS_6103,
-        CIC_NUS_6105,
-        CIC_NUS_6106,
+        CIC_X101,
+        CIC_X102,
+        CIC_X103,
+        CIC_X105,
+        CIC_X106,
         CIC_HLE
     }
 
@@ -39,12 +39,25 @@ namespace Soft64
             switch (type)
             {
                 case CICKeyType.CIC_HLE: return "HLE CIC";
-                case CICKeyType.CIC_NUS_6101: return "CIC-NUS-6101";
-                case CICKeyType.CIC_NUS_6102: return "CIC-NUS-6102";
-                case CICKeyType.CIC_NUS_6103: return "CIC-NUS-6103";
-                case CICKeyType.CIC_NUS_6105: return "CIC-NUS-6105";
-                case CICKeyType.CIC_NUS_6106: return "CIC-NUS-6106";
+                case CICKeyType.CIC_X101: return "CIC-X101";
+                case CICKeyType.CIC_X102: return "CIC-X102";
+                case CICKeyType.CIC_X103: return "CIC-X103";
+                case CICKeyType.CIC_X105: return "CIC-X105";
+                case CICKeyType.CIC_X106: return "CIC-X106";
                 default: return type.ToString();
+            }
+        }
+
+        public static Int32 Seed(this CICKeyType cic)
+        {
+            switch (cic)
+            {
+                default: return 0;
+                case CICKeyType.CIC_X101:
+                case CICKeyType.CIC_X102: return 0x3F;
+                case CICKeyType.CIC_X103: return 0x78;
+                case CICKeyType.CIC_X105: return 0x91;
+                case CICKeyType.CIC_X106: return 0x85;
             }
         }
     }
