@@ -1,3 +1,5 @@
+# Notice: This is not a fully funtional emulator, its work in progress, and only it runs a basic interpereter.  That means no RCP emulation yet until the CPU is functional and fully tested.
+
 # Project Goals for revision 1 #
 * Implement high level graphics system
 * Implement high level audio system
