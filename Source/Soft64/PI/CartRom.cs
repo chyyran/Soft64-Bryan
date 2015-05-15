@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 using System;
 using System.IO;
 using System.Text;
+using NLog;
 
 /* = NOTES ==============================
  * Rom should have its own custom checksum in case the emulator wants check if has been modified in RAM
@@ -65,6 +66,8 @@ namespace Soft64.PI
         private Int32 m_CRC2;
         private RegionType m_Region;
 
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public CartRom(Stream romDataStream, Boolean headerOnly, FormatVerifyFlag verifyFlag)
         {
             m_HeaderOnly = headerOnly;
@@ -89,7 +92,8 @@ namespace Soft64.PI
 
             if (verifyFlag != FormatVerifyFlag.Skip && format == RomFormat.Unknown)
             {
-                // SystemEventLog.WriteError("Tried to verify the rom but failed, emulator may crash or be unstable.", LogType.PI);
+                logger.Warn("treid to verify rom but failed, emulator may be unstable");
+
             }
             else
             {
