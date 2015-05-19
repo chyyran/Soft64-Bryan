@@ -23,6 +23,9 @@ using System.Windows;
 using Soft64;
 using Soft64.Debugging;
 using Soft64WPF.Windows;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.IO;
 
 namespace Soft64WPF
 {
@@ -57,6 +60,11 @@ namespace Soft64WPF
             {
                 win.Close();
             }
+
+            var file = File.OpenWrite("config.json");
+            JsonWriter writer = new JsonWriter()
+            JsonSerializer s = new JsonSerializer();
+            s.Serialize()
         }
     }
 

@@ -26,6 +26,7 @@ using Soft64.Debugging;
 using Soft64.Engines;
 using Soft64.PIF;
 using Soft64.RCP;
+using JsonConfig;
 
 namespace Soft64
 {
@@ -33,7 +34,7 @@ namespace Soft64
     /// The emulator core machine.
     /// </summary>
     [Serializable]
-    public class Machine : ILifetimeTrackable, IConfiguration
+    public class Machine : ILifetimeTrackable
     {
         /* Private Fields */
         private Boolean m_Booted = false;
@@ -48,6 +49,9 @@ namespace Soft64
         public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /* Global Config */
+        public dynamic Config { get; set; }
+
         public Machine()
         {
             Current = this;
@@ -55,12 +59,17 @@ namespace Soft64
             CPU = new CPUProcessor();
             PIF = new PIFModule();
             m_PropEngine = new SimpleEngine();
+
+            Config.Global.Machine.SystemBootMode = m_PropSysBootMode;
+            Config.Global.Machine.Engine = m_PropEngine;
         }
 
         public void Initialize()
         {
             if (this.CheckStateRequestInvalid(RequestState.Initialize))
                 throw new MachineException("Failed to call Initialize on machine instance");
+
+            logger.Trace("Saving configuration");
 
             logger.Trace("Initializing machine");
 
@@ -208,16 +217,6 @@ namespace Soft64
             }
         }
 
-        public void SaveConfig(System.Collections.Generic.IDictionary<string, object> propertyBag)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ReadConfig(System.Collections.Generic.IDictionary<string, object> proeprtyBag)
-        {
-            throw new NotImplementedException();
-        }
-
         public LifetimeState CurrentLifeState
         {
             get { return m_RunState; }
@@ -226,7 +225,11 @@ namespace Soft64
         public BootMode SystemBootMode
         {
             get { return m_PropSysBootMode; }
-            set { m_PropSysBootMode = value; }
+            set 
+            { 
+                m_PropSysBootMode = value;
+                Config.Global.Machine.SystemBootMode = value;
+            }
         }
 
         public Boolean IsRunning

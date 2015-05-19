@@ -58,7 +58,6 @@
     <Compile Include="Engines\SingleCoreScheduler.cs" />
     <Compile Include="Engines\CoreTaskScheduler.cs" />
     <Compile Include="ELFLoader.cs" />
-    <Compile Include="IConfiguration.cs" />
     <Compile Include="MipsR4300\Analyzing\MemoryEnitityType.cs" />
     <Compile Include="MipsR4300\Analyzing\MemoryScan.cs" />
     <Compile Include="MipsR4300\Cache.cs" />
