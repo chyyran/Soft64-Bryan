@@ -117,7 +117,7 @@ namespace Tests.PJ64
         {
 
             Machine machine = new Machine();
-            machine.SystemBootType = BootMode.HLE_IPL_OLD;
+            machine.SystemBootMode = BootMode.HLE_IPL_OLD;
             machine.RCP.DevicePI.MountCartridge(cart);
             Debugger debugger = new Debugger();
             debugger.SetBootBreak(true, DebuggerBootEvent.PostBoot);

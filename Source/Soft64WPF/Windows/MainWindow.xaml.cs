@@ -85,7 +85,7 @@ namespace Soft64WPF.Windows
             /* For now we are using default crap */
             Machine.Current.RCP.Engine = new PureInterpreter();
             Machine.Current.CPU.Engine = new PureInterpreter();
-            Machine.Current.SystemBootType = BootMode.HLE_IPL;
+            Machine.Current.SystemBootMode = BootMode.HLE_IPL;
             Machine.Current.Initialize();
             Machine.Current.Run();
         }
