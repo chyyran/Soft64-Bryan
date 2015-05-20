@@ -47,7 +47,7 @@ namespace Soft64
         {
             List<GprRegWrite> regs = new List<GprRegWrite>();
             List<Mem32Write> mem32 = new List<Mem32Write>();
-            BinaryWriter bw = new BinaryWriter(Machine.Current.RCP.SafeN64Memory);
+            BinaryWriter bw = new BinaryWriter(Machine.Current.DeviceRCP.SafeN64Memory);
 
             StreamReader reader = new StreamReader(m_BootSnapStream);
             XDocument doc = XDocument.Load(reader, LoadOptions.None);
@@ -82,7 +82,7 @@ namespace Soft64
             /* Now we do the actual writes to the emulator */
             foreach (var reg in regs)
             {
-                Machine.Current.CPU.State.GPRRegs64[reg.index] = reg.value;
+                Machine.Current.DeviceCPU.State.GPRRegs64[reg.index] = reg.value;
             }
 
             foreach (var m in mem32)

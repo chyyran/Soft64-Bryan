@@ -23,7 +23,7 @@ namespace Soft64.MipsR4300.Analyzing
             Int32 stride = 8;
             Int32 length = (Int32)(0xFFFFFFFFU / stride);
 
-            Stream memory = Machine.Current.RCP.SafeN64Memory;
+            Stream memory = Machine.Current.DeviceRCP.SafeN64Memory;
             BinaryReader reader = new BinaryReader(memory);
 
             var results = from index in Enumerable.Range(0, length)

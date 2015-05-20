@@ -18,7 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using NLog;
@@ -26,7 +28,6 @@ using Soft64.Debugging;
 using Soft64.Engines;
 using Soft64.PIF;
 using Soft64.RCP;
-using JsonConfig;
 
 namespace Soft64
 {
@@ -41,27 +42,57 @@ namespace Soft64
         private LifetimeState m_RunState =LifetimeState.Created;
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private EmulatorEngine m_CurrentEngine;
+        private static dynamic s_Config = new ExpandoObject();
 
-        /* Property Backings */
-        private BootMode m_PropSysBootMode = BootMode.HLE_IPL;
+        /* Non-Dynamic Property Backings */
         private EmulatorEngine m_PropEngine;
 
+        /* Events */
         public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        /* Global Config */
-        public dynamic Config { get; set; }
-
         public Machine()
         {
-            Current = this;
-            RCP = new RcpProcessor();
-            CPU = new CPUProcessor();
-            PIF = new PIFModule();
-            m_PropEngine = new SimpleEngine();
+            Config.Machine = new ExpandoObject();
+            Config.Machine.SystemBootMode = BootMode.HLE_IPL;
 
-            Config.Global.Machine.SystemBootMode = m_PropSysBootMode;
-            Config.Global.Machine.Engine = m_PropEngine;
+            Current = this;
+            DeviceRCP = new RcpProcessor();
+            DeviceCPU = new CPUProcessor();
+            DevicePIF = new PIFModule();
+            m_PropEngine = new SimpleEngine();
+        }
+
+        internal static dynamic Config
+        {
+            get { return s_Config; }
+        }
+
+        Object ExportConfig()
+        {
+            return CloneExpando(s_Config);
+        }
+
+        private Object CloneExpando(Object obj)
+        {
+            var d1 = (IDictionary<String, Object>)obj;
+            var tmp = new ExpandoObject();
+            var d = (IDictionary<String, Object>)tmp;
+
+            foreach (var m in d1)
+            {
+                if (m.GetType().Equals(typeof(ExpandoObject)))
+                {
+                    d.Add(m.Key, CloneExpando(m.Value));
+                }
+                else
+                {
+                    d.Add(m.Key, m.Value);
+                }
+            }
+
+
+            return tmp;
         }
 
         public void Initialize()
@@ -76,20 +107,16 @@ namespace Soft64
             try
             {
                 /* Initialize the PIF module */
-                PIF.Initialize();
+                DevicePIF.Initialize();
 
                 /* Initialize the RCP Processor */
-                RCP.Initialize();
+                DeviceRCP.Initialize();
 
                 /* Connect memory to the CPU Processor and initialize it */
-                CPU.SetMemoryBus(Machine.Current.RCP.N64Memory);
-                CPU.Initialize();
+                DeviceCPU.SetMemoryBus(Machine.Current.DeviceRCP.N64Memory);
+                DeviceCPU.Initialize();
 
-                /* TODO: Initializaitons
-                 * Graphics Plugin
-                 * Audio Plugin
-                 * Controller Plugin
-                 * ----------------------------*/
+                /* TODO: Multimedia Backend Initialization */
 
                 /* Initilaize the runtime engine */
                 m_CurrentEngine = m_PropEngine;
@@ -194,9 +221,9 @@ namespace Soft64
                 if (Debugger.Current != null) Debugger.Current.NotifyBootEvent(DebuggerBootEvent.PreBoot);
 
                 /* Use the boot manager to propertly setup the software state on the processors */
-                logger.Trace("Booting: " + m_PropSysBootMode.GetFriendlyName());
+                logger.Trace("Booting: " + SystemBootMode.GetFriendlyName());
 
-                SoftBootManager.SetupExecutionState(m_PropSysBootMode);
+                SoftBootManager.SetupExecutionState(SystemBootMode);
 
                 /* Notify debugger after booting */
                 if (Debugger.Current != null) Debugger.Current.NotifyBootEvent(DebuggerBootEvent.PostBoot);
@@ -224,12 +251,8 @@ namespace Soft64
 
         public BootMode SystemBootMode
         {
-            get { return m_PropSysBootMode; }
-            set 
-            { 
-                m_PropSysBootMode = value;
-                Config.Global.Machine.SystemBootMode = value;
-            }
+            get { return Config.Machine.SystemBootMode; }
+            set { Config.Machine.SystemBootMode = value; }
         }
 
         public Boolean IsRunning
@@ -256,19 +279,19 @@ namespace Soft64
             private set;
         }
 
-        public RcpProcessor RCP
+        public RcpProcessor DeviceRCP
         {
             get;
             private set;
         }
 
-        public CPUProcessor CPU
+        public CPUProcessor DeviceCPU
         {
             get;
             private set;
         }
 
-        public PIFModule PIF
+        public PIFModule DevicePIF
         {
             get;
             private set;

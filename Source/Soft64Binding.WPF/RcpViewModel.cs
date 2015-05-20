@@ -26,8 +26,8 @@ namespace Soft64Binding.WPF
         {
             m_MachineModel = model;
             Machine machine = model.TargetMachine;
-            SetValue(SafeN64MemoryPropertyKey, StreamViewModel.NewModelFromStream(machine.RCP.SafeN64Memory));
-            SetValue(N64MemoryPropertyKey, StreamViewModel.NewModelFromStream(machine.RCP.N64Memory));
+            SetValue(SafeN64MemoryPropertyKey, StreamViewModel.NewModelFromStream(machine.DeviceRCP.SafeN64Memory));
+            SetValue(N64MemoryPropertyKey, StreamViewModel.NewModelFromStream(machine.DeviceRCP.N64Memory));
         }
 
         public StreamViewModel N64Memory

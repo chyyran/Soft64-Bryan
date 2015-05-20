@@ -86,10 +86,10 @@ namespace Soft64.RCP
             m_RcpMemoryBus.Add(0x04000000, m_SPMemory);
             m_RcpMemoryBus.Add(0x05000000, m_PIInterface);
 
-            if (Machine.Current.PIF.RomStream != null)
-                m_RcpMemoryBus.Add(0x1FC00000, Machine.Current.PIF.RomStream);
+            if (Machine.Current.DevicePIF.RomStream != null)
+                m_RcpMemoryBus.Add(0x1FC00000, Machine.Current.DevicePIF.RomStream);
 
-            m_RcpMemoryBus.Add(0x1FC007C0, Machine.Current.PIF.RamStream);
+            m_RcpMemoryBus.Add(0x1FC007C0, Machine.Current.DevicePIF.RamStream);
 
             base.Initialize();
         }

@@ -32,19 +32,19 @@ namespace Soft64.MipsR4300.Debugging
         {
             UseCompiler = false;
             BuildMap();
-            Machine.Current.CPU.VirtualMemoryStream.TLB.CacheChanged += TLB_CacheChanged;
+            Machine.Current.DeviceCPU.VirtualMemoryStream.TLB.CacheChanged += TLB_CacheChanged;
         }
 
         private void BuildMap()
         {
-            var physicalRam = Machine.Current.RCP.SafeN64Memory;
+            var physicalRam = Machine.Current.DeviceRCP.SafeN64Memory;
 
             Add(0x80000000, new PhysicalMapStream(physicalRam));
             Add(0xA0000000, new PhysicalMapStream(physicalRam));
 
             /* Query all the valid entries in the TLB */
             var entries =
-                    from entryInfo in Machine.Current.CPU.VirtualMemoryStream.TLB.AsQueryable<TLBEntryInfo>()
+                    from entryInfo in Machine.Current.DeviceCPU.VirtualMemoryStream.TLB.AsQueryable<TLBEntryInfo>()
                     let tlbEntry = entryInfo.AssociatedEntry
                     select entryInfo;
 

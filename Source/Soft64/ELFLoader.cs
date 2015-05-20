@@ -17,7 +17,7 @@ namespace Soft64
         public static void LoadElf(ELFExecutable executable)
         {
             /* Get the current processor instance */
-            CPUProcessor cpu = Machine.Current.CPU;
+            CPUProcessor cpu = Machine.Current.DeviceCPU;
 
             /* Setup the CPU for the executable */
             cpu.State.CP0Regs.HLStatusRegister.KSUMode = RingMode.Kernel; /* Running whole program in lowest ring mode */
@@ -25,7 +25,7 @@ namespace Soft64
             cpu.State.GPRRegs64[29] = 0x00000000A4001000;                 /* Create a stack pointer pointing into IMEM */
 
             /* Set the entry point */
-            Machine.Current.CPU.State.PC = (Int64)executable.EntryPointAddress;
+            Machine.Current.DeviceCPU.State.PC = (Int64)executable.EntryPointAddress;
 
             /* Load sections into memory and setup TLB entries */
             LoadSegments(executable);
@@ -56,7 +56,7 @@ namespace Soft64
                     entry, 
                     nextEntryValid, 
                     nextEntry, 
-                    Machine.Current.CPU.VirtualMemoryStream, 
+                    Machine.Current.DeviceCPU.VirtualMemoryStream, 
                     0xA0000000);
             }
         }

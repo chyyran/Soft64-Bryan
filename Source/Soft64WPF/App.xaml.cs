@@ -26,6 +26,7 @@ using Soft64WPF.Windows;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.IO;
+using System.Dynamic;
 
 namespace Soft64WPF
 {
@@ -60,11 +61,6 @@ namespace Soft64WPF
             {
                 win.Close();
             }
-
-            var file = File.OpenWrite("config.json");
-            JsonWriter writer = new JsonWriter()
-            JsonSerializer s = new JsonSerializer();
-            s.Serialize()
         }
     }
 
@@ -73,15 +69,33 @@ namespace Soft64WPF
         [STAThread]
         public static void Main()
         {
-            /* Create an instance of the emulator machine */
-            Machine machine = new Machine();
+            using (var file = File.Open("config.json", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read))
+            {
+                /* Create an instance of the emulator machine */
+                Machine machine = new Machine();
 
-            /* Debugger */
-            Debugger debugger = new Debugger();
+                /* Debugger */
+                Debugger debugger = new Debugger();
 
-            App app = new App();
-            app.InitializeComponent();
-            app.Run();
+                /* Load configuration */
+                String json = new StreamReader(file).ReadToEnd();
+                Object config = JsonConvert.DeserializeObject<ExpandoObject>(json);
+                
+                if (config != null)
+                    Machine.Config = config;
+
+                /* WPF Start */
+                App app = new App();
+                app.InitializeComponent();
+                app.Run();
+
+                /* Save configuration */
+                var writer = new StreamWriter(file);
+                JsonConvert.SerializeObject(new JsonTextWriter(writer), Machine.Config);
+                writer.Flush();
+
+                machine.Dispose();
+            }
         }
     }
 }

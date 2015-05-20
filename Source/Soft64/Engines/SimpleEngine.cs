@@ -29,7 +29,7 @@ namespace Soft64.Engines
                     pauseWaitAction();
 
                     /* Execute a step in the CPU */
-                    Machine.Current.CPU.StepOnce();
+                    Machine.Current.DeviceCPU.StepOnce();
                 }
             };
 

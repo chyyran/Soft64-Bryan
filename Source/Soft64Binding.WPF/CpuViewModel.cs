@@ -15,7 +15,7 @@ namespace Soft64Binding.WPF
     {
         public CpuViewModel(MachineViewModel machineViewModel) : base(machineViewModel)
         {
-            var cpu = machineViewModel.TargetMachine.CPU;
+            var cpu = machineViewModel.TargetMachine.DeviceCPU;
 
             VirtualMemory = StreamViewModel.NewModelFromStream(cpu.VirtualMemoryStream);
             DebugVirtualMemory = StreamViewModel.NewModelFromStream(new VMemViewStream());

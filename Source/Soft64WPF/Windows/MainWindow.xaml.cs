@@ -68,8 +68,8 @@ namespace Soft64WPF.Windows
             {
                 FileStream fs = File.OpenRead(dlg.FileName);
                 VirtualCartridge cart = new VirtualCartridge(fs);
-                Machine.Current.RCP.DevicePI.ReleaseCartridge();
-                Machine.Current.RCP.DevicePI.MountCartridge(cart);
+                Machine.Current.DeviceRCP.DevicePI.ReleaseCartridge();
+                Machine.Current.DeviceRCP.DevicePI.MountCartridge(cart);
             }
         }
 
@@ -83,8 +83,8 @@ namespace Soft64WPF.Windows
             logger.Trace("----- N64 Emulation Started -----");
 
             /* For now we are using default crap */
-            Machine.Current.RCP.Engine = new PureInterpreter();
-            Machine.Current.CPU.Engine = new PureInterpreter();
+            Machine.Current.DeviceRCP.Engine = new PureInterpreter();
+            Machine.Current.DeviceCPU.Engine = new PureInterpreter();
             Machine.Current.SystemBootMode = BootMode.HLE_IPL;
             Machine.Current.Initialize();
             Machine.Current.Run();
@@ -92,7 +92,7 @@ namespace Soft64WPF.Windows
 
         private void xaml_ButtonEjectCartridge_Click(object sender, RoutedEventArgs e)
         {
-            Machine.Current.RCP.DevicePI.ReleaseCartridge();
+            Machine.Current.DeviceRCP.DevicePI.ReleaseCartridge();
         }
 
         private void xaml_ButtonToolMemoryEditor_Click(object sender, RoutedEventArgs e)

@@ -118,17 +118,17 @@ namespace Tests.PJ64
 
             Machine machine = new Machine();
             machine.SystemBootMode = BootMode.HLE_IPL_OLD;
-            machine.RCP.DevicePI.MountCartridge(cart);
+            machine.DeviceRCP.DevicePI.MountCartridge(cart);
             Debugger debugger = new Debugger();
             debugger.SetBootBreak(true, DebuggerBootEvent.PostBoot);
             var mockedCPUEngine = new Mock<ExecutionEngine>();
             var mockedRCPEngine = new Mock<ExecutionEngine>();
-            machine.CPU.Engine = mockedCPUEngine.Object;
-            machine.RCP.Engine = mockedRCPEngine.Object;
+            machine.DeviceCPU.Engine = mockedCPUEngine.Object;
+            machine.DeviceRCP.Engine = mockedRCPEngine.Object;
             machine.Initialize();
             machine.Run();
 
-            ExecutionState state = machine.CPU.State;
+            ExecutionState state = machine.DeviceCPU.State;
 
             /* CP0 Testing */
             Assert.Equal(0x0000001FUL, state.CP0Regs[CP0RegName.Random]);
@@ -348,7 +348,7 @@ namespace Tests.PJ64
 
         private void AssertEqualMemoryReadU32(Int64 offset, UInt32 expected)
         {
-            BinaryReader reader = new BinaryReader(Machine.Current.CPU.VirtualMemoryStream);
+            BinaryReader reader = new BinaryReader(Machine.Current.DeviceCPU.VirtualMemoryStream);
             reader.BaseStream.Position = offset;
             Assert.Equal(expected, reader.ReadUInt32());
         }

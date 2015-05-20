@@ -55,7 +55,7 @@ namespace Soft64WPF.Windows
 
         private void ScanCode()
         {
-            Stream vmemory = Machine.Current.CPU.VirtualMemoryStream;
+            Stream vmemory = Machine.Current.DeviceCPU.VirtualMemoryStream;
             Int64 begin = 0xA4000040;
             Int64 current = vmemory.Position;
             Stream view = new VMemViewStream();
