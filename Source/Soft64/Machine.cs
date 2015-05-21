@@ -54,7 +54,7 @@ namespace Soft64
         public Machine()
         {
             Config.Machine = new ExpandoObject();
-            Config.Machine.SystemBootMode = BootMode.HLE_IPL;
+            Config.Machine.SystemBootMode = (Int32)BootMode.HLE_IPL;
 
             Current = this;
             DeviceRCP = new RcpProcessor();
@@ -68,9 +68,32 @@ namespace Soft64
             get { return s_Config; }
         }
 
-        Object ExportConfig()
+        public Object ExportConfig()
         {
             return CloneExpando(s_Config);
+        }
+
+        public void ImportConfig(Object config)
+        {
+            MergeConfig(config, Config);
+        }
+
+        private void MergeConfig(Object obj, Object config)
+        {
+            var list = (IDictionary<String, Object>)obj;
+            var configList = (IDictionary<String, Object>)config;
+
+            foreach (var member in list)
+            {
+                if (member.Value.GetType().Equals(typeof(ExpandoObject)))
+                {
+                    MergeConfig(member.Value, configList[member.Key]);
+                }
+                else
+                {
+                    configList[member.Key] = member.Value;
+                }
+            }
         }
 
         private Object CloneExpando(Object obj)
@@ -81,7 +104,7 @@ namespace Soft64
 
             foreach (var m in d1)
             {
-                if (m.GetType().Equals(typeof(ExpandoObject)))
+                if (m.Value.GetType().Equals(typeof(ExpandoObject)))
                 {
                     d.Add(m.Key, CloneExpando(m.Value));
                 }
@@ -251,8 +274,8 @@ namespace Soft64
 
         public BootMode SystemBootMode
         {
-            get { return Config.Machine.SystemBootMode; }
-            set { Config.Machine.SystemBootMode = value; }
+            get { return (BootMode)Config.Machine.SystemBootMode; }
+            set { Config.Machine.SystemBootMode = (Int32)value; }
         }
 
         public Boolean IsRunning

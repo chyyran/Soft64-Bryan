@@ -78,11 +78,16 @@ namespace Soft64WPF
                 Debugger debugger = new Debugger();
 
                 /* Load configuration */
-                String json = new StreamReader(file).ReadToEnd();
-                Object config = JsonConvert.DeserializeObject<ExpandoObject>(json);
-                
-                if (config != null)
-                    Machine.Config = config;
+                try
+                {
+                    String json = new StreamReader(file).ReadToEnd();
+                    Object config = JsonConvert.DeserializeObject<ExpandoObject>(json);
+                    machine.ImportConfig(config);
+                }
+                catch (JsonException)
+                {
+                    /* TODO: Ignore the bad file, maybe just do validation on JSON */
+                }
 
                 /* WPF Start */
                 App app = new App();
@@ -90,8 +95,10 @@ namespace Soft64WPF
                 app.Run();
 
                 /* Save configuration */
+                file.SetLength(0);
+                file.Flush();
                 var writer = new StreamWriter(file);
-                JsonConvert.SerializeObject(new JsonTextWriter(writer), Machine.Config);
+                writer.Write(JsonConvert.SerializeObject(machine.ExportConfig()));
                 writer.Flush();
 
                 machine.Dispose();

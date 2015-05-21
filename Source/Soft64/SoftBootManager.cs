@@ -26,9 +26,9 @@ using Soft64.RCP;
 
 namespace Soft64
 {
-    public enum BootMode
+    public enum BootMode : int
     {
-        MIPS_ELF,
+        MIPS_ELF = 0,
         HLE_IPL,
         HLE_IPL_OLD,
         IPL_ROM,
