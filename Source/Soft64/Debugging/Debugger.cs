@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,8 +42,6 @@ namespace Soft64.Debugging
         private DebuggerEngineEvent m_EngineHook;
         private static Debugger s_CurrentDebugger;
         private Boolean m_Disposed;
-        private Boolean m_BreakOnBoot;
-        private DebuggerBootEvent m_BreakOnBootMode;
 
         public Debugger()
         {
@@ -56,14 +55,18 @@ namespace Soft64.Debugging
             if (Machine.Current != null)
             {
                 Machine.Current.LifetimeStateChanged += Current_LifetimeStateChanged;
+
+                Machine.Config.Debugger = new ExpandoObject();
+                Machine.Config.Debugger.BreakOnBoot = false;
+                Machine.Config.Debugger.BreakOnBootMode = DebuggerBootEvent.PostBoot;
             }
         }
 
         public void NotifyBootEvent(DebuggerBootEvent eventType)
         {
-            if (m_BreakOnBoot)
+            if (Machine.Config.Debugger.BreakOnBoot)
             {
-                if (m_BreakOnBootMode == eventType)
+                if (Machine.Config.Debugger.BreakOnBootMode == eventType)
                 {
                     Break();
                 }
@@ -93,8 +96,8 @@ namespace Soft64.Debugging
 
         public void SetBootBreak(Boolean enabled, DebuggerBootEvent type = DebuggerBootEvent.PostBoot)
         {
-            m_BreakOnBoot = enabled;
-            m_BreakOnBootMode = type;
+            Machine.Config.Debugger.BreakOnBoot = enabled;
+            Machine.Config.Debugger.BreakOnBootMode = type;
         }
 
         public static Debugger Current

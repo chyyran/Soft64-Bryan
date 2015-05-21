@@ -42,7 +42,7 @@ namespace Soft64
         private LifetimeState m_RunState =LifetimeState.Created;
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private EmulatorEngine m_CurrentEngine;
-        private static dynamic s_Config = new ExpandoObject();
+        private static ExpandoObject s_Config = new ExpandoObject();
 
         /* Non-Dynamic Property Backings */
         private EmulatorEngine m_PropEngine;
@@ -54,6 +54,7 @@ namespace Soft64
         public Machine()
         {
             Config.Machine = new ExpandoObject();
+            Config.UI = new ExpandoObject();
             Config.Machine.SystemBootMode = (Int32)BootMode.HLE_IPL;
 
             Current = this;
@@ -61,6 +62,26 @@ namespace Soft64
             DeviceCPU = new CPUProcessor();
             DevicePIF = new PIFModule();
             m_PropEngine = new SimpleEngine();
+        }
+
+        public T GetUIConfig<T>(String propName)
+        {
+            var d = (IDictionary<String, Object>)Config.UI;
+            Object value = null;
+
+            if (d.TryGetValue(propName, out value))
+            {
+                return (T)value;
+            }
+            else
+            {
+                return default(T);
+            }
+        }
+
+        public void SetUIConfig<T>(String propName, T value)
+        {
+            ((IDictionary<String, Object>)Config.UI)[propName] = value;
         }
 
         internal static dynamic Config
@@ -75,6 +96,9 @@ namespace Soft64
 
         public void ImportConfig(Object config)
         {
+            if (config == null)
+                return;
+
             MergeConfig(config, Config);
         }
 

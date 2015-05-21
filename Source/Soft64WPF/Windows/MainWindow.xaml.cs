@@ -63,9 +63,14 @@ namespace Soft64WPF.Windows
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.Filter = @"(N64 Cartridge ROM (*.z64;*.n64;*.v64;*.bin)|*.n64;*.z64;*.v64;*.bin|All Files (*.*)|*.*;";
+            String romdir = Machine.Current.GetUIConfig<String>("RecentRomDirectory");
+
+            if (Directory.Exists(romdir))
+                dlg.InitialDirectory = romdir;
 
             if (dlg.ShowDialog() == true)
             {
+                Machine.Current.SetUIConfig<String>("RecentRomDirectory", Path.GetDirectoryName(dlg.FileName));
                 FileStream fs = File.OpenRead(dlg.FileName);
                 VirtualCartridge cart = new VirtualCartridge(fs);
                 Machine.Current.DeviceRCP.DevicePI.ReleaseCartridge();

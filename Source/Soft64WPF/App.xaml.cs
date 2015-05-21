@@ -27,6 +27,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.IO;
 using System.Dynamic;
+using NLog;
 
 namespace Soft64WPF
 {
@@ -66,10 +67,12 @@ namespace Soft64WPF
 
     public static class EntryPoint
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         [STAThread]
         public static void Main()
         {
-            using (var file = File.Open("config.json", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read))
+            using (var file = File.Open("Config.json", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read))
             {
                 /* Create an instance of the emulator machine */
                 Machine machine = new Machine();
@@ -80,13 +83,17 @@ namespace Soft64WPF
                 /* Load configuration */
                 try
                 {
-                    String json = new StreamReader(file).ReadToEnd();
-                    Object config = JsonConvert.DeserializeObject<ExpandoObject>(json);
-                    machine.ImportConfig(config);
+                    machine.ImportConfig(JsonConvert.DeserializeObject<ExpandoObject>(new StreamReader(file).ReadToEnd()));
                 }
-                catch (JsonException)
+                catch
                 {
-                    /* TODO: Ignore the bad file, maybe just do validation on JSON */
+                    logger.Trace("Config.json was not valid, skipped configuration merge");
+                }
+                finally
+                {
+                    /* Clear the configuration file */
+                    file.SetLength(0);
+                    file.Flush();
                 }
 
                 /* WPF Start */
@@ -95,10 +102,8 @@ namespace Soft64WPF
                 app.Run();
 
                 /* Save configuration */
-                file.SetLength(0);
-                file.Flush();
                 var writer = new StreamWriter(file);
-                writer.Write(JsonConvert.SerializeObject(machine.ExportConfig()));
+                writer.Write(JsonConvert.SerializeObject(machine.ExportConfig(), Formatting.Indented));
                 writer.Flush();
 
                 machine.Dispose();
