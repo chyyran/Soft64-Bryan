@@ -9,6 +9,10 @@ namespace Soft64.Toolkits.WPF
             DependencyProperty.Register("Address", typeof(Int64), typeof(HexEditorRowViewModel),
             new PropertyMetadata());
 
+        public static readonly DependencyProperty RowIndexProperty =
+            DependencyProperty.Register("RowIndex", typeof(Int32), typeof(HexEditorRowViewModel),
+            new PropertyMetadata());
+
         public HexEditorRowViewModel()
         {
             Bytes = new ObservableIndexByteCollection();
@@ -21,5 +25,11 @@ namespace Soft64.Toolkits.WPF
         }
 
         public ObservableIndexByteCollection Bytes { get; set; }
+
+        public Int32 RowIndex
+        {
+            get { return (Int32)GetValue(RowIndexProperty); }
+            set { SetValue(RowIndexProperty, value); }
+        }
     }
 }

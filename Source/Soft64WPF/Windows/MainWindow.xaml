@@ -8,7 +8,7 @@
         x:Class="Soft64WPF.Windows.MainWindow"
         Title="Soft64 Emulator" Height="451" Width="659"
         FontSize="10.667"
-        ClipToBounds="False" Background="{x:Null}" Icon="/Soft64WPF;component/Images/s64logo.png">
+        ClipToBounds="False" Background="White" Icon="/Soft64WPF;component/Images/s64logo.png">
     <Window.Resources>
         <conv:CartridgeHeaderConverter x:Key="cartridgeHeaderConverter" />
         <conv:RcpBusConfigurationConverter x:Key="rcpBusConfigurationConverter" />
@@ -29,27 +29,40 @@
             <Setter Property="IsHitTestVisible" Value="False" />
         </Style>
     </Window.Resources>
-    <WindowChrome.WindowChrome>
-        <WindowChrome GlassFrameThickness="-1" CaptionHeight="26" />
-    </WindowChrome.WindowChrome>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="650*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="260*" />
             <RowDefinition Height="51*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Button x:Name="xamlControl_EmuRunButton" Margin="0,4,4,0" Content="Run" HorizontalAlignment="Left" VerticalAlignment="Top" Width="46" Height="22" />
-            <Button x:Name="xamlControl_EmuPauseButton" Margin="0,4,4,0" Content="Pause" HorizontalAlignment="Left" VerticalAlignment="Top" Width="55" Height="22" />
-            <Button x:Name="xamlControl_EmuStopButton" Margin="0,4,4,0" Content="Stop" HorizontalAlignment="Left" VerticalAlignment="Top" Width="47" Height="22" />
-            <Button x:Name="xamlControl_MainCartBrowseFileButton" Content="Insert Cartridge" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="123" RenderTransformOrigin="0.5,0.5" Margin="0,4,4,0" />
-            <Button x:Name="xaml_ButtonEjectCartridge" Content="Eject Cartridge" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left" Width="123" RenderTransformOrigin="0.5,0.5" Margin="0,4,4,0" Click="xaml_ButtonEjectCartridge_Click" />
-            <Button x:Name="xaml_ButtonScript" Content="Script Runner" Margin="0,4" Width="93" />
-            <Button x:Name="xaml_ButtonElfRun" Content="Run Elf" Margin="4,4,0,4" Width="62" Click="xaml_ButtonElfRun_Click" />
-        </StackPanel>
+        <Menu Background="#FF0077C9">
+            <MenuItem>
+                <MenuItem.Header>
+                    <TextBlock Foreground="White" FontSize="18" FontWeight="Bold" Text="Control" />
+                </MenuItem.Header>
+                <MenuItem x:Name="xamlControl_EmuRunButton" Header="Run" Foreground="Black" />
+                <MenuItem x:Name="xamlControl_EmuPauseButton" Header="Pause" Foreground="Black" />
+                <MenuItem x:Name="xamlControl_EmuStopButton" Header="Stop" Foreground="Black" />
+            </MenuItem>
+            <MenuItem>
+                <MenuItem.Header>
+                    <TextBlock Foreground="White" FontSize="18" FontWeight="Bold" Text="Media" />
+                </MenuItem.Header>
+                <MenuItem x:Name="xamlControl_MainCartBrowseFileButton" Header="Insert Cartridge" Foreground="Black" />
+                <MenuItem x:Name="xaml_ButtonEjectCartridge" Header="Eject Cartridge" Foreground="Black" />
+                <Separator />
+                <MenuItem x:Name="xaml_ButtonElfRun" Header="Load ELF" Foreground="Black" />
+            </MenuItem>
+            <MenuItem>
+                <MenuItem.Header>
+                    <TextBlock Foreground="White" FontSize="18" FontWeight="Bold" Text="Script" />
+                </MenuItem.Header>
+                <MenuItem x:Name="xaml_ButtonScript" Header="Python Window..." Foreground="Black" />
+            </MenuItem>
+        </Menu>
         <TabControl Grid.Row="1">
             <TabItem Header="Log">
                 <Grid Background="#FFE5E5E5">

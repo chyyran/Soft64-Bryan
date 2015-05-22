@@ -39,7 +39,7 @@ namespace Soft64WPF.Windows
         public MainWindow()
         {
             InitializeComponent();
-            GlassStyleLoader.ApplyWindowGlassStyle(this);
+            //GlassStyleLoader.ApplyWindowGlassStyle(this);
 
             xamlControl_EmuRunButton.Click += xamlControl_EmuRunButton_Click;
             xamlControl_MainCartBrowseFileButton.Click += xamlControl_MainCartBrowseFileButton_Click;

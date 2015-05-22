@@ -181,7 +181,7 @@ namespace Soft64.Toolkits.WPF
                         DataRows.Add(new HexEditorRowViewModel
                         {
                             Address = m_ClonedStreamVM.StreamPosition + ((rowCount + i) * m_GridWidth),
-   
+                            RowIndex = i
                         });
                 }
 
@@ -242,16 +242,17 @@ namespace Soft64.Toolkits.WPF
         private void HexEditor_TextInput(object sender, TextCompositionEventArgs e)
         {
             HexEditorTextBlock block = xaml_CaretControl.TargetControl as HexEditorTextBlock;
+            Int32 col = block.Index % m_GridWidth;
 
             if (block != null)
             {
                 if (block.BlockType == BlockType.Ascii)
                 {
-                    WriteAsciiCharacter(e, block.RowIndex, block.Index, block.BlockType);
+                    WriteAsciiCharacter(e, block.RowIndex, col, block.BlockType);
                 }
                 else
                 {
-                    WriteHexCharacter(e, block.RowIndex, block.Index, block.BlockType);
+                    WriteHexCharacter(e, block.RowIndex, col, block.BlockType);
                 }
             }
         }

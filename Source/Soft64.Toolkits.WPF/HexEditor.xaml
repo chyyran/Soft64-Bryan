@@ -56,6 +56,7 @@
                                             Margin="2, 0, 1, 0"
                                             Text="{Binding ByteValue, StringFormat=X2}"
                                             Index="{Binding Index}"
+                                            RowIndex="{Binding DataContext.RowIndex, ElementName=itemsSourceHex}"
                                             BlockType="Hex">
                                         </root:HexEditorTextBlock>
                                     </DataTemplate>
@@ -83,6 +84,7 @@
                                         Margin="2, 0, 1, 0"
                                         BlockType="Ascii"
                                         Text="{Binding ByteValue, Converter={StaticResource byteToAsciiConverter}}"
+                                        RowIndex="{Binding DataContext.RowIndex, ElementName=itemsSourceHex}"
                                         Index="{Binding Index}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
