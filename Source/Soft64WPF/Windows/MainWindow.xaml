@@ -57,7 +57,7 @@
                 <MenuItem x:Name="xaml_ButtonToolCPUDebugger"  Header="CPU Debugger..." />
             </MenuItem>
         </Menu>
-        <TabControl Grid.Row="1" Background="{x:Null}">
+        <TabControl Grid.Row="1" Background="Transparent" BorderBrush="Transparent">
             <TabItem>
                 <TabItem.Template>
                     <ControlTemplate>
