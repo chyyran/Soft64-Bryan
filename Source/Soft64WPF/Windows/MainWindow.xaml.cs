@@ -19,12 +19,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 using System.IO;
+using System.Text;
 using System.Windows;
+using System.Windows.Documents;
 using Microsoft.Win32;
 using NLog;
+using NLog.Config;
+using NLog.Layouts;
+using NLog.Targets;
+using NLog.Targets.Wrappers;
 using Soft64;
 using Soft64.Media;
 using Soft64.MipsR4300.Interpreter;
+using Soft64WPF.Helper;
 using Soft64WPF.Styles;
 
 namespace Soft64WPF.Windows
@@ -46,6 +53,55 @@ namespace Soft64WPF.Windows
             xaml_ButtonScript.Click += xaml_ButtonScript_Click;
 
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            Loaded += MainWindow_Loaded;
+        }
+
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                ((Paragraph)xaml_LogRichBox.Document.Blocks.FirstBlock).LineHeight = 3;
+
+                var target = new WpfRichTextBoxTarget
+                {
+                    Name = "RichText",
+                    Layout = @"[${level:uppercase=true}] :: ${callsite:className=true:fileName=false:includeSourcePath=false:methodName=false:cleanNamesOfAnonymousDelegates=false} :: ${message} ${exception:innerFormat=tostring:maxInnerExceptionLevel=10:separator=,:format=tostring}",
+                    ControlName = xaml_LogRichBox.Name,
+                    FormName = GetType().Name,
+                    AutoScroll = true,
+                    MaxLines = 100000,
+                    UseDefaultRowColoringRules = false,
+                };
+                var asyncWrapper = new AsyncTargetWrapper { Name = "RichTextAsync", WrappedTarget = target };
+
+                target.RowColoringRules.Clear();
+                target.RowColoringRules.Add(new WpfRichTextBoxRowColoringRule("level == LogLevel.Fatal", "White", "Red", FontStyles.Normal, FontWeights.Bold));
+                target.RowColoringRules.Add(new WpfRichTextBoxRowColoringRule("level == LogLevel.Error", "Red", "Transparent", FontStyles.Italic, FontWeights.Bold));
+                target.RowColoringRules.Add(new WpfRichTextBoxRowColoringRule("level == LogLevel.Warn", "Orange", "Transparent"));
+                target.RowColoringRules.Add(new WpfRichTextBoxRowColoringRule("level == LogLevel.Info", "Black", "Transparent"));
+                target.RowColoringRules.Add(new WpfRichTextBoxRowColoringRule("level == LogLevel.Debug", "Gray", "Transparent"));
+                target.RowColoringRules.Add(new WpfRichTextBoxRowColoringRule("level == LogLevel.Trace", "White", "Transparent", FontStyles.Normal, FontWeights.Normal));
+
+
+                var cpuLogTarget = new FileTarget();
+                cpuLogTarget.Name = "instTraceFile";
+                cpuLogTarget.Layout = "${message}";
+                cpuLogTarget.FileName = "${basedir}/logs/cpuTrace.txt";
+                cpuLogTarget.KeepFileOpen = false;
+                cpuLogTarget.DeleteOldFileOnStartup = true;
+                cpuLogTarget.Encoding = Encoding.ASCII;
+
+                LogManager.Configuration.AddTarget(asyncWrapper.Name, asyncWrapper);
+                LogManager.Configuration.AddTarget(cpuLogTarget.Name, cpuLogTarget);
+
+                var cpulogrule = new LoggingRule("Soft64.MipsR4300.Interpreter.PureInterpreter", LogLevel.Trace, cpuLogTarget);
+                cpulogrule.Final = true;
+
+                LogManager.Configuration.LoggingRules.Add(cpulogrule);
+                LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, asyncWrapper));
+
+                LogManager.ReconfigExistingLoggers();
+            });
         }
 
         void xaml_ButtonScript_Click(object sender, RoutedEventArgs e)

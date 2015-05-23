@@ -3,27 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:binding="clr-namespace:Soft64Binding.WPF;assembly=Soft64Binding.WPF"
         xmlns:r="clr-namespace:Soft64WPF"
-        xmlns:NlogViewer="clr-namespace:NlogViewer;assembly=NlogViewer"
         xmlns:conv="clr-namespace:Soft64WPF.Converters"
         x:Class="Soft64WPF.Windows.MainWindow"
         Title="Soft64 Emulator" Height="451" Width="659"
         FontSize="10.667"
-        ClipToBounds="False" Background="White" Icon="/Soft64WPF;component/Images/s64logo.png">
+    Background="#FF4F4F4F"
+        ClipToBounds="False" Icon="/Soft64WPF;component/Images/s64logo.png">
     <Window.Resources>
         <conv:CartridgeHeaderConverter x:Key="cartridgeHeaderConverter" />
         <conv:RcpBusConfigurationConverter x:Key="rcpBusConfigurationConverter" />
-        <LinearGradientBrush x:Key="InfoBorderBrush" EndPoint="0.5,1" StartPoint="0.5,0">
-            <LinearGradientBrush.RelativeTransform>
-                <TransformGroup>
-                    <ScaleTransform CenterY="0.5" CenterX="0.5" />
-                    <SkewTransform CenterY="0.5" CenterX="0.5" />
-                    <RotateTransform Angle="-30" CenterY="0.5" CenterX="0.5" />
-                    <TranslateTransform />
-                </TransformGroup>
-            </LinearGradientBrush.RelativeTransform>
-            <GradientStop Color="#FF113346" Offset="0" />
-            <GradientStop Color="#FF7FA2CB" Offset="0.575" />
-        </LinearGradientBrush>
         <Style x:Key="readOnlyStyle" TargetType="{x:Type ContentControl}">
             <Setter Property="Focusable" Value="False" />
             <Setter Property="IsHitTestVisible" Value="False" />
@@ -36,9 +24,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="260*" />
-            <RowDefinition Height="51*" />
         </Grid.RowDefinitions>
-        <Menu Background="#FF0077C9">
+        <Menu Background="#FFD8BB00" TextOptions.TextFormattingMode="Display">
             <MenuItem>
                 <MenuItem.Header>
                     <TextBlock Foreground="White" FontSize="18" FontWeight="Bold" Text="Control" />
@@ -62,25 +49,42 @@
                 </MenuItem.Header>
                 <MenuItem x:Name="xaml_ButtonScript" Header="Python Window..." Foreground="Black" />
             </MenuItem>
+            <MenuItem>
+                <MenuItem.Header>
+                    <TextBlock Foreground="White" FontSize="18" FontWeight="Bold" Text="Tools" />
+                </MenuItem.Header>
+                <MenuItem x:Name="xaml_ButtonToolMemoryEditor" Header="Memory Editor..." />
+                <MenuItem x:Name="xaml_ButtonToolCPUDebugger"  Header="CPU Debugger..." />
+            </MenuItem>
         </Menu>
-        <TabControl Grid.Row="1">
-            <TabItem Header="Log">
-                <Grid Background="#FFE5E5E5">
-                    <NlogViewer:NlogViewer />
+        <TabControl Grid.Row="1" Background="{x:Null}">
+            <TabItem>
+                <TabItem.Template>
+                    <ControlTemplate>
+                        <Grid Background="{x:Null}">
+                            <TextBlock Margin="10,0,10,0" Foreground="White" FontSize="18" FontWeight="Bold" Text="Log" TextOptions.TextFormattingMode="Display" />
+                        </Grid>
+                    </ControlTemplate>
+                </TabItem.Template>
+                <Grid>
+                    <RichTextBox x:Name="xaml_LogRichBox" IsReadOnly="True" Background="{x:Null}" Foreground="White" FontSize="11" BorderBrush="White" BorderThickness="5" TextOptions.TextFormattingMode="Display" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Cartridge">
-                <Grid Background="#FFE5E5E5" DataContext="{Binding Cartridge, Source={StaticResource machineVM}}">
+            <TabItem>
+                <TabItem.Template>
+                    <ControlTemplate>
+                        <Grid Background="{x:Null}">
+                            <TextBlock Margin="10,0,10,0" Foreground="White" FontSize="18" FontWeight="Bold" Text="Cartridge" TextOptions.TextFormattingMode="Display" />
+                        </Grid>
+                    </ControlTemplate>
+                </TabItem.Template>
+                <Grid DataContext="{Binding Cartridge, Source={StaticResource machineVM}}">
                     <TextBlock x:Name="xamlControl_CartridgeName" Margin="10,10,10,0" Height="23" VerticalAlignment="Top"
-						Text="{Binding Name, Mode=OneWay}" FontSize="10" FontWeight="Normal" />
+						Text="{Binding Name, Mode=OneWay}" FontSize="18" FontWeight="Bold" Background="#FF767676" Foreground="White" />
                     <ListBox x:Name="xamlControl_MainCartridgeHeaderListBox" Margin="10,38,10,10"
-						ItemsSource="{Binding Header, Converter={StaticResource cartridgeHeaderConverter}, Mode=OneWay}" FontSize="14" />
+						ItemsSource="{Binding Header, Converter={StaticResource cartridgeHeaderConverter}, Mode=OneWay}" FontSize="18" Background="#FF7C7C7C" Foreground="White" FontWeight="Bold" />
                 </Grid>
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="2">
-            <Button x:Name="xaml_ButtonToolMemoryEditor" Content="Memory" Margin="10,10,0,0" Height="31" VerticalAlignment="Top" HorizontalAlignment="Left" Width="65" Click="xaml_ButtonToolMemoryEditor_Click" />
-            <Button x:Name="xaml_ButtonToolCPUDebugger" Content="CPU Debug" Margin="80,10,0,0" Height="31" VerticalAlignment="Top" HorizontalAlignment="Left" Width="65" Click="xaml_ButtonToolCPUDebugger_Click" />
-        </Grid>
     </Grid>
 </Window>

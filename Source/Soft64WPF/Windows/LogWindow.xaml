@@ -1,7 +1,0 @@
-﻿<Window x:Class="Soft64WPF.Windows.LogWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:NlogViewer="clr-namespace:NlogViewer;assembly=NlogViewer"
-        Title="Emulator System Log" Height="300" Width="739">
-    <Grid />
-</Window>

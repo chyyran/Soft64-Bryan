@@ -61,9 +61,6 @@
     <Reference Include="IronPython.Wpf">
       <HintPath>..\packages\IronPython.2.7.5\lib\Net45\IronPython.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="IronPythonConsole">
-      <HintPath>..\packages\IronPythonConsole.1.1.4.0\lib\net40\IronPythonConsole.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Dynamic">
       <HintPath>..\packages\IronPython.2.7.5\lib\Net45\Microsoft.Dynamic.dll</HintPath>
     </Reference>
@@ -80,17 +77,11 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="NlogViewer">
-      <HintPath>..\packages\NlogViewer.0.5.3.0\lib\net40\NlogViewer.dll</HintPath>
+    <Reference Include="NLog, Version=3.2.1.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationFramework.Classic" />
-    <Reference Include="PythonConsoleControl">
-      <HintPath>..\packages\IronPythonConsole.1.1.4.0\lib\net40\PythonConsoleControl.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -116,6 +107,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\StringToCollectionConverter.cs" />
+    <Compile Include="Helper\WpfRichTextBoxRowColoringRule.cs" />
+    <Compile Include="Helper\WpfRichTextBoxTarget.cs" />
+    <Compile Include="Helper\WpfRichTextBoxWordColoringRule.cs" />
     <Compile Include="Windows\CodeWindow.xaml.cs">
       <DependentUpon>CodeWindow.xaml</DependentUpon>
     </Compile>
@@ -146,10 +140,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\LogWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -160,9 +150,6 @@
     </Compile>
     <Compile Include="Converters\CartridgeHeaderConverter.cs" />
     <Compile Include="Styles\GlassStyleLoader.cs" />
-    <Compile Include="Windows\LogWindow.xaml.cs">
-      <DependentUpon>LogWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -201,6 +188,7 @@
     <Resource Include="Fonts\DroidSansMono.ttf" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -248,7 +236,7 @@
     </Content>
     <Resource Include="Images\control_pause.png" />
     <Resource Include="Images\control_play.png" />
-    <Content Include="IronPythonConsole.py" />
+    <Resource Include="Helper\README_NLog_WpfRichTextBox.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
