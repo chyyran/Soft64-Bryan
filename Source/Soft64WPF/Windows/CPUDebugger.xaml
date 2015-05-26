@@ -1,35 +1,10 @@
-﻿<RibbonWindow x:Class="Soft64WPF.Windows.CPUDebugger"
+﻿<Window x:Class="Soft64WPF.Windows.CPUDebugger"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ae="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
         Title="CPU Debugger" Height="629.3" Width="801"
         DataContext="{Binding ., Source={StaticResource machineVM}}">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="29"/>
-        </Grid.RowDefinitions>
-        <Ribbon>
-            <RibbonTab Header="Debug">
-                <RibbonGroup Header="Control">
-                    <StackPanel Orientation="Horizontal">
-                        <RibbonButton x:Name="xaml_BtnPause" Label="Pause" Height="63" VerticalAlignment="Top" Click="xaml_BtnPause_Click" LargeImageSource="/Soft64WPF;component/Images/control_pause.png" Margin="0,0,0,-45" />
-                        <RibbonButton x:Name="xaml_BtnResume" Label="Resume" Height="63" VerticalAlignment="Top" Click="xaml_BtnResume_Click" LargeImageSource="/Soft64WPF;component/Images/control_play.png" Margin="0,0,0,-45" />
-                    </StackPanel>
-                </RibbonGroup>
-                <RibbonGroup Header="Debugger">
-                    
-                </RibbonGroup>
-            </RibbonTab>
-        </Ribbon>
-        <ae:TextEditor x:Name="xaml_DisassemblyList" Background="White" Foreground="Black" Grid.Row="1" />
-        <StatusBar x:Name="xaml_StatusBar" Grid.Row="2">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding MachineRunState, StringFormat=Machine State: {0}}" />
-                <TextBlock Text=" | " />
-                <TextBlock Text="{Binding Engine.Status, StringFormat=Engine State: {0}}" />
-            </StackPanel>
-        </StatusBar>
+        
     </Grid>
-</RibbonWindow>
+</Window>

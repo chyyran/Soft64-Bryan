@@ -23,7 +23,7 @@ namespace Soft64WPF.Windows
     /// <summary>
     /// Interaction logic for CPUDebugger.xaml
     /// </summary>
-    public partial class CPUDebugger : RibbonWindow
+    public partial class CPUDebugger : Window
     {
         private MachineViewModel machineModel;
 

@@ -8,6 +8,7 @@
                 <ResourceDictionary Source="/Soft64WPF;component/Styles/Theme.xaml" />
                 <ResourceDictionary>
                     <soft64binding:MachineViewModel x:Key="machineVM" />
+                    <soft64binding:DebuggerViewModel x:Key="debugger" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

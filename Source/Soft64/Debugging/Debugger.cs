@@ -94,10 +94,16 @@ namespace Soft64.Debugging
             }
         }
 
-        public void SetBootBreak(Boolean enabled, DebuggerBootEvent type = DebuggerBootEvent.PostBoot)
+        public Boolean DebugOnBreak
         {
-            Machine.Config.Debugger.BreakOnBoot = enabled;
-            Machine.Config.Debugger.BreakOnBootMode = type;
+            get { return Machine.Config.Debugger.BreakOnBoot; }
+            set { Machine.Config.Debugger.BreakOnBoot = value; }
+        }
+
+        public DebuggerBootEvent BreakOnBootMode
+        {
+            get { return (DebuggerBootEvent)Machine.Config.Debugger.BreakOnBootMode; }
+            set { Machine.Config.Debugger.BreakOnBootMode = value; }
         }
 
         public static Debugger Current

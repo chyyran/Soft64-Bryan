@@ -51,6 +51,8 @@ namespace Soft64WPF.Windows
             xamlControl_EmuRunButton.Click += xamlControl_EmuRunButton_Click;
             xamlControl_MainCartBrowseFileButton.Click += xamlControl_MainCartBrowseFileButton_Click;
             xaml_ButtonScript.Click += xaml_ButtonScript_Click;
+            xaml_ButtonToolCPUDebugger.Click += xaml_ButtonToolCPUDebugger_Click;
+            xaml_ButtonToolMemoryEditor.Click += xaml_ButtonToolMemoryEditor_Click;
 
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             Loaded += MainWindow_Loaded;

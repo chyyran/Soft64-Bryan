@@ -115,12 +115,12 @@ namespace Tests.PJ64
 
         private void TestBootSequence(Cartridge cart)
         {
-
             Machine machine = new Machine();
             machine.SystemBootMode = BootMode.HLE_IPL_OLD;
             machine.DeviceRCP.DevicePI.MountCartridge(cart);
             Debugger debugger = new Debugger();
-            debugger.SetBootBreak(true, DebuggerBootEvent.PostBoot);
+            debugger.BreakOnBootMode = DebuggerBootEvent.PostBoot;
+            debugger.DebugOnBreak = true;
             var mockedCPUEngine = new Mock<ExecutionEngine>();
             var mockedRCPEngine = new Mock<ExecutionEngine>();
             machine.DeviceCPU.Engine = mockedCPUEngine.Object;
