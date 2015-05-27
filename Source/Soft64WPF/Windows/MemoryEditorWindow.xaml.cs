@@ -11,7 +11,7 @@ namespace Soft64WPF.Windows
     /// <summary>
     /// Interaction logic for MemoryEditorWindow.xaml
     /// </summary>
-    public partial class MemoryEditorWindow : RibbonWindow
+    public partial class MemoryEditorWindow : Window
     {
         private static readonly DependencyProperty CurrentMemoryStreamProperty =
             DependencyProperty.Register("CurrentMemoryStream", typeof(StreamViewModel), typeof(MemoryEditorWindow),
