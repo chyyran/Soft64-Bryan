@@ -4,13 +4,14 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using System.ComponentModel;
 
 namespace Soft64.Toolkits.WPF
 {
     /// <summary>
     /// ViewModel of a System.IO.Stream object
     /// </summary>
-    public class StreamViewModel : DependencyObject
+    public class StreamViewModel : DependencyObject, INotifyPropertyChanged
     {
         private WeakReference<Stream> m_Stream;
 
@@ -24,15 +25,7 @@ namespace Soft64.Toolkits.WPF
             DependencyProperty.Register("BufferSize", typeof(Int32), typeof(StreamViewModel),
             new PropertyMetadata());
 
-        private static readonly DependencyPropertyKey DataByteCollectionPropertyKey =
-            DependencyProperty.RegisterReadOnly("DataByteCollection", typeof(ObservableCollection<Byte>), typeof(StreamViewModel),
-            new PropertyMetadata());
-
-        public event EventHandler ReadFinished;
-
-        public static readonly DependencyProperty DataByteCollectionProperty =
-            DataByteCollectionPropertyKey.DependencyProperty;
-
+        private Byte[] m_ReadBuffer;
         private Object m_Lock = new Object();
 
         public static StreamViewModel NewModelFromStream(Stream stream)
@@ -43,7 +36,6 @@ namespace Soft64.Toolkits.WPF
         private StreamViewModel(WeakReference<Stream> streamWF)
         {
             m_Stream = streamWF;
-            SetValue(DataByteCollectionPropertyKey, new ObservableCollection<Byte>());
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
         }
 
@@ -67,27 +59,15 @@ namespace Soft64.Toolkits.WPF
                     lock (m_Lock)
                     {
                         stream.Position = StreamPosition;
-                        Int32 count = DataByteCollection.Count;
-                        Int32 reqSize = BufferSize;
-
-                        Action<Int32, Byte> readAction = (index, b) =>
-                        {
-                            if (index < DataByteCollection.Count)
-                                DataByteCollection[index] = b;
-                            else
-                                DataByteCollection.Add(b);
-                        };
-
+                        Byte[] buffer = new Byte[BufferSize];
+                        
                         Task.Factory.StartNew(() =>
                         {
-                            for (Int32 i = 0; i < reqSize; i++)
+                            stream.Read(buffer, 0, buffer.Length);
+                            Dispatcher.Invoke(() => 
                             {
-                                Int32 readByte = stream.ReadByte();
-
-                                Dispatcher.BeginInvoke(readAction, DispatcherPriority.Input, i, readByte >= 0 ? (Byte)readByte : (Byte)0);
-                            }
-
-                            Dispatcher.Invoke(OnReadFinished);
+                                ReadBuffer = buffer;
+                            });
                         });
                     }
                 }
@@ -109,16 +89,6 @@ namespace Soft64.Toolkits.WPF
             }
         }
 
-        protected virtual void OnReadFinished()
-        {
-            var e = ReadFinished;
-
-            if (e != null)
-            {
-                e(this, new EventArgs());
-            }
-        }
-
         public Stream GetSteamSource()
         {
             Stream stream = null;
@@ -132,9 +102,21 @@ namespace Soft64.Toolkits.WPF
             set { SetValue(StreamPositionProperty, value); }
         }
 
-        public ObservableCollection<Byte> DataByteCollection
+        public Byte[] ReadBuffer
         {
-            get { return (ObservableCollection<Byte>)GetValue(DataByteCollectionProperty); }
+            get {
+                    return m_ReadBuffer; 
+            }
+
+            private  set 
+            {
+                m_ReadBuffer = value;
+
+                var e = PropertyChanged;
+
+                if (e != null)
+                    e(this, new PropertyChangedEventArgs("ReadBuffer"));
+            }
         }
 
         public Int32 BufferSize
@@ -142,5 +124,11 @@ namespace Soft64.Toolkits.WPF
             get { return (Int32)GetValue(BufferSizeProperty); }
             set { SetValue(BufferSizeProperty, value); }
         }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }
 }

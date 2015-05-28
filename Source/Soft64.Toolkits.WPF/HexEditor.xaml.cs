@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -24,7 +25,7 @@ namespace Soft64.Toolkits.WPF
             new PropertyMetadata(StreamVMChanged));
 
         private static readonly DependencyProperty DataRowsProperty =
-            DependencyProperty.Register("DataRows", typeof(ObservableCollection<HexEditorRowViewModel>), typeof(HexEditor),
+            DependencyProperty.Register("DataRows", typeof(ObservableCollection<HexEditorRow>), typeof(HexEditor),
             new PropertyMetadata());
 
         public static readonly DependencyProperty GridLineBrushProperty =
@@ -39,7 +40,6 @@ namespace Soft64.Toolkits.WPF
                 if (editor.m_ClonedStreamVM != null)
                 {
                     editor.m_ClonedStreamVM.StreamPosition = (Int64)a.NewValue;
-                    editor.AdjustColumns();
                     editor.Refresh();
                 }
             }));
@@ -60,14 +60,7 @@ namespace Soft64.Toolkits.WPF
         private Int32 m_GridHeight;
         private Boolean m_HexUpperNibble;
         private Size m_FontSize;
-        private Boolean m_FirstRead = true;
-        private Boolean m_FirstTick = true;
-        private Size m_LastSize;
-        private Timer m_ResizeTimer;
-        private Boolean m_IsResizing;
         private StreamViewModel m_ClonedStreamVM;
-
-        public event EventHandler ReadFinished;
 
         static HexEditor()
         {
@@ -112,24 +105,15 @@ namespace Soft64.Toolkits.WPF
         public HexEditor()
         {
             InitializeComponent();
-            DataRows = new ObservableCollection<HexEditorRowViewModel>();
+            DataRows = new ObservableCollection<HexEditorRow>();
             xaml_rootGrid.MouseLeftButtonDown += xaml_rootGrid_MouseLeftButtonDown;
             this.TextInput += HexEditor_TextInput;
             this.KeyDown += HexEditor_KeyDown;
-            Loaded += HexEditor_Loaded;
             this.SizeChanged += HexEditor_SizeChanged;
         }
 
         private void HexEditor_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            m_IsResizing = true;
-
-            if (m_ResizeTimer != null)
-            {
-                m_ResizeTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                m_ResizeTimer.Change(0, 200);
-            }
-
             /* Compute the number of rows and columns that fit into the avaiable graphics space */
             m_GridHeight = (Int32)Math.Floor((e.NewSize.Height / 1.10) / m_FontSize.Height);
             m_GridWidth = (Int32)Math.Floor((e.NewSize.Width / 2.5) / m_FontSize.Width);
@@ -140,11 +124,12 @@ namespace Soft64.Toolkits.WPF
                 m_GridHeight = 0;
                 m_GridWidth = 0;
             }
-        }
 
-        private void HexEditor_Loaded(object sender, RoutedEventArgs e)
-        {
-            m_ResizeTimer = new Timer(ResizeTimerCallback, null, 0, 200);
+            Task.Factory.StartNew(() =>
+                {
+                    Thread.Sleep(1000);
+                    Dispatcher.Invoke(Refresh);
+                });
         }
 
         private void UpdateHexGrid()
@@ -152,67 +137,25 @@ namespace Soft64.Toolkits.WPF
             if (!IsInitialized || m_ClonedStreamVM == null)
                 return;
 
-            Size newSize = new Size(ActualWidth, ActualHeight);
-            /* Read the stream data in background task */
+            DataRows.Clear();
 
-            if (!Size.Equals(m_LastSize, newSize))
+            Byte[] readBuffer = m_ClonedStreamVM.ReadBuffer;
+            Int64 position = m_ClonedStreamVM.StreamPosition;
+
+            if (readBuffer == null)
+                return;
+
+            for (Int32 i = 0; i < m_GridHeight; i++)
             {
-                /* When the timer fires, and checks the user is not using the mouse, then apply visual updates */
+                Byte[] rowBuffer = new Byte[m_GridWidth];
+                Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
 
-                /* Store some metrics about the data rows */
-                Int32 rowCount = DataRows.Count;
+                HexEditorRow row = new HexEditorRow();
+                row.SetBytes(rowBuffer);
+                row.Address = position + (m_GridWidth * i);
+                row.RowIndex = i;
 
-                /* Determine if we need to expand or reduce the row collection */
-                if (m_GridHeight <= rowCount)
-                {
-                    /* Reduce */
-
-                    Int32 diff = rowCount - m_GridHeight;
-
-                    for (Int32 i = 0; i < diff; i++)
-                        DataRows.RemoveAt(rowCount - 1 - i);
-                }
-                else
-                {
-                    /* Expand */
-                    Int32 diff = m_GridHeight - rowCount;
-
-                    for (Int32 i = 0; i < diff; i++)
-                        DataRows.Add(new HexEditorRowViewModel
-                        {
-                            Address = m_ClonedStreamVM.StreamPosition + ((rowCount + i) * m_GridWidth),
-                            RowIndex = i
-                        });
-                }
-
-                AdjustColumns();
-
-                if (m_FirstRead && m_FirstTick)
-                    Refresh();
-
-                m_LastSize = newSize;
-                m_FirstTick = false;
-            }
-        }
-
-        private void ResizeTimerCallback(Object o)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                if (m_IsResizing)
-                {
-                    m_IsResizing = false;
-                    UpdateHexGrid();
-                }
-            });
-        }
-
-        private void AdjustColumns()
-        {
-            for (Int32 i = 0; i < DataRows.Count; i++)
-            {
-                DataRows[i].Address = m_ClonedStreamVM.StreamPosition + (m_GridWidth * i);
-                DataRows[i].Bytes.UpdateRowSize(m_GridWidth);
+                DataRows.Add(row);
             }
         }
 
@@ -292,7 +235,7 @@ namespace Soft64.Toolkits.WPF
                 default: return;
             }
 
-            Byte value = DataRows[row].Bytes[col].ByteValue;
+            Byte value = DataRows[row].GetByteValue(col);
 
             if (!m_HexUpperNibble)
             {
@@ -345,14 +288,7 @@ namespace Soft64.Toolkits.WPF
         {
             if (m_ClonedStreamVM != null)
             {
-                Int64 originalPos = m_ClonedStreamVM.StreamPosition;
-                Int64 tempPos = originalPos + ((row * m_GridWidth) + offset);
-                Stream stream = m_ClonedStreamVM.GetSteamSource();
-
-                stream.Position = tempPos;
-                stream.WriteByte(b);
-                stream.Position = originalPos;
-                DataRows[row].Bytes[offset] = new IndexedByte { Index = DataRows[row].Bytes[offset].Index, ByteValue = b };
+                DataRows[row].WriteByte(m_ClonedStreamVM.GetSteamSource(), offset, b);
             }
         }
 
@@ -383,26 +319,13 @@ namespace Soft64.Toolkits.WPF
                     Brushes.Black);
 
                 editor.m_FontSize = new Size(formattedText.Width, formattedText.Height);
-                editor.UpdateHexGrid();
+                editor.Refresh();
             }
         }
 
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-        }
-
-        private void ByteCollectionSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace)
-            {
-                Int32 rowIndex = e.NewStartingIndex / m_GridWidth;
-                Int32 colIndex = e.NewStartingIndex % m_GridWidth;
-
-                if (rowIndex < DataRows.Count && colIndex < DataRows[rowIndex].Bytes.Count)
-                    DataRows[rowIndex].Bytes[colIndex] = 
-                        new IndexedByte { ByteValue = (Byte)e.NewItems[0], Index = e.NewStartingIndex };
-            }
         }
 
         protected static void StreamVMChanged(DependencyObject o, DependencyPropertyChangedEventArgs a)
@@ -416,45 +339,17 @@ namespace Soft64.Toolkits.WPF
                 if (svm != null)
                 {
                     editor.m_ClonedStreamVM = svm.DeepCopy();
-
-                    editor.m_FirstRead = true;
-                    editor.m_FirstTick = true;
+                    editor.m_ClonedStreamVM.PropertyChanged += editor.m_ClonedStreamVM_PropertyChanged;
                     editor.m_ClonedStreamVM.StreamPosition = editor.BaseAddress;
-
-                    WeakEventManager<ObservableCollection<Byte>, NotifyCollectionChangedEventArgs>.AddHandler(
-                        editor.m_ClonedStreamVM.DataByteCollection,
-                        "CollectionChanged",
-                        editor.ByteCollectionSource_CollectionChanged
-                        );
-
-                    WeakEventManager<StreamViewModel, EventArgs>.AddHandler(editor.m_ClonedStreamVM,
-                        "ReadFinished",
-                        editor.ReadFinishedHandler);
-
                     editor.Refresh();
                 }
             }
         }
 
-        protected virtual void OnReadFinished()
+        private void m_ClonedStreamVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var e = ReadFinished;
-
-            if (e != null)
-            {
-                e(this, new EventArgs());
-            }
-        }
-
-        private void ReadFinishedHandler(object sender, EventArgs e)
-        {
-            if (m_FirstRead)
-            {
-                MoveCaret(0, 0, BlockType.Hex);
-                m_FirstRead = false;
-            }
-
-            OnReadFinished();
+            if (e.PropertyName == "ReadBuffer")
+                UpdateHexGrid();
         }
 
         public void Refresh()
@@ -475,9 +370,9 @@ namespace Soft64.Toolkits.WPF
             set { SetValue(StreamSourceProperty, value); }
         }
 
-        internal ObservableCollection<HexEditorRowViewModel> DataRows
+        internal ObservableCollection<HexEditorRow> DataRows
         {
-            get { return (ObservableCollection<HexEditorRowViewModel>)GetValue(DataRowsProperty); }
+            get { return (ObservableCollection<HexEditorRow>)GetValue(DataRowsProperty); }
             set { SetValue(DataRowsProperty, value); }
         }
 

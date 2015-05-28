@@ -53,7 +53,7 @@
                      BaseAddress="{Binding Text, ElementName=txtBoxBaseAddress, Converter={StaticResource stringToInt64Converter}}"
                      StreamSource="{Binding CurrentMemoryStream, ElementName=window}"
                      Grid.RowSpan="2"
-                     TextOptions.TextFormattingMode="Display" Background="#FF363636" Foreground="#FFC17B00" />
+                     TextOptions.TextFormattingMode="Display" Background="#FF494949" Foreground="#FFCDB100" GridLineBrush="#FFDADADA" />
         </DockPanel>
     </Grid>
 </Window>

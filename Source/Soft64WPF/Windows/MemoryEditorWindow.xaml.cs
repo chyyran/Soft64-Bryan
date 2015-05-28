@@ -28,12 +28,6 @@ namespace Soft64WPF.Windows
             xaml_ChkboxVAdressMode.Checked +=xaml_ChkboxVAdressMode_Checked;
             xaml_ChkboxVAdressMode.Unchecked += xaml_ChkboxVAdressMode_Unchecked;
             CurrentMemoryStream = ((MachineViewModel)DataContext).Rcp.SafeN64Memory;
-            xaml_HexEditor.ReadFinished += xaml_HexEditor_ReadFinished;
-        }
-
-        void xaml_HexEditor_ReadFinished(object sender, EventArgs e)
-        {
-            xaml_HexScrollBar.IsEnabled = true;
         }
 
         void xaml_ChkboxVAdressMode_Unchecked(object sender, RoutedEventArgs e)
