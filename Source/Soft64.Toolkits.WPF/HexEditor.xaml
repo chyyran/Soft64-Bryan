@@ -41,9 +41,13 @@
                             <Border BorderBrush="{Binding GridLineBrush, ElementName=mainControl}" BorderThickness="0,0,4,0">
                                 <TextBlock Text="{Binding Address, StringFormat=X8}" x:Name="hexBlock" Margin="0,0,10,0" />
                             </Border>
-                            
+
+                            <ContentPresenter Content="{Binding HexContent}" />
+
+                            <ContentPresenter Content="{Binding AsciiContent}" />
+
                             <!-- Hexadecimal Blocks -->
-                            <ItemsControl ItemsSource="{Binding Bytes}" DataContext="{Binding .}" x:Name="itemsSourceHex">
+                            <!--<ItemsControl ItemsSource="{Binding Bytes}" DataContext="{Binding .}" x:Name="itemsSourceHex">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Orientation="Horizontal" />
@@ -61,10 +65,10 @@
                                         </root:HexEditorTextBlock>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            </ItemsControl>-->
                             
                             <!-- Ascii Blocks -->
-                            <ItemsControl ItemsSource="{Binding Bytes}">
+                            <!--<ItemsControl ItemsSource="{Binding Bytes}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Orientation="Horizontal" />
@@ -88,7 +92,7 @@
                                         Index="{Binding Index}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            </ItemsControl>-->
                             
                         </StackPanel>
                     </Border>
