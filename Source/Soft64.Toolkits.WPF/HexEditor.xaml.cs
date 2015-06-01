@@ -151,9 +151,9 @@ namespace Soft64.Toolkits.WPF
                 Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
 
                 HexEditorRow row = new HexEditorRow();
-                row.SetBytes(rowBuffer);
-                row.Address = position + (m_GridWidth * i);
                 row.RowIndex = i;
+                row.Address = position + (m_GridWidth * i);
+                row.SetBytes(rowBuffer, HexLUT, AsciiLUT);
 
                 DataRows.Add(row);
             }
@@ -169,7 +169,7 @@ namespace Soft64.Toolkits.WPF
             HexEditorTextBlock block = xaml_CaretControl.TargetControl as HexEditorTextBlock;
 
             Int32 row = block.RowIndex;
-            Int32 col = block.Index;
+            Int32 col = block.ColIndex;
             BlockType type = block.BlockType;
 
             switch (e.Key)
@@ -185,7 +185,7 @@ namespace Soft64.Toolkits.WPF
         private void HexEditor_TextInput(object sender, TextCompositionEventArgs e)
         {
             HexEditorTextBlock block = xaml_CaretControl.TargetControl as HexEditorTextBlock;
-            Int32 col = block.Index % m_GridWidth;
+            Int32 col = block.ColIndex % m_GridWidth;
 
             if (block != null)
             {

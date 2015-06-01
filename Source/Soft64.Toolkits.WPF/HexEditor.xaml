@@ -41,58 +41,10 @@
                             <Border BorderBrush="{Binding GridLineBrush, ElementName=mainControl}" BorderThickness="0,0,4,0">
                                 <TextBlock Text="{Binding Address, StringFormat=X8}" x:Name="hexBlock" Margin="0,0,10,0" />
                             </Border>
-
-                            <ContentPresenter Content="{Binding HexContent}" />
-
-                            <ContentPresenter Content="{Binding AsciiContent}" />
-
-                            <!-- Hexadecimal Blocks -->
-                            <!--<ItemsControl ItemsSource="{Binding Bytes}" DataContext="{Binding .}" x:Name="itemsSourceHex">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <root:HexEditorTextBlock
-                                            ElementLUT="{Binding HexLUT, Mode=OneTime, ElementName=mainControl}"
-                                            Margin="2, 0, 1, 0"
-                                            Text="{Binding ByteValue, StringFormat=X2}"
-                                            Index="{Binding Index}"
-                                            RowIndex="{Binding DataContext.RowIndex, ElementName=itemsSourceHex}"
-                                            BlockType="Hex">
-                                        </root:HexEditorTextBlock>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>-->
                             
-                            <!-- Ascii Blocks -->
-                            <!--<ItemsControl ItemsSource="{Binding Bytes}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.Template>
-                                    <ControlTemplate>
-                                        <Border BorderBrush="{Binding GridLineBrush, ElementName=mainControl}" BorderThickness="4,0,0,0" Margin="30,0,0,0">
-                                            <ItemsPresenter />
-                                        </Border>
-                                    </ControlTemplate>
-                                </ItemsControl.Template>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <root:HexEditorTextBlock
-                                        ElementLUT="{Binding AsciiLUT, Mode=OneTime, ElementName=mainControl}"
-                                        Margin="2, 0, 1, 0"
-                                        BlockType="Ascii"
-                                        Text="{Binding ByteValue, Converter={StaticResource byteToAsciiConverter}}"
-                                        RowIndex="{Binding DataContext.RowIndex, ElementName=itemsSourceHex}"
-                                        Index="{Binding Index}" />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>-->
+                            <ContentPresenter Content="{Binding HexContent}" />
+                            
+                            <ContentPresenter Content="{Binding AsciiContent}" />
                             
                         </StackPanel>
                     </Border>

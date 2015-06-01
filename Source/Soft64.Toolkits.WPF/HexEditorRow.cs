@@ -6,12 +6,13 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Soft64.Toolkits.WPF
 {
     internal class HexEditorRow : DependencyObject
     {
-        private ObservableCollection<IndexedByte> m_RowBytes;
+        private List<Byte> m_RowBytes;
         private Int64 m_Address;
         private Int32 m_RowIndex;
         private StackPanel m_HexRootPanel;
@@ -19,9 +20,15 @@ namespace Soft64.Toolkits.WPF
         private List<HexEditorTextBlock> m_HexBlocks;
         private List<HexEditorTextBlock> m_AsciiBlocks;
 
+        private static readonly HashSet<Char> s_PrintableHashSet = new HashSet<char>((
+            from index in Enumerable.Range(0, 128)
+            let ch = (Char)index
+            where Char.IsLetterOrDigit(ch) || Char.IsSymbol(ch) || Char.IsPunctuation(ch)
+            select ch));
+
         public HexEditorRow()
         {
-            m_RowBytes = new ObservableCollection<IndexedByte>();
+            m_RowBytes = new List<Byte>();
             m_HexRootPanel = new StackPanel();
             m_HexRootPanel.Orientation = Orientation.Horizontal;
             m_AsciiRootPanel = new StackPanel();
@@ -30,7 +37,7 @@ namespace Soft64.Toolkits.WPF
             m_AsciiBlocks = new List<HexEditorTextBlock>();
         }
 
-        public void SetBytes(Byte[] bytes)
+        public void SetBytes(Byte[] bytes, Dictionary<Int32, HexEditorTextBlock> hexLUT, Dictionary<Int32, HexEditorTextBlock> asciiLUT)
         {
             m_RowBytes.Clear();
             m_HexRootPanel.Children.Clear();
@@ -38,22 +45,18 @@ namespace Soft64.Toolkits.WPF
             m_HexBlocks.Clear();
             m_AsciiBlocks.Clear();
 
-            for(Int32 i = 0; i <bytes.Length; i++)
+            for(Int32 i = 0; i < bytes.Length; i++)
             {
-                m_RowBytes.Add(new IndexedByte() { ByteValue = bytes[i], Index = i });
+                m_RowBytes.Add(bytes[i]);
 
                 HexEditorTextBlock hexBlock = new HexEditorTextBlock();
-                hexBlock.Index = i;
-                hexBlock.BlockType = BlockType.Hex;
-                hexBlock.RowIndex = RowIndex;
+                hexBlock.SetEditorPosition(BlockType.Hex, RowIndex, i, hexLUT);
                 hexBlock.Text = bytes[i].ToString("X2");
                 hexBlock.Margin = new Thickness(2, 0, 0, 0);
 
                 HexEditorTextBlock asciiBlock = new HexEditorTextBlock();
-                asciiBlock.Index = i;
-                asciiBlock.BlockType = BlockType.Ascii;
-                asciiBlock.RowIndex = RowIndex;
-                asciiBlock.Text = new String((char)bytes[i], 1);
+                asciiBlock.SetEditorPosition(BlockType.Ascii, RowIndex, i, asciiLUT);
+                asciiBlock.Text = new String(GetAscii(bytes[i]), 1);
                 asciiBlock.Margin = new Thickness(2, 0, 0, 0);
 
                 m_HexBlocks.Add(hexBlock);
@@ -63,13 +66,21 @@ namespace Soft64.Toolkits.WPF
             }
         }
 
+        private Char GetAscii(Byte value)
+        {
+            if (s_PrintableHashSet.Contains((char)value))
+                return (char)value;
+            else
+                return '.';
+        }
+
         public Int64 Address
         {
             get { return m_Address; }
             set { m_Address = value; }
         }
 
-        public ObservableCollection<IndexedByte> Bytes
+        public IList<Byte> Bytes
         {
             get { return m_RowBytes; }
         }
@@ -82,7 +93,7 @@ namespace Soft64.Toolkits.WPF
 
         public void WriteByte(Stream source, Int32 byteOffset, Byte b)
         {
-            Bytes[byteOffset] = new IndexedByte() { Index = byteOffset, ByteValue = b };
+            Bytes[byteOffset] = b;
             source.Position = Address + byteOffset;
             source.WriteByte(b);
             m_AsciiBlocks[byteOffset].Text = new String((char)b, 1);
@@ -91,7 +102,7 @@ namespace Soft64.Toolkits.WPF
 
         public Byte GetByteValue(Int32 offset)
         {
-            return m_RowBytes[offset].ByteValue;
+            return m_RowBytes[offset];
         }
 
         public Panel HexContent

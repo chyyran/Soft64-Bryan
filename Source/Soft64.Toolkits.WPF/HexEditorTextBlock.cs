@@ -8,22 +8,10 @@ namespace Soft64.Toolkits.WPF
 {
     public sealed class HexEditorTextBlock : TextBlock
     {
-        public static readonly DependencyProperty RowIndexProperty =
-            DependencyProperty.Register("RowIndex", typeof(Int32), typeof(HexEditorTextBlock),
-            new PropertyMetadata());
-
-        public static readonly DependencyProperty BlockTypeProperty =
-            DependencyProperty.Register("BlockType", typeof(BlockType), typeof(HexEditorTextBlock),
-            new PropertyMetadata());
-
-        public static readonly DependencyProperty IndexProperty =
-            DependencyProperty.Register("Index", typeof(Int32), typeof(HexEditorTextBlock),
-            new PropertyMetadata());
-
-        public static readonly DependencyProperty ElementLUTProperty =
-            DependencyProperty.Register("ElementLUT", typeof(Dictionary<Int32, HexEditorTextBlock>), typeof(HexEditorTextBlock),
-            new PropertyMetadata());
-
+        private BlockType m_Type;
+        private Int32 m_RowIndex;
+        private Int32 m_ColIndex;
+        private Dictionary<Int32, HexEditorTextBlock> m_LUT;
         private Int32 m_BlockHash;
 
         static HexEditorTextBlock()
@@ -48,51 +36,52 @@ namespace Soft64.Toolkits.WPF
 
         public HexEditorTextBlock()
         {
-            Loaded += HexEditorTextBlock_Loaded;
             Unloaded += HexEditorTextBlock_Unloaded;
         }
 
-        private void HexEditorTextBlock_Loaded(object sender, RoutedEventArgs e)
+        public void SetEditorPosition(BlockType type, Int32 row, Int32 col, Dictionary<Int32, HexEditorTextBlock> lut)
         {
-            if (ElementLUT == null)
-                return;
+            m_Type = type;
+            m_RowIndex = row;
+            m_ColIndex = col;
+            m_LUT = lut;
+            m_BlockHash = GetBlockHash(row, col);
 
-            m_BlockHash = GetBlockHash(RowIndex, Index);
-
-            var hashTable = ElementLUT;
-
-            if (hashTable.ContainsKey(m_BlockHash))
+            if (m_LUT.ContainsKey(m_BlockHash))
             {
-                hashTable.Remove(m_BlockHash);
+                m_LUT.Remove(m_BlockHash);
             }
 
-            hashTable.Add(m_BlockHash, this);
+            m_LUT.Add(m_BlockHash, this);
         }
+
 
         private void HexEditorTextBlock_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (ElementLUT == null)
+            if (m_LUT == null)
                 return;
 
-            ElementLUT.Remove(m_BlockHash);
+            m_LUT.Remove(m_BlockHash);
         }
 
         public Int32 RowIndex
         {
-            get { return (Int32)GetValue(RowIndexProperty); }
-            set { SetValue(RowIndexProperty, value); }
+            get { return m_RowIndex; }
         }
 
-        public Int32 Index
+        public Int32 ColIndex
         {
-            get { return (Int32)GetValue(IndexProperty); }
-            set { SetValue(IndexProperty, value); }
+            get { return m_ColIndex; }
         }
 
         public BlockType BlockType
         {
-            get { return (BlockType)GetValue(BlockTypeProperty); }
-            set { SetValue(BlockTypeProperty, value); }
+            get { return m_Type; }
+        }
+        
+        public Int32 BlockHash
+        {
+            get { return m_BlockHash; }
         }
 
         private static Int32 GetBlockHash(Int32 row, Int32 col)
@@ -107,12 +96,6 @@ namespace Soft64.Toolkits.WPF
             Int32 targetHash = GetBlockHash(row, col);
             lut.TryGetValue(targetHash, out element);
             return element;
-        }
-
-        public Dictionary<Int32, HexEditorTextBlock> ElementLUT
-        {
-            get { return (Dictionary<Int32, HexEditorTextBlock>)GetValue(ElementLUTProperty); }
-            set { SetValue(ElementLUTProperty, value); }
         }
     }
 }
