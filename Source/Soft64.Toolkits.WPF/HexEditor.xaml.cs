@@ -48,19 +48,14 @@ namespace Soft64.Toolkits.WPF
             DependencyProperty.Register("RefreshOnResize", typeof(Boolean), typeof(HexEditor),
             new PropertyMetadata());
 
-        private static readonly DependencyProperty HexLUTProperty =
-            DependencyProperty.Register("HexLUT", typeof(Dictionary<Int32, HexEditorTextBlock>), typeof(HexEditor),
-            new PropertyMetadata(new Dictionary<Int32, HexEditorTextBlock>()));
-
-        private static readonly DependencyProperty AsciiLUTProperty =
-            DependencyProperty.Register("AsciiLUT", typeof(Dictionary<Int32, HexEditorTextBlock>), typeof(HexEditor),
-            new PropertyMetadata(new Dictionary<Int32, HexEditorTextBlock>()));
-
         private Int32 m_GridWidth;
         private Int32 m_GridHeight;
         private Boolean m_HexUpperNibble;
         private Size m_FontSize;
         private StreamViewModel m_ClonedStreamVM;
+        private Dictionary<Int32, HexEditorTextBlock> m_HexLUT = new Dictionary<int,HexEditorTextBlock>();
+        private Dictionary<Int32, HexEditorTextBlock> m_AsciiLut = new Dictionary<int,HexEditorTextBlock>();
+        private List<HexEditorTextBlock> m_BlockCache = new List<HexEditorTextBlock>();
 
         static HexEditor()
         {
@@ -125,37 +120,73 @@ namespace Soft64.Toolkits.WPF
                 m_GridWidth = 0;
             }
 
-            Task.Factory.StartNew(() =>
-                {
-                    Thread.Sleep(1000);
-                    Dispatcher.Invoke(Refresh);
-                });
+            Dispatcher.Invoke(Refresh);
         }
 
         private void UpdateHexGrid()
         {
-            if (!IsInitialized || m_ClonedStreamVM == null)
-                return;
-
-            DataRows.Clear();
-
-            Byte[] readBuffer = m_ClonedStreamVM.ReadBuffer;
-            Int64 position = m_ClonedStreamVM.StreamPosition;
-
-            if (readBuffer == null)
-                return;
-
-            for (Int32 i = 0; i < m_GridHeight; i++)
+            try
             {
-                Byte[] rowBuffer = new Byte[m_GridWidth];
-                Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
+                if (!IsInitialized || m_ClonedStreamVM == null)
+                    return;
 
-                HexEditorRow row = new HexEditorRow();
-                row.RowIndex = i;
-                row.Address = position + (m_GridWidth * i);
-                row.SetBytes(rowBuffer, HexLUT, AsciiLUT);
+                DataRows.Clear();
 
-                DataRows.Add(row);
+                /* Check block cache */
+                Int32 size = m_GridWidth * m_GridHeight * 2;
+                Int32 count = m_BlockCache.Count;
+
+                if (count <= size)
+                {
+                    for (Int32 i = 0; i < (size - count); i++)
+                    {
+                        HexEditorTextBlock block = new HexEditorTextBlock();
+                        block.Margin = new Thickness(2, 0, 0, 0);
+                        m_BlockCache.Add(block);
+                    }
+                }
+
+                Byte[] readBuffer = m_ClonedStreamVM.ReadBuffer;
+                Int64 position = m_ClonedStreamVM.StreamPosition;
+
+                if (readBuffer == null)
+                    return;
+
+                /* Allocate the row objects on UI Thread */
+                HexEditorRow[] rows = new HexEditorRow[m_GridHeight];
+
+                for (Int32 i = 0; i < m_GridHeight; i++)
+                    rows[i] = new HexEditorRow();
+
+                /* Create a queue of rows to append */
+                Queue<HexEditorRow> rowQueue = new Queue<HexEditorRow>();
+
+                /* Create an async task to fill in the data */
+                Task.Factory.StartNew(() =>
+                {
+                    for (Int32 i = 0; i < m_GridHeight; i++)
+                    {
+                        Byte[] rowBuffer = new Byte[m_GridWidth];
+                        Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
+
+                        HexEditorRow row = rows[i];
+                        row.RowIndex = i;
+                        row.Address = position + (m_GridWidth * i);
+                        row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
+
+                        rowQueue.Enqueue(row);
+                    }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        while (rowQueue.Count > 0)
+                            DataRows.Add(rowQueue.Dequeue());
+                    });
+                });
+            }
+            catch (ArgumentException)
+            {
+                /* Ignore these since it can happen from too much resizing */
             }
         }
 
@@ -349,7 +380,10 @@ namespace Soft64.Toolkits.WPF
         private void m_ClonedStreamVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "ReadBuffer")
+            {
                 UpdateHexGrid();
+            }
+                
         }
 
         public void Refresh()
@@ -388,14 +422,12 @@ namespace Soft64.Toolkits.WPF
 
         private Dictionary<Int32, HexEditorTextBlock> HexLUT
         {
-            get { return (Dictionary<Int32, HexEditorTextBlock>)GetValue(HexLUTProperty); }
-            set { SetValue(HexLUTProperty, value); }
+            get { return m_HexLUT; }
         }
 
         private Dictionary<Int32, HexEditorTextBlock> AsciiLUT
         {
-            get { return (Dictionary<Int32, HexEditorTextBlock>)GetValue(AsciiLUTProperty); }
-            set { SetValue(AsciiLUTProperty, value); }
+            get { return m_AsciiLut; }
         }
     }
 }

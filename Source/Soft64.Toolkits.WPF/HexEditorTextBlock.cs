@@ -13,6 +13,7 @@ namespace Soft64.Toolkits.WPF
         private Int32 m_ColIndex;
         private Dictionary<Int32, HexEditorTextBlock> m_LUT;
         private Int32 m_BlockHash;
+        private String m_Text;
 
         static HexEditorTextBlock()
         {
@@ -37,6 +38,12 @@ namespace Soft64.Toolkits.WPF
         public HexEditorTextBlock()
         {
             Unloaded += HexEditorTextBlock_Unloaded;
+            Loaded += HexEditorTextBlock_Loaded;
+        }
+
+        void HexEditorTextBlock_Loaded(object sender, RoutedEventArgs e)
+        {
+            Text = m_Text;
         }
 
         public void SetEditorPosition(BlockType type, Int32 row, Int32 col, Dictionary<Int32, HexEditorTextBlock> lut)
@@ -54,7 +61,6 @@ namespace Soft64.Toolkits.WPF
 
             m_LUT.Add(m_BlockHash, this);
         }
-
 
         private void HexEditorTextBlock_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -82,6 +88,12 @@ namespace Soft64.Toolkits.WPF
         public Int32 BlockHash
         {
             get { return m_BlockHash; }
+        }
+
+        public String BlockText
+        {
+            get { return m_Text; }
+            set { m_Text = value; }
         }
 
         private static Int32 GetBlockHash(Int32 row, Int32 col)

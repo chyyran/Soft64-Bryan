@@ -45,7 +45,7 @@ namespace Soft64.Toolkits.WPF
 
         public void Refresh()
         {
-            Dispatcher.InvokeAsync(ReadBytes);
+            ReadBytes();
         }
 
         private void ReadBytes()
@@ -61,13 +61,10 @@ namespace Soft64.Toolkits.WPF
                         stream.Position = StreamPosition;
                         Byte[] buffer = new Byte[BufferSize];
                         
-                        Task.Factory.StartNew(() =>
+                        Dispatcher.InvokeAsync(() =>
                         {
                             stream.Read(buffer, 0, buffer.Length);
-                            Dispatcher.Invoke(() => 
-                            {
-                                ReadBuffer = buffer;
-                            });
+                            ReadBuffer = buffer;
                         });
                     }
                 }

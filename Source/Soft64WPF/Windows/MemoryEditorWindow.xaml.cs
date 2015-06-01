@@ -108,7 +108,7 @@ namespace Soft64WPF.Windows
 
         private void DisbleScroll()
         {
-            xaml_HexScrollBar.IsEnabled = false;
+           // xaml_HexScrollBar.IsEnabled = false;
         }
     }
 }
