@@ -54,16 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockType.cs" />
-    <Compile Include="ByteToAsciiConverter.cs" />
     <Compile Include="HexEditorRow.cs" />
     <Compile Include="HexCaret.cs" />
     <Compile Include="HexEditor.xaml.cs">
       <DependentUpon>HexEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="HexEditorTextBlock.cs" />
-    <Compile Include="IndexedByte.cs" />
     <Compile Include="InvertColorEffect.cs" />
-    <Compile Include="ObservableCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

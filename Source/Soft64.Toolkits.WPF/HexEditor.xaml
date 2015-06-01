@@ -9,7 +9,6 @@
              x:Name="mainControl"
              Focusable="True">
     <UserControl.Resources>
-        <root:ByteToAsciiConverter x:Key="byteToAsciiConverter" />
         <Storyboard x:Key="ByteTextChangedAnimation">
             <DoubleAnimation Storyboard.TargetProperty="(TextBlock.Opacity)" Duration="0.0:0:0.0" To="0.0" />
             <DoubleAnimation Storyboard.TargetProperty="(TextBlock.Opacity)" Duration="0.0:0:0.5" To="1.0" />
@@ -36,16 +35,9 @@
                 <DataTemplate>
                     <Border x:Name="hexEditorRowBorder" BorderBrush="{Binding GridLineBrush, ElementName=mainControl}" BorderThickness="0,0,0,0">
                         <StackPanel Orientation="Horizontal">
-                            
-                            <!-- Address -->
-                            <Border BorderBrush="{Binding GridLineBrush, ElementName=mainControl}" BorderThickness="0,0,4,0">
-                                <TextBlock Text="{Binding Address, StringFormat=X8}" x:Name="hexBlock" Margin="0,0,10,0" />
-                            </Border>
-                            
-                            <ContentPresenter Content="{Binding HexContent}" />
-                            
+                            <TextBlock Text="{Binding Address, StringFormat=X8}" x:Name="hexBlock" Margin="0,0,10,0" />
+                            <ContentPresenter Content="{Binding HexContent}" Margin="0,0,10,0" />
                             <ContentPresenter Content="{Binding AsciiContent}" />
-                            
                         </StackPanel>
                     </Border>
                 </DataTemplate>
