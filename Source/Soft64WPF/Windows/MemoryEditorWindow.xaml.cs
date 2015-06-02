@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls.Ribbon;
@@ -17,6 +18,8 @@ namespace Soft64WPF.Windows
             DependencyProperty.Register("CurrentMemoryStream", typeof(StreamViewModel), typeof(MemoryEditorWindow),
             new PropertyMetadata());
 
+        private Stream m_PhysicalMem;
+
         static MemoryEditorWindow()
         {
         }
@@ -27,13 +30,15 @@ namespace Soft64WPF.Windows
             xaml_HexScrollBar.Scroll += xaml_HexScrollBar_Scroll;
             xaml_ChkboxVAdressMode.Checked +=xaml_ChkboxVAdressMode_Checked;
             xaml_ChkboxVAdressMode.Unchecked += xaml_ChkboxVAdressMode_Unchecked;
-            CurrentMemoryStream = StreamViewModel.NewModelFromStream(new N64StreamWrapper());
+            m_PhysicalMem = new N64StreamWrapper();
+
+            CurrentMemoryStream = StreamViewModel.NewModelFromStream(m_PhysicalMem);
         }
 
         void xaml_ChkboxVAdressMode_Unchecked(object sender, RoutedEventArgs e)
         {
             CurrentAddress -= 0xA0000000;
-            CurrentMemoryStream = StreamViewModel.NewModelFromStream(new N64StreamWrapper()); ;
+            CurrentMemoryStream = StreamViewModel.NewModelFromStream(m_PhysicalMem); ;
         }
 
         void xaml_ChkboxVAdressMode_Checked(object sender, RoutedEventArgs e)

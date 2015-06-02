@@ -17,22 +17,7 @@ namespace Soft64.Toolkits.WPF
 
         static HexEditorTextBlock()
         {
-            TextBlock.TextProperty.OverrideMetadata(typeof(HexEditorTextBlock), new FrameworkPropertyMetadata(
-            (o, a) =>
-            {
-                HexEditorTextBlock b = o as HexEditorTextBlock;
 
-                if (b != null)
-                {
-                    Storyboard sb = b.TryFindResource("ByteTextChangedAnimation") as Storyboard;
-
-                    if (sb != null)
-                    {
-                        Storyboard.SetTarget(sb, b);
-                        sb.Begin();
-                    }
-                }
-            }));
         }
 
         public HexEditorTextBlock()

@@ -8,12 +8,6 @@
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="mainControl"
              Focusable="True">
-    <UserControl.Resources>
-        <Storyboard x:Key="ByteTextChangedAnimation">
-            <DoubleAnimation Storyboard.TargetProperty="(TextBlock.Opacity)" Duration="0.0:0:0.0" To="0.0" />
-            <DoubleAnimation Storyboard.TargetProperty="(TextBlock.Opacity)" Duration="0.0:0:0.5" To="1.0" />
-        </Storyboard>
-    </UserControl.Resources>
     <Grid x:Name="xaml_rootGrid" Margin="12,7,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
