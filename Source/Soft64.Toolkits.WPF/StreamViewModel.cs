@@ -62,13 +62,10 @@ namespace Soft64.Toolkits.WPF
 
                         Dispatcher.InvokeAsync(() =>
                         {
-                            lock (stream)
-                            {
-                                stream.Position = pos;
-                                Byte[] buffer = new Byte[BufferSize];
-                                stream.Read(buffer, 0, buffer.Length);
-                                ReadBuffer = buffer;
-                            }
+                            stream.Position = pos;
+                            Byte[] buffer = new Byte[BufferSize];
+                            stream.Read(buffer, 0, buffer.Length);
+                            ReadBuffer = buffer;
                         });
                     }
                 }
