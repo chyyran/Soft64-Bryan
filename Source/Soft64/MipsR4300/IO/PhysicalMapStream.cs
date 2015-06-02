@@ -68,7 +68,7 @@ namespace Soft64.MipsR4300.IO
         {
             Int32 read = 0;
 
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
+            Machine.Current.DeviceRCP.ExecuteN64MemoryOp((s) =>
             {
                 s.Position = m_Position;
                 read = s.Read(buffer, offset, count);
