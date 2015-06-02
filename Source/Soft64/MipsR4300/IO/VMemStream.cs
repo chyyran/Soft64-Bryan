@@ -42,7 +42,6 @@ namespace Soft64.MipsR4300.IO
     [Serializable]
     public sealed class VMemStream : UnifiedStream
     {
-        private Stream m_PhysicalMemoryStream;
         private TLBCache m_TLBCache;
         private CP0Registers m_Cp0Regs;
         private StringBuilder m_StrBuilder = new StringBuilder();
@@ -55,21 +54,16 @@ namespace Soft64.MipsR4300.IO
             m_TLBCache = new TLBCache(m_Cp0Regs);
         }
 
-        internal void SetPhysMemoryStream(Stream stream)
-        {
-            m_PhysicalMemoryStream = stream;
-        }
-
         public void Initialize()
         {
             m_TLBCache.Initialize();
             logger.Trace("TLB Cache Intialized");
 
-            Add(0x00000000, new TLBMapStream(m_PhysicalMemoryStream, m_TLBCache, 0x80000000));
-            Add(0x80000000, new PhysicalMapStream(m_PhysicalMemoryStream));
-            Add(0xA0000000, new PhysicalMapStream(m_PhysicalMemoryStream));
-            Add(0xC0000000, new TLBMapStream(m_PhysicalMemoryStream, m_TLBCache, 0x20000000));
-            Add(0xE0000000, new TLBMapStream(m_PhysicalMemoryStream, m_TLBCache, 0x20000000));
+            Add(0x00000000, new TLBMapStream(m_TLBCache, 0x80000000));
+            Add(0x80000000, new PhysicalMapStream());
+            Add(0xA0000000, new PhysicalMapStream());
+            Add(0xC0000000, new TLBMapStream(m_TLBCache, 0x20000000));
+            Add(0xE0000000, new TLBMapStream(m_TLBCache, 0x20000000));
             logger.Trace("VMap Initialized");
         }
 

@@ -27,14 +27,12 @@ namespace Soft64.Debugging
         private Int64 m_PhysicalOffset;
         private Int64 m_MirrorSize;
         private Int64 m_CurrentOffset;
-        private Stream m_SourceStream;
 
-        public PMemMirrorStream(Stream physicalStream, Int64 physicalOffset, Int64 mirrorSize)
+        public PMemMirrorStream(Int64 physicalOffset, Int64 mirrorSize)
         {
             m_PhysicalOffset = physicalOffset;
             m_MirrorSize = mirrorSize;
             m_CurrentOffset = 0;
-            m_SourceStream = physicalStream;
         }
 
         public override bool CanRead
@@ -54,7 +52,10 @@ namespace Soft64.Debugging
 
         public override void Flush()
         {
-            m_SourceStream.Flush();
+            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
+            {
+                s.Flush();
+            });
         }
 
         public override long Length
@@ -81,8 +82,12 @@ namespace Soft64.Debugging
                 count = (Int32)((m_CurrentOffset + count) - (Length - 1));
             }
 
-            m_SourceStream.Position = m_PhysicalOffset + m_CurrentOffset;
-            m_SourceStream.Read(buffer, offset, count);
+            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
+            {
+                s.Position = m_CurrentOffset;
+                s.Read(buffer, offset, count);
+            });
+
             return count;
         }
 
@@ -109,8 +114,11 @@ namespace Soft64.Debugging
                 count = (Int32)((m_CurrentOffset + count) - (Length - 1));
             }
 
-            m_SourceStream.Position = m_PhysicalOffset + m_CurrentOffset;
-            m_SourceStream.Write(buffer, offset, count);
+            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
+            {
+                s.Position = m_PhysicalOffset + m_CurrentOffset;
+                s.Write(buffer, offset, count);
+            });
         }
     }
 }

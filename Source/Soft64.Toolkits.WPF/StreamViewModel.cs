@@ -58,13 +58,17 @@ namespace Soft64.Toolkits.WPF
                 {
                     lock (m_Lock)
                     {
-                        stream.Position = StreamPosition;
-                        Byte[] buffer = new Byte[BufferSize];
-                        
+                        Int64 pos = StreamPosition;
+
                         Dispatcher.InvokeAsync(() =>
                         {
-                            stream.Read(buffer, 0, buffer.Length);
-                            ReadBuffer = buffer;
+                            lock (stream)
+                            {
+                                stream.Position = pos;
+                                Byte[] buffer = new Byte[BufferSize];
+                                stream.Read(buffer, 0, buffer.Length);
+                                ReadBuffer = buffer;
+                            }
                         });
                     }
                 }

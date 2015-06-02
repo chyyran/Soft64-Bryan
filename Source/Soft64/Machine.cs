@@ -43,6 +43,7 @@ namespace Soft64
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private EmulatorEngine m_CurrentEngine;
         private static ExpandoObject s_Config = new ExpandoObject();
+        private Object m_PhysicalMemLock = new object();
 
         /* Non-Dynamic Property Backings */
         private EmulatorEngine m_PropEngine;
@@ -153,14 +154,8 @@ namespace Soft64
 
             try
             {
-                /* Initialize the PIF module */
                 DevicePIF.Initialize();
-
-                /* Initialize the RCP Processor */
                 DeviceRCP.Initialize();
-
-                /* Connect memory to the CPU Processor and initialize it */
-                DeviceCPU.SetMemoryBus(Machine.Current.DeviceRCP.N64Memory);
                 DeviceCPU.Initialize();
 
                 /* TODO: Multimedia Backend Initialization */
@@ -230,6 +225,14 @@ namespace Soft64
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public void AquirePMemLockAndRun(Action action)
+        {
+            lock (m_PhysicalMemLock)
+            {
+
+            }
         }
 
         protected virtual void Dispose(Boolean disposing)

@@ -25,13 +25,11 @@ namespace Soft64.MipsR4300.CP0
     internal sealed class TLBMapStream : Stream
     {
         private TLBCache m_TLBCache;
-        private Stream m_PhysicalMemory;
         private Int64 m_Length;
         private Int64 m_Position;
 
-        public TLBMapStream(Stream physicalMemoryStream, TLBCache tlbCache, Int64 length)
+        public TLBMapStream( TLBCache tlbCache, Int64 length)
         {
-            m_PhysicalMemory = physicalMemoryStream;
             m_TLBCache = tlbCache;
             m_Length = length;
         }
@@ -92,8 +90,11 @@ namespace Soft64.MipsR4300.CP0
                 return count;
             }
 
-            m_PhysicalMemory.Position = translatedAddress - 0x80000000;
-            m_PhysicalMemory.Read(buffer, 0, buffer.Length);
+            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
+            {
+                s.Position = translatedAddress - 0x80000000;
+                s.Read(buffer, 0, buffer.Length);
+            });
 
             return count;
         }
@@ -132,8 +133,11 @@ namespace Soft64.MipsR4300.CP0
                 return;
             }
 
-            m_PhysicalMemory.Position = translatedAddress - 0x80000000;
-            m_PhysicalMemory.Write(buffer, 0, buffer.Length);
+            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
+            {
+                s.Position = translatedAddress - 0x80000000;
+                s.Write(buffer, 0, buffer.Length);
+            });
         }
     }
 }

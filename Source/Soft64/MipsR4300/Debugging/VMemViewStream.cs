@@ -37,10 +37,10 @@ namespace Soft64.MipsR4300.Debugging
 
         private void BuildMap()
         {
-            var physicalRam = Machine.Current.DeviceRCP.SafeN64Memory;
+            var pMap = new PhysicalMapStream();
 
-            Add(0x80000000, new PhysicalMapStream(physicalRam));
-            Add(0xA0000000, new PhysicalMapStream(physicalRam));
+            Add(0x80000000, new PhysicalMapStream());
+            Add(0xA0000000, new PhysicalMapStream());
 
             /* Query all the valid entries in the TLB */
             var entries =
@@ -58,7 +58,6 @@ namespace Soft64.MipsR4300.Debugging
 
                         Add(entryInfo.AssociatedEntry.MappedVirtualAddress,
                             new PMemMirrorStream(
-                                physicalRam,
                                 addr,
                                 entryInfo.AssociatedEntry.Size.Size));
                     }
@@ -69,7 +68,6 @@ namespace Soft64.MipsR4300.Debugging
 
                         Add(entryInfo.AssociatedEntry.MappedVirtualAddress,
                             new PMemMirrorStream(
-                                physicalRam,
                                 addr,
                                 entryInfo.AssociatedEntry.Size.Size));
                     }

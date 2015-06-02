@@ -71,58 +71,61 @@ namespace Soft64
             {
                 if (Machine.Current.DeviceRCP.DevicePI.InsertedCartridge != null)
                 {
-                    /* Code taken from mupen64plus-core on github */
-                    ExecutionState state = Machine.Current.DeviceCPU.State;
-                    state.PC = 0xA4000040;
-                    state.CP0Regs[CP0RegName.SR] = 0x34000000;
-                    state.CP0Regs[CP0RegName.Config] = 0x0006e463;
+                    Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
+                    {
+                        /* Code taken from mupen64plus-core on github */
+                        ExecutionState state = Machine.Current.DeviceCPU.State;
+                        state.PC = 0xA4000040;
+                        state.CP0Regs[CP0RegName.SR] = 0x34000000;
+                        state.CP0Regs[CP0RegName.Config] = 0x0006e463;
 
-                    /* sp_register.sp_status_reg = 1;
-                        rsp_register.rsp_pc = 0;
+                        /* sp_register.sp_status_reg = 1;
+                            rsp_register.rsp_pc = 0;
 
-                        uint32_t bsd_dom1_config = *(uint32_t*)rom;
-                        pi_register.pi_bsd_dom1_lat_reg = (bsd_dom1_config      ) & 0xff;
-                        pi_register.pi_bsd_dom1_pwd_reg = (bsd_dom1_config >>  8) & 0xff;
-                        pi_register.pi_bsd_dom1_pgs_reg = (bsd_dom1_config >> 16) & 0x0f;
-                        pi_register.pi_bsd_dom1_rls_reg = (bsd_dom1_config >> 20) & 0x03;
-                        pi_register.read_pi_status_reg = 0;
+                            uint32_t bsd_dom1_config = *(uint32_t*)rom;
+                            pi_register.pi_bsd_dom1_lat_reg = (bsd_dom1_config      ) & 0xff;
+                            pi_register.pi_bsd_dom1_pwd_reg = (bsd_dom1_config >>  8) & 0xff;
+                            pi_register.pi_bsd_dom1_pgs_reg = (bsd_dom1_config >> 16) & 0x0f;
+                            pi_register.pi_bsd_dom1_rls_reg = (bsd_dom1_config >> 20) & 0x03;
+                            pi_register.read_pi_status_reg = 0;
 
-                        ai_register.ai_dram_addr = 0;
-                        ai_register.ai_len = 0;
+                            ai_register.ai_dram_addr = 0;
+                            ai_register.ai_len = 0;
 
-                        vi_register.vi_v_intr = 1023;
-                        vi_register.vi_current = 0;
-                        vi_register.vi_h_start = 0;
+                            vi_register.vi_v_intr = 1023;
+                            vi_register.vi_current = 0;
+                            vi_register.vi_h_start = 0;
 
-                        MI_register.mi_intr_reg &= ~(0x10 | 0x8 | 0x4 | 0x1) */
+                            MI_register.mi_intr_reg &= ~(0x10 | 0x8 | 0x4 | 0x1) */
 
-                    logger.Debug("PIF HLE: Copying cartridge bootrom into DMEM + 0x40");
-                    Machine.Current.DeviceRCP.SafeN64Memory.Position = N64MemRegions.SPDMem.ToRegionAddress() + 0x40;
-                    Machine.Current.DeviceRCP.DevicePI.InsertedCartridge.RomImage.BootRomInformation.CopyCode(Machine.Current.DeviceRCP.SafeN64Memory);
+                        logger.Debug("PIF HLE: Copying cartridge bootrom into DMEM + 0x40");
+                        s.Position = N64MemRegions.SPDMem.ToRegionAddress() + 0x40;
+                        Machine.Current.DeviceRCP.DevicePI.InsertedCartridge.RomImage.BootRomInformation.CopyCode(s);
 
-                    state.GPRRegs64[19] = 0; /* 0: Cart, 1: DiskDrive */
-                    state.GPRRegs64[20] = (UInt64)((Int32)Cartridge.Current.RomImage.Region) - 1;
-                    state.GPRRegs64[21] = 0; /* 0: ColdReset, 1: NMI */
-                    state.GPRRegs64[22] = (UInt64)Cartridge.Current.RomImage.BootRomInformation.CIC.Seed();
-                    state.GPRRegs64[23] = 0; /* S7: Unknown */
+                        state.GPRRegs64[19] = 0; /* 0: Cart, 1: DiskDrive */
+                        state.GPRRegs64[20] = (UInt64)((Int32)Cartridge.Current.RomImage.Region) - 1;
+                        state.GPRRegs64[21] = 0; /* 0: ColdReset, 1: NMI */
+                        state.GPRRegs64[22] = (UInt64)Cartridge.Current.RomImage.BootRomInformation.CIC.Seed();
+                        state.GPRRegs64[23] = 0; /* S7: Unknown */
 
-                    /* Required by CIC X105 */
-                    BinaryWriter bw = new BinaryWriter(Machine.Current.DeviceRCP.SafeN64Memory);
-                    bw.BaseStream.Position = 0x04001000;
-                    bw.Write(0x3c0dbfc0U);
-                    bw.Write(0x8da807fcU);
-                    bw.Write(0x25ad07c0U);
-                    bw.Write(0x31080080U);
-                    bw.Write(0x5500fffcU);
-                    bw.Write(0x3c0dbfc0U);
-                    bw.Write(0x8da80024U);
-                    bw.Write(0x3c0bb000U);
+                        /* Required by CIC X105 */
+                        BinaryWriter bw = new BinaryWriter(s);
+                        bw.BaseStream.Position = 0x04001000;
+                        bw.Write(0x3c0dbfc0U);
+                        bw.Write(0x8da807fcU);
+                        bw.Write(0x25ad07c0U);
+                        bw.Write(0x31080080U);
+                        bw.Write(0x5500fffcU);
+                        bw.Write(0x3c0dbfc0U);
+                        bw.Write(0x8da80024U);
+                        bw.Write(0x3c0bb000U);
 
-                    /* Required by CIC X105 */
-                    state.GPRRegs64[11] = 0xffffffffa4000040UL; /* T3 */
-                    state.GPRRegs64[29] = 0xffffffffa4001ff0UL; /* SP */
-                    state.GPRRegs64[31] = 0xffffffffa4001550UL; /* RA */
-                    
+                        /* Required by CIC X105 */
+                        state.GPRRegs64[11] = 0xffffffffa4000040UL; /* T3 */
+                        state.GPRRegs64[29] = 0xffffffffa4001ff0UL; /* SP */
+                        state.GPRRegs64[31] = 0xffffffffa4001550UL; /* RA */
+
+                    });
                 }
                 else
                 {
@@ -136,25 +139,28 @@ namespace Soft64
             {
                 if (Machine.Current.DeviceRCP.DevicePI.InsertedCartridge != null)
                 {
-                    /* This is the older method of booting the emulator */
-
-                    Machine.Current.DeviceCPU.State.PC = 0xA4000040;
-
-                    /* This simulates the effects of the PIF Bootloader */
-                    /* 1. Copy the game cartrdige boot rom into SP Memory
-                     * 2. Load a snapshot of the CPU / Memory state generated by the real PIF boot sequence */
-
-                    logger.Debug("PIF HLE: Copying cartridge bootrom into DMEM + 0x40");
-                    Machine.Current.DeviceRCP.SafeN64Memory.Position = N64MemRegions.SPDMem.ToRegionAddress() + 0x40;
-                    Machine.Current.DeviceRCP.DevicePI.InsertedCartridge.RomImage.BootRomInformation.CopyCode(Machine.Current.DeviceRCP.SafeN64Memory);
-
-                    using (Stream stream = typeof(SoftBootManager).Assembly.GetManifestResourceStream("Soft64.BootStateSnapshots.xml"))
+                    Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
                     {
-                        CartridgeInfo info = Cartridge.Current.GetCartridgeInfo();
-                        CICKeyType cic = Cartridge.Current.RomImage.BootRomInformation.CIC;
-                        BootSnapReader bootsnap = new BootSnapReader(stream);
-                        bootsnap.LoadBootSnap(cic, info.RegionCode);
-                    }
+                        /* This is the older method of booting the emulator */
+
+                        Machine.Current.DeviceCPU.State.PC = 0xA4000040;
+
+                        /* This simulates the effects of the PIF Bootloader */
+                        /* 1. Copy the game cartrdige boot rom into SP Memory
+                         * 2. Load a snapshot of the CPU / Memory state generated by the real PIF boot sequence */
+
+                        logger.Debug("PIF HLE: Copying cartridge bootrom into DMEM + 0x40");
+                        s.Position = N64MemRegions.SPDMem.ToRegionAddress() + 0x40;
+                        Machine.Current.DeviceRCP.DevicePI.InsertedCartridge.RomImage.BootRomInformation.CopyCode(s);
+
+                        using (Stream stream = typeof(SoftBootManager).Assembly.GetManifestResourceStream("Soft64.BootStateSnapshots.xml"))
+                        {
+                            CartridgeInfo info = Cartridge.Current.GetCartridgeInfo();
+                            CICKeyType cic = Cartridge.Current.RomImage.BootRomInformation.CIC;
+                            BootSnapReader bootsnap = new BootSnapReader(stream);
+                            bootsnap.LoadBootSnap(cic, info.RegionCode);
+                        }
+                    });
                 }
                 else
                 {

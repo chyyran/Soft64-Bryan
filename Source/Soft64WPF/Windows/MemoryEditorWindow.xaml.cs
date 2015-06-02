@@ -27,24 +27,19 @@ namespace Soft64WPF.Windows
             xaml_HexScrollBar.Scroll += xaml_HexScrollBar_Scroll;
             xaml_ChkboxVAdressMode.Checked +=xaml_ChkboxVAdressMode_Checked;
             xaml_ChkboxVAdressMode.Unchecked += xaml_ChkboxVAdressMode_Unchecked;
-            CurrentMemoryStream = ((MachineViewModel)DataContext).Rcp.SafeN64Memory;
+            CurrentMemoryStream = StreamViewModel.NewModelFromStream(new N64StreamWrapper());
         }
 
         void xaml_ChkboxVAdressMode_Unchecked(object sender, RoutedEventArgs e)
         {
             CurrentAddress -= 0xA0000000;
-            CurrentMemoryStream = ((MachineViewModel)DataContext).Rcp.SafeN64Memory;
-
-            DisbleScroll();
-            
+            CurrentMemoryStream = StreamViewModel.NewModelFromStream(new N64StreamWrapper()); ;
         }
 
         void xaml_ChkboxVAdressMode_Checked(object sender, RoutedEventArgs e)
         {
             CurrentAddress += 0xA0000000;
             CurrentMemoryStream = ((MachineViewModel)DataContext).Cpu.DebugVirtualMemory;
-
-            DisbleScroll();
         }
 
         private void xaml_HexScrollBar_Scroll(object sender, ScrollEventArgs e)
@@ -53,32 +48,24 @@ namespace Soft64WPF.Windows
             {
                 txtBoxBaseAddress.Text =
                     (Int64.Parse(txtBoxBaseAddress.Text, NumberStyles.AllowHexSpecifier) - xaml_HexEditor.NumRows).ToString("X8");
-
-                DisbleScroll();
             }
 
             if (e.ScrollEventType == ScrollEventType.LargeIncrement)
             {
                 txtBoxBaseAddress.Text =
                     (Int64.Parse(txtBoxBaseAddress.Text, NumberStyles.AllowHexSpecifier) + xaml_HexEditor.NumRows).ToString("X8");
-
-                DisbleScroll();
             }
 
             if (e.ScrollEventType == ScrollEventType.SmallDecrement)
             {
                 txtBoxBaseAddress.Text =
                    (Int64.Parse(txtBoxBaseAddress.Text, NumberStyles.AllowHexSpecifier) - xaml_HexEditor.NumCols).ToString("X8");
-
-                DisbleScroll();
             }
 
             if (e.ScrollEventType == ScrollEventType.SmallIncrement)
             {
                 txtBoxBaseAddress.Text =
                    (Int64.Parse(txtBoxBaseAddress.Text, NumberStyles.AllowHexSpecifier) + xaml_HexEditor.NumCols).ToString("X8");
-
-                DisbleScroll();
             }
 
             xaml_HexScrollBar.Value = 5;
@@ -104,11 +91,6 @@ namespace Soft64WPF.Windows
         {
             get { return Int64.Parse(txtBoxBaseAddress.Text, NumberStyles.AllowHexSpecifier); }
             set { txtBoxBaseAddress.Text = value.ToString("X8"); }
-        }
-
-        private void DisbleScroll()
-        {
-           // xaml_HexScrollBar.IsEnabled = false;
         }
     }
 }

@@ -20,19 +20,19 @@ namespace Soft64.MipsR4300.Analyzing
 
         private void ScanMemory()
         {
-            Int32 stride = 8;
-            Int32 length = (Int32)(0xFFFFFFFFU / stride);
+            //Int32 stride = 8;
+            //Int32 length = (Int32)(0xFFFFFFFFU / stride);
 
-            Stream memory = Machine.Current.DeviceRCP.SafeN64Memory;
-            BinaryReader reader = new BinaryReader(memory);
+            //Stream memory = Machine.Current.DeviceRCP.SafeN64Memory;
+            //BinaryReader reader = new BinaryReader(memory);
 
-            var results = from index in Enumerable.Range(0, length)
-                          let address = index * stride
-                          let value = ReadValue(reader, address)
-                          where value >= 0
-                          select new { Address = address, Value = value };
+            //var results = from index in Enumerable.Range(0, length)
+            //              let address = index * stride
+            //              let value = ReadValue(reader, address)
+            //              where value >= 0
+            //              select new { Address = address, Value = value };
 
-            /* Group sequantial results */
+            ///* Group sequantial results */
 
         }
 

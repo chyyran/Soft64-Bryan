@@ -29,17 +29,11 @@ namespace Soft64.MipsR4300
         private ExecutionState m_State;           /* Processor Register State */
         private ExecutionEngine m_ExecEngine;     /* Processor Execution Engine */
         private VMemStream m_MMU;                 /* Processor Memory Management Unit */
-        private Stream m_N64MemoryStream;
 
         public MipsR4300Core()
         {
             m_State = new ExecutionState(this);
             m_MMU = new VMemStream(m_State.CP0Regs);
-        }
-
-        public void SetMemoryBus(Stream stream)
-        {
-            m_N64MemoryStream = stream;
         }
 
         public virtual void Initialize()
@@ -96,7 +90,6 @@ namespace Soft64.MipsR4300
             m_ExecEngine.SetParent(this);
 
             /* Initialize the MMU */
-            m_MMU.SetPhysMemoryStream(m_N64MemoryStream);
             m_MMU.Initialize();
 
             /* Initialize the engine */

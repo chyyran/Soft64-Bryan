@@ -57,6 +57,7 @@ namespace Soft64.RCP
     {
         private Boolean m_Disposed;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private Object m_PMemLock = new object();
 
         /* IO Interfaces */
         private ParallelInterface m_PIInterface;
@@ -108,25 +109,35 @@ namespace Soft64.RCP
             get { return m_PIInterface; }
         }
 
-        /// <summary>
-        /// Allows stream access into the main N64 memory bus with compiled operation support
-        /// </summary>
-        public Stream N64Memory
+        private Stream N64Memory
         {
             get { return m_RcpMemoryBus; }
         }
 
-        public UnifiedStream N64MemoryUnifedStream
+        private UnifiedStream N64MemoryUnifedStream
         {
             get { return m_RcpMemoryBus; }
         }
 
-        /// <summary>
-        /// Allows safe access into the main N64 memory bus by opting out steam compiler services
-        /// </summary>
-        public Stream SafeN64Memory
+        private Stream SafeN64Memory
         {
             get { return m_RcpMemoryBus.GetSafeStream(); }
+        }
+
+        public void ExecuteN64MemoryOp(Action<Stream> action)
+        {
+            lock (m_PMemLock)
+            {
+                action(N64Memory);
+            }
+        }
+
+        public void ExecuteN64MemoryOpSafe(Action<Stream> action)
+        {
+            lock (m_PMemLock)
+            {
+                action(SafeN64Memory);
+            }
         }
 
         private void Dispose(Boolean disposing)
