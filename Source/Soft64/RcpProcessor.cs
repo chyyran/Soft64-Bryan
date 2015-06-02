@@ -109,26 +109,11 @@ namespace Soft64.RCP
             get { return m_PIInterface; }
         }
 
-        private Stream N64Memory
-        {
-            get { return m_RcpMemoryBus; }
-        }
-
-        private UnifiedStream N64MemoryUnifedStream
-        {
-            get { return m_RcpMemoryBus; }
-        }
-
-        private Stream SafeN64Memory
-        {
-            get { return m_RcpMemoryBus.GetSafeStream(); }
-        }
-
         public void ExecuteN64MemoryOp(Action<Stream> action)
         {
             lock (m_PMemLock)
             {
-                action(N64Memory);
+                action(m_RcpMemoryBus);
             }
         }
 
@@ -136,7 +121,7 @@ namespace Soft64.RCP
         {
             lock (m_PMemLock)
             {
-                action(SafeN64Memory);
+                action(m_RcpMemoryBus.GetSafeStream());
             }
         }
 
