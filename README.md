@@ -3,7 +3,7 @@ This is not a fully funtional emulator, its work in progress, and only it runs a
 
 # What Works
 * WPF hexadecimal editor works very nicely!
-* Unified memory system seems to work nicely too
+* Unified memory system seems to work nicely too (its thread safe too!)
 * Bootloader based on PJ64 and Mupen64P both work correctly
 * JSON based configuration is easy to use
 * Emulator thread management is simple and OOP, works good, and supports local debugger control
