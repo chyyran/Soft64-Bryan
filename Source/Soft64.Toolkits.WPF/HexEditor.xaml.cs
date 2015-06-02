@@ -56,6 +56,7 @@ namespace Soft64.Toolkits.WPF
         private Dictionary<Int32, HexEditorTextBlock> m_HexLUT = new Dictionary<int,HexEditorTextBlock>();
         private Dictionary<Int32, HexEditorTextBlock> m_AsciiLut = new Dictionary<int,HexEditorTextBlock>();
         private List<HexEditorTextBlock> m_BlockCache = new List<HexEditorTextBlock>();
+        private Int32 m_OldGridWidth, m_OldGridHeight;
 
         static HexEditor()
         {
@@ -127,66 +128,87 @@ namespace Soft64.Toolkits.WPF
         {
             try
             {
-                if (!IsInitialized || m_ClonedStreamVM == null)
+                if (!IsInitialized || m_ClonedStreamVM == null || m_ClonedStreamVM.ReadBuffer == null)
                     return;
 
-                DataRows.Clear();
-
-                /* Check block cache */
-                Int32 size = m_GridWidth * m_GridHeight * 2;
-                Int32 count = m_BlockCache.Count;
-
-                if (count <= size)
-                {
-                    for (Int32 i = 0; i < (size - count); i++)
-                    {
-                        HexEditorTextBlock block = new HexEditorTextBlock();
-                        block.Margin = new Thickness(2, 0, 0, 0);
-                        m_BlockCache.Add(block);
-                    }
-                }
-
-                Byte[] readBuffer = m_ClonedStreamVM.ReadBuffer;
-                Int64 position = m_ClonedStreamVM.StreamPosition;
-
-                if (readBuffer == null)
-                    return;
-
-                /* Allocate the row objects on UI Thread */
-                HexEditorRow[] rows = new HexEditorRow[m_GridHeight];
-
-                for (Int32 i = 0; i < m_GridHeight; i++)
-                    rows[i] = new HexEditorRow();
-
-                /* Create a queue of rows to append */
-                Queue<HexEditorRow> rowQueue = new Queue<HexEditorRow>();
-
-                /* Create an async task to fill in the data */
-                Task.Factory.StartNew(() =>
-                {
-                    for (Int32 i = 0; i < m_GridHeight; i++)
-                    {
-                        Byte[] rowBuffer = new Byte[m_GridWidth];
-                        Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
-
-                        HexEditorRow row = rows[i];
-                        row.RowIndex = i;
-                        row.Address = position + (m_GridWidth * i);
-                        row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
-
-                        rowQueue.Enqueue(row);
-                    }
-
-                    Dispatcher.Invoke(() =>
-                    {
-                        while (rowQueue.Count > 0)
-                            DataRows.Add(rowQueue.Dequeue());
-                    });
-                });
+                AdjustDataRows();
+                CheckBlockCache();
+                ReadDataBytes();
             }
             catch (ArgumentException)
             {
                 /* Ignore these since it can happen from too much resizing */
+            }
+        }
+
+        private void ReadDataBytes()
+        {
+            Byte[] readBuffer = m_ClonedStreamVM.ReadBuffer;
+            Int64 position = m_ClonedStreamVM.StreamPosition;
+
+            /* Allocate the row objects on UI Thread */
+            AllocateRows();
+
+            /* Create a local list copy of the rows */
+            HexEditorRow[] rows = new HexEditorRow[DataRows.Count];
+            DataRows.CopyTo(rows, 0);
+
+            /* Create an async task to fill in the data */
+            Task.Factory.StartNew(() =>
+            {
+                for (Int32 i = 0; i < m_GridHeight; i++)
+                {
+                    Byte[] rowBuffer = new Byte[m_GridWidth];
+                    Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
+
+                    HexEditorRow row = rows[i];
+                    row.RowIndex = i;
+                    row.Address = position + (m_GridWidth * i);
+                    row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    foreach (var row in rows)
+                        row.UpdateText();
+                });
+            });
+        }
+
+
+        private void AllocateRows()
+        {
+            for (Int32 i = 0; i < m_GridHeight; i++)
+            {
+                if (i >= DataRows.Count)
+                    DataRows.Add(new HexEditorRow());
+            }
+        }
+
+        private void CheckBlockCache()
+        {
+            /* Check block cache */
+            Int32 size = m_GridWidth * m_GridHeight * 2;
+            Int32 count = m_BlockCache.Count;
+
+            if (count <= size)
+            {
+                for (Int32 i = 0; i < (size - count); i++)
+                {
+                    HexEditorTextBlock block = new HexEditorTextBlock();
+                    block.Margin = new Thickness(2, 0, 0, 0);
+                    m_BlockCache.Add(block);
+                }
+            }
+        }
+
+        private void AdjustDataRows()
+        {
+            if (m_GridHeight != m_OldGridHeight ||
+                m_GridWidth != m_OldGridWidth)
+            {
+                /* if the grid size changed, then rebuild the data rows */
+                DataRows.Clear();
             }
         }
 
@@ -382,8 +404,10 @@ namespace Soft64.Toolkits.WPF
             if (e.PropertyName == "ReadBuffer")
             {
                 UpdateHexGrid();
-            }
-                
+
+                m_OldGridWidth = m_GridWidth;
+                m_OldGridHeight = m_GridHeight;
+            }  
         }
 
         public void Refresh()

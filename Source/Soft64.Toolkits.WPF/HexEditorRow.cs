@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Soft64.Toolkits.WPF
 {
-    internal class HexEditorRow : DependencyObject
+    internal class HexEditorRow : DependencyObject, INotifyPropertyChanged
     {
         private List<Byte> m_RowBytes;
         private Int64 m_Address;
@@ -132,7 +132,6 @@ namespace Soft64.Toolkits.WPF
 
         public Panel HexContent
         {
-            
             get {  return m_HexRootPanel;  }
         }
 
@@ -140,5 +139,27 @@ namespace Soft64.Toolkits.WPF
         {
             get  { return m_AsciiRootPanel;  }
         }
+
+        internal void UpdateText()
+        {
+            foreach (var h in m_HexBlocks)
+                h.Text = h.BlockText;
+
+            foreach (var a in m_AsciiBlocks)
+                a.Text = a.BlockText;
+
+            var e = PropertyChanged;
+
+            if (e != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Address"));
+            }
+        }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }
 }
