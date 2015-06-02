@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using System.ComponentModel;
 
 namespace Soft64.Toolkits.WPF
 {
@@ -102,11 +100,12 @@ namespace Soft64.Toolkits.WPF
 
         public Byte[] ReadBuffer
         {
-            get {
-                    return m_ReadBuffer; 
+            get
+            {
+                return m_ReadBuffer;
             }
 
-            private  set 
+            private set
             {
                 m_ReadBuffer = value;
 
@@ -127,6 +126,6 @@ namespace Soft64.Toolkits.WPF
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        #endregion
+        #endregion INotifyPropertyChanged Members
     }
 }

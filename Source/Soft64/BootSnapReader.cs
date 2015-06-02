@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace Soft64
@@ -27,7 +24,7 @@ namespace Soft64
             public Int32 index;
             public UInt32 value;
         }
-        
+
         public BootSnapReader(Stream xmlSource)
         {
             m_BootSnapStream = xmlSource;
@@ -92,10 +89,10 @@ namespace Soft64
                     bw.BaseStream.Position = m.position + (4 * m.index);
                     bw.Write(m.value);
                 }
-            });    
+            });
         }
 
-        private Boolean CompareCic (String cicName, CICKeyType cic)
+        private Boolean CompareCic(String cicName, CICKeyType cic)
         {
             return cic.ToString().Contains(cicName);
         }
@@ -113,7 +110,8 @@ namespace Soft64
 
             if (condition != null)
             {
-                switch (condition.Value) {
+                switch (condition.Value)
+                {
                     case "CIC": valid = CompareCic(value.Value, cic); break;
                     case "Region": valid = CompareRegion(value.Value, region); break;
                     default: break;

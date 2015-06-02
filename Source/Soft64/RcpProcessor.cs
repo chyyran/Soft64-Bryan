@@ -48,7 +48,6 @@ using System;
 using System.IO;
 using NLog;
 using Soft64.DeviceMemory;
-using Soft64.IO;
 using Soft64.MipsR4300;
 
 namespace Soft64.RCP

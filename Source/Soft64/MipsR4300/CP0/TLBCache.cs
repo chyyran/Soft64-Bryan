@@ -183,9 +183,9 @@ namespace Soft64.MipsR4300.CP0
             PageSize pageSize = new PageSize(m_PageMask);
             TLBEntry entry = null;
 
-            /* Note: 
+            /* Note:
              * We are assuming the software set ASID and VPN in the EntryHi when comparing
-             * the virtual address with the TLB cache.  Without a real test of this, 
+             * the virtual address with the TLB cache.  Without a real test of this,
              * we don't know truly know if we rely on EntryHi every time there is a translation
              * to be performed.  I do not understand how the TLB is really even used on the N64
              * system, virtual memory is useless without having some kind of pagefile.
@@ -306,7 +306,6 @@ namespace Soft64.MipsR4300.CP0
             }
         }
 
-
         public UInt64 PageMask
         {
             get { return m_PageMask; }
@@ -370,7 +369,7 @@ namespace Soft64.MipsR4300.CP0
 
         public int IndexOf(TLBEntry item)
         {
-            for(Int32 i = 0; i < m_Entries.Length; i++)
+            for (Int32 i = 0; i < m_Entries.Length; i++)
             {
                 if (Object.Equals(item, m_Entries[i]))
                     return i;
@@ -401,7 +400,7 @@ namespace Soft64.MipsR4300.CP0
             }
         }
 
-        #endregion
+        #endregion IList<TLBEntry> Members
 
         #region ICollection<TLBEntry> Members
 
@@ -440,7 +439,7 @@ namespace Soft64.MipsR4300.CP0
             throw new NotSupportedException();
         }
 
-        #endregion
+        #endregion ICollection<TLBEntry> Members
 
         #region IEnumerable<TLBEntry> Members
 
@@ -450,6 +449,6 @@ namespace Soft64.MipsR4300.CP0
                 yield return entry;
         }
 
-        #endregion
+        #endregion IEnumerable<TLBEntry> Members
     }
 }

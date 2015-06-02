@@ -1,18 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Soft64;
 using Soft64.Debugging;
 using Soft64.MipsR4300.Debugging;
@@ -49,7 +37,6 @@ namespace Soft64WPF.Windows
         {
             if (args.NewState == LifetimeState.Running)
             {
-
             }
         }
 
@@ -75,10 +62,6 @@ namespace Soft64WPF.Windows
                     break;
                 }
             }
-
-            
-
-
         }
 
         private void xaml_BtnPause_Click(object sender, RoutedEventArgs e)

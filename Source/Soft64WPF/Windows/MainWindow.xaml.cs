@@ -25,14 +25,11 @@ using System.Windows.Documents;
 using Microsoft.Win32;
 using NLog;
 using NLog.Config;
-using NLog.Layouts;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
 using Soft64;
-using Soft64.Media;
 using Soft64.MipsR4300.Interpreter;
 using Soft64WPF.Helper;
-using Soft64WPF.Styles;
 
 namespace Soft64WPF.Windows
 {
@@ -58,7 +55,7 @@ namespace Soft64WPF.Windows
             Loaded += MainWindow_Loaded;
         }
 
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Dispatcher.Invoke(() =>
             {
@@ -84,7 +81,6 @@ namespace Soft64WPF.Windows
                 target.RowColoringRules.Add(new WpfRichTextBoxRowColoringRule("level == LogLevel.Debug", "Gray", "Transparent"));
                 target.RowColoringRules.Add(new WpfRichTextBoxRowColoringRule("level == LogLevel.Trace", "White", "Transparent", FontStyles.Normal, FontWeights.Normal));
 
-
                 var cpuLogTarget = new FileTarget();
                 cpuLogTarget.Name = "instTraceFile";
                 cpuLogTarget.Layout = "${message}";
@@ -106,13 +102,13 @@ namespace Soft64WPF.Windows
             });
         }
 
-        void xaml_ButtonScript_Click(object sender, RoutedEventArgs e)
+        private void xaml_ButtonScript_Click(object sender, RoutedEventArgs e)
         {
             PyWindow window = new PyWindow();
             window.Show();
         }
 
-        void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show(e.Exception.Message, "Runtime Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }

@@ -93,7 +93,6 @@ namespace Soft64.PI
             if (verifyFlag != FormatVerifyFlag.Skip && format == RomFormat.Unknown)
             {
                 logger.Warn("treid to verify rom but failed, emulator may be unstable");
-
             }
             else
             {

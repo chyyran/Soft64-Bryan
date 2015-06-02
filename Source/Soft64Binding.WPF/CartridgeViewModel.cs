@@ -26,7 +26,8 @@ namespace Soft64Binding.WPF
 {
     public class CartridgeViewModel : MachineComponentViewModel
     {
-        internal CartridgeViewModel(MachineViewModel currentModel) : base(currentModel)
+        internal CartridgeViewModel(MachineViewModel currentModel)
+            : base(currentModel)
         {
             Machine machine = (Machine)currentModel.TargetMachine;
 

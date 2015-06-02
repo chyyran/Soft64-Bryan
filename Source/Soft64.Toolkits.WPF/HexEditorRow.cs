@@ -1,12 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Text;
-using System.Windows;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Soft64.Toolkits.WPF
 {
@@ -41,7 +39,7 @@ namespace Soft64.Toolkits.WPF
             m_AsciiBlocks = new List<HexEditorTextBlock>();
         }
 
-        void m_AsciiRootPanel_Loaded(object sender, RoutedEventArgs e)
+        private void m_AsciiRootPanel_Loaded(object sender, RoutedEventArgs e)
         {
             if (m_AsciiRootPanel.Children.Count <= 0)
             {
@@ -50,7 +48,7 @@ namespace Soft64.Toolkits.WPF
             }
         }
 
-        void m_HexRootPanel_Loaded(object sender, RoutedEventArgs e)
+        private void m_HexRootPanel_Loaded(object sender, RoutedEventArgs e)
         {
             if (m_HexRootPanel.Children.Count <= 0)
             {
@@ -61,19 +59,19 @@ namespace Soft64.Toolkits.WPF
             }
         }
 
-        void m_AsciiRootPanel_Unloaded(object sender, RoutedEventArgs e)
+        private void m_AsciiRootPanel_Unloaded(object sender, RoutedEventArgs e)
         {
             m_AsciiRootPanel.Children.Clear();
         }
 
-        void m_HexRootPanel_Unloaded(object sender, RoutedEventArgs e)
+        private void m_HexRootPanel_Unloaded(object sender, RoutedEventArgs e)
         {
             m_HexRootPanel.Children.Clear();
         }
 
         public void SetBytes(List<HexEditorTextBlock> blockCache, Byte[] bytes, Dictionary<Int32, HexEditorTextBlock> hexLUT, Dictionary<Int32, HexEditorTextBlock> asciiLUT)
         {
-            for(Int32 i = 0; i < bytes.Length; i++)
+            for (Int32 i = 0; i < bytes.Length; i++)
             {
                 m_RowBytes.Add(bytes[i]);
                 Int32 index = i + (bytes.Length * RowIndex * 2) + (i * 1);
@@ -132,12 +130,12 @@ namespace Soft64.Toolkits.WPF
 
         public Panel HexContent
         {
-            get {  return m_HexRootPanel;  }
+            get { return m_HexRootPanel; }
         }
 
         public Panel AsciiContent
         {
-            get  { return m_AsciiRootPanel;  }
+            get { return m_AsciiRootPanel; }
         }
 
         internal void UpdateText()
@@ -160,6 +158,6 @@ namespace Soft64.Toolkits.WPF
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        #endregion
+        #endregion INotifyPropertyChanged Members
     }
 }

@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Soft64;
-using Xunit;
-using Moq;
-using Soft64.MipsR4300;
-using Soft64.PI;
 using System.IO;
-using Soft64.Media;
+using Moq;
+using Soft64;
 using Soft64.Debugging;
+using Soft64.MipsR4300;
 using Soft64.MipsR4300.CP0;
+using Soft64.PI;
+using Xunit;
 
 namespace Tests.PJ64
 {
@@ -77,16 +72,15 @@ namespace Tests.PJ64
             TestBootSequence(MockUpCartridge(RegionType.PAL, CICKeyType.CIC_X106));
         }
 
-
         private Cartridge MockUpCartridge(RegionType region, CICKeyType cic)
         {
             var mockedCart = new Mock<Cartridge>();
             var mockedCartRom = new Mock<ICartRom>();
             var mockedBootRom = new Mock<IBootRom>();
-            GameSerial serial = new GameSerial(new Byte[] { 0x00, 00, 00, 00, 00, 00, 00, 00});
+            GameSerial serial = new GameSerial(new Byte[] { 0x00, 00, 00, 00, 00, 00, 00, 00 });
 
-           MemoryStream stream = new MemoryStream();
-            
+            MemoryStream stream = new MemoryStream();
+
             for (Int32 i = 0; i < (1024 ^ 2); i++)
                 stream.WriteByte(0);
 
@@ -104,7 +98,6 @@ namespace Tests.PJ64
             mockedCartRom.Setup<IBootRom>(x => x.BootRomInformation).Returns(mockedBootRom.Object);
             mockedCartRom.Setup<RegionType>(x => x.Region).Returns(region);
             mockedCartRom.Setup<Stream>(x => x.RomStream).Returns(stream);
-
 
             mockedCart.SetupProperty<Boolean>(c => c.IsOpened, true);
             mockedCart.Setup<Stream>(c => c.PiCartridgeStream).Returns(stream);
@@ -143,7 +136,7 @@ namespace Tests.PJ64
 
             /* PIF Testing */
             AssertPIFCodes(
-                Cartridge.Current.RomImage.Region, 
+                Cartridge.Current.RomImage.Region,
                 Cartridge.Current.RomImage.BootRomInformation.CIC,
                 state);
 
@@ -217,7 +210,6 @@ namespace Tests.PJ64
                                     Assert.Equal(0x0000000000000002UL, state.GPRRegs64[24]);
                                     break;
                                 }
-
                         }
 
                         Assert.Equal(0x0000000000000000UL, state.GPRRegs64[20]);
@@ -343,7 +335,6 @@ namespace Tests.PJ64
                         break;
                     }
             }
-
         }
 
         private void AssertEqualMemoryReadU32(Int64 offset, UInt32 expected)

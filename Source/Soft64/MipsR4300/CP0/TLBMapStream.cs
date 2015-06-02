@@ -28,7 +28,7 @@ namespace Soft64.MipsR4300.CP0
         private Int64 m_Length;
         private Int64 m_Position;
 
-        public TLBMapStream( TLBCache tlbCache, Int64 length)
+        public TLBMapStream(TLBCache tlbCache, Int64 length)
         {
             m_TLBCache = tlbCache;
             m_Length = length;

@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Globalization;
-using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Soft64.Toolkits.WPF;
 
 namespace Soft64.Toolkits.WPF
 {
@@ -53,8 +49,8 @@ namespace Soft64.Toolkits.WPF
         private Boolean m_HexUpperNibble;
         private Size m_FontSize;
         private StreamViewModel m_ClonedStreamVM;
-        private Dictionary<Int32, HexEditorTextBlock> m_HexLUT = new Dictionary<int,HexEditorTextBlock>();
-        private Dictionary<Int32, HexEditorTextBlock> m_AsciiLut = new Dictionary<int,HexEditorTextBlock>();
+        private Dictionary<Int32, HexEditorTextBlock> m_HexLUT = new Dictionary<int, HexEditorTextBlock>();
+        private Dictionary<Int32, HexEditorTextBlock> m_AsciiLut = new Dictionary<int, HexEditorTextBlock>();
         private List<HexEditorTextBlock> m_BlockCache = new List<HexEditorTextBlock>();
         private Int32 m_OldGridWidth, m_OldGridHeight;
 
@@ -174,7 +170,6 @@ namespace Soft64.Toolkits.WPF
                 });
             });
         }
-
 
         private void AllocateRows()
         {
@@ -407,7 +402,7 @@ namespace Soft64.Toolkits.WPF
 
                 m_OldGridWidth = m_GridWidth;
                 m_OldGridHeight = m_GridHeight;
-            }  
+            }
         }
 
         public void Refresh()

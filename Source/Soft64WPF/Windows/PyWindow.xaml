@@ -4,13 +4,13 @@
         Title="PyWindow" Height="300" Width="488">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="5*"/>
-            <RowDefinition/>
+            <RowDefinition Height="5*" />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <RichTextBox x:Name="xaml_RtbPyScript" Grid.RowSpan="2" FontFamily="Courier New">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
-                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Margin" Value="0" />
                 </Style>
             </RichTextBox.Resources>
         </RichTextBox>

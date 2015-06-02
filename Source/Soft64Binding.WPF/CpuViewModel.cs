@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using Soft64;
-using Soft64.MipsR4300.CP0;
+﻿using System.Windows;
 using Soft64.MipsR4300.Debugging;
 using Soft64.Toolkits.WPF;
 
@@ -13,7 +6,8 @@ namespace Soft64Binding.WPF
 {
     public class CpuViewModel : MachineComponentViewModel
     {
-        public CpuViewModel(MachineViewModel machineViewModel) : base(machineViewModel)
+        public CpuViewModel(MachineViewModel machineViewModel)
+            : base(machineViewModel)
         {
             var cpu = machineViewModel.TargetMachine.DeviceCPU;
 

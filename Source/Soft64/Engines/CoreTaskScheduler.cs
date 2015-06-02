@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Contexts;
 using System.Security;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,7 +27,6 @@ namespace Soft64.Engines
 
         public virtual void Initialize()
         {
-
         }
 
         public void CleanThreads()
@@ -85,7 +81,6 @@ namespace Soft64.Engines
                     thread.Start();
                     m_ThreadList.Add(thread);
                 }
-                
             }
 
             ResumeThreads();

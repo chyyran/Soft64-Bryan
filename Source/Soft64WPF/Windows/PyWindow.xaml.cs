@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
 using Microsoft.Win32;
@@ -34,7 +24,7 @@ namespace Soft64WPF.Windows
             xaml_BtnRunScriptFile.Click += xaml_BtnRunScriptFile_Click;
         }
 
-        void xaml_BtnRunScriptFile_Click(object sender, RoutedEventArgs e)
+        private void xaml_BtnRunScriptFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.Filter = "IronPython Script (*.py) | *.py;";
@@ -53,7 +43,7 @@ namespace Soft64WPF.Windows
             m_PyEngine.Runtime.LoadAssembly(typeof(MessageBox).Assembly);
         }
 
-        void xaml_BtnRunScript_Click(object sender, RoutedEventArgs e)
+        private void xaml_BtnRunScript_Click(object sender, RoutedEventArgs e)
         {
             String currentScript =
                 new TextRange(
@@ -62,7 +52,6 @@ namespace Soft64WPF.Windows
 
             try
             {
-                
                 m_PyEngine.Execute(currentScript);
             }
             catch (Exception ee)

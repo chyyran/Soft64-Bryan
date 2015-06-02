@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using Soft64.Debugging;
 
@@ -16,7 +12,6 @@ namespace Soft64Binding.WPF
             DebugOnBreakMode = Debugger.Current.BreakOnBootMode;
         }
 
-
         public static readonly DependencyProperty DebugOnBreakProperty =
             DependencyProperty.Register("DebugOnBreak", typeof(Boolean), typeof(DebuggerViewModel),
             new PropertyMetadata(DebugOnBreak_ChangeHandler));
@@ -29,7 +24,7 @@ namespace Soft64Binding.WPF
 
         private static void DebugOnBreak_ChangeHandler(DependencyObject o, DependencyPropertyChangedEventArgs a)
         {
-            Debugger.Current.DebugOnBreak =  (Boolean)a.NewValue;
+            Debugger.Current.DebugOnBreak = (Boolean)a.NewValue;
         }
 
         public static readonly DependencyProperty DebugOnBreakModeProperty =

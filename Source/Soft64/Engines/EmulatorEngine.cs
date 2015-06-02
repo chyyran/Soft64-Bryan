@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -50,6 +48,7 @@ namespace Soft64.Engines
         private EngineStatus m_Status = EngineStatus.Created;
 
         public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
+
         public event EventHandler<EngineStatusChangedArgs> EngineStatusChanged;
 
         protected EmulatorEngine()

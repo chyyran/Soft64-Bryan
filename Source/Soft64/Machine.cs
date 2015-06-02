@@ -21,8 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using NLog;
 using Soft64.Debugging;
 using Soft64.Engines;
@@ -39,7 +37,7 @@ namespace Soft64
     {
         /* Private Fields */
         private Boolean m_Booted = false;
-        private LifetimeState m_RunState =LifetimeState.Created;
+        private LifetimeState m_RunState = LifetimeState.Created;
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private EmulatorEngine m_CurrentEngine;
         private static ExpandoObject s_Config = new ExpandoObject();
@@ -49,7 +47,9 @@ namespace Soft64
         private EmulatorEngine m_PropEngine;
 
         /* Events */
+
         public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Machine()
@@ -139,7 +139,6 @@ namespace Soft64
                 }
             }
 
-
             return tmp;
         }
 
@@ -220,7 +219,7 @@ namespace Soft64
 
             SetNewRuntimeState(LifetimeState.Stopped);
         }
-       
+
         public void Dispose()
         {
             Dispose(true);
@@ -231,7 +230,6 @@ namespace Soft64
         {
             lock (m_PhysicalMemLock)
             {
-
             }
         }
 

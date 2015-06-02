@@ -1,31 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using Soft64.MipsR4300;
 using Soft64.MipsR4300.CP0;
 
 namespace Soft64Binding.WPF
 {
     public sealed class TlbCacheViewModel : MachineComponentViewModel
     {
-        public TlbCacheViewModel(MachineViewModel parentMachineModel) : base(parentMachineModel)
+        public TlbCacheViewModel(MachineViewModel parentMachineModel)
+            : base(parentMachineModel)
         {
             Refresh();
 
             WeakEventManager<TLBCache, TLBCacheChangeEventArgs>.AddHandler(
-                parentMachineModel.TargetMachine.DeviceCPU.VirtualMemoryStream.TLB, 
-                "CacheChanged", 
+                parentMachineModel.TargetMachine.DeviceCPU.VirtualMemoryStream.TLB,
+                "CacheChanged",
                 TlbChange);
 
             TlbEntries.CollectionChanged += TlbEntries_CollectionChanged;
         }
 
-        void TlbEntries_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void TlbEntries_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Replace)
             {
@@ -64,7 +60,6 @@ namespace Soft64Binding.WPF
                     }
                 }
             }
-
         }
 
         private void ReadRegs()
@@ -84,8 +79,6 @@ namespace Soft64Binding.WPF
         private void ReadEntries()
         {
             TLBCache cache = ParentMachine.TargetMachine.DeviceCPU.VirtualMemoryStream.TLB;
-
-
         }
 
         private static void UpdateRegister(DependencyObject o, DependencyPropertyChangedEventArgs a)

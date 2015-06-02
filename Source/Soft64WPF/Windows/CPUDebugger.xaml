@@ -5,6 +5,5 @@
         Title="CPU Debugger" Height="629.3" Width="801"
         DataContext="{Binding ., Source={StaticResource machineVM}}">
     <Grid>
-        
     </Grid>
 </Window>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Soft64Binding.WPF
 {
@@ -11,12 +6,12 @@ namespace Soft64Binding.WPF
     {
         private MachineViewModel m_MachineParent;
 
-        internal protected MachineComponentViewModel(MachineViewModel parentMachine)
+        protected internal MachineComponentViewModel(MachineViewModel parentMachine)
         {
             m_MachineParent = parentMachine;
         }
 
-        internal protected MachineViewModel ParentMachine
+        protected internal MachineViewModel ParentMachine
         {
             get { return m_MachineParent; }
         }

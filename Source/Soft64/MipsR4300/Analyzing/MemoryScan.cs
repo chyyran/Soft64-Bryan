@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Soft64.MipsR4300.Analyzing
@@ -33,7 +30,6 @@ namespace Soft64.MipsR4300.Analyzing
             //              select new { Address = address, Value = value };
 
             ///* Group sequantial results */
-
         }
 
         private UInt64 ReadValue(BinaryReader reader, Int64 position)

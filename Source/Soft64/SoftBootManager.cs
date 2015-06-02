@@ -22,7 +22,6 @@ using System.IO;
 using NLog;
 using Soft64.MipsR4300;
 using Soft64.MipsR4300.CP0;
-using Soft64.RCP;
 
 namespace Soft64
 {
@@ -124,7 +123,6 @@ namespace Soft64
                         state.GPRRegs64[11] = 0xffffffffa4000040UL; /* T3 */
                         state.GPRRegs64[29] = 0xffffffffa4001ff0UL; /* SP */
                         state.GPRRegs64[31] = 0xffffffffa4001550UL; /* RA */
-
                     });
                 }
                 else
@@ -174,7 +172,6 @@ namespace Soft64
             {
                 ELFExecutable executable = new ELFExecutable(s_ElfName, s_ElfStream);
                 logger.Debug("ELF Entry Point: " + executable.EntryPointAddress.ToString("X16"));
-
 
                 ELFLoader.LoadElf(executable);
                 logger.Trace("ELF loaded");

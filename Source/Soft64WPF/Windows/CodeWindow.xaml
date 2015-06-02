@@ -4,11 +4,11 @@
         Title="CodeWindow" Height="334" Width="518">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="11*"/>
-            <RowDefinition Height="65*"/>
+            <RowDefinition Height="11*" />
+            <RowDefinition Height="65*" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Button Content="Scan Code" HorizontalAlignment="Left" Margin="10,12,0,0" VerticalAlignment="Top" Width="75" Height="22"/>
+            <Button Content="Scan Code" HorizontalAlignment="Left" Margin="10,12,0,0" VerticalAlignment="Top" Width="75" Height="22" />
         </StackPanel>
         <RichTextBox Grid.Row="1" x:Name="xaml_AnalsysResult">
         </RichTextBox>

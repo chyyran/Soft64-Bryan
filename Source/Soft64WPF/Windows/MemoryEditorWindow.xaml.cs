@@ -3,7 +3,6 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Controls.Ribbon;
 using Soft64.Toolkits.WPF;
 using Soft64Binding.WPF;
 
@@ -28,20 +27,20 @@ namespace Soft64WPF.Windows
         {
             InitializeComponent();
             xaml_HexScrollBar.Scroll += xaml_HexScrollBar_Scroll;
-            xaml_ChkboxVAdressMode.Checked +=xaml_ChkboxVAdressMode_Checked;
+            xaml_ChkboxVAdressMode.Checked += xaml_ChkboxVAdressMode_Checked;
             xaml_ChkboxVAdressMode.Unchecked += xaml_ChkboxVAdressMode_Unchecked;
             m_PhysicalMem = new N64StreamWrapper();
 
             CurrentMemoryStream = StreamViewModel.NewModelFromStream(m_PhysicalMem);
         }
 
-        void xaml_ChkboxVAdressMode_Unchecked(object sender, RoutedEventArgs e)
+        private void xaml_ChkboxVAdressMode_Unchecked(object sender, RoutedEventArgs e)
         {
             CurrentAddress -= 0xA0000000;
             CurrentMemoryStream = StreamViewModel.NewModelFromStream(m_PhysicalMem); ;
         }
 
-        void xaml_ChkboxVAdressMode_Checked(object sender, RoutedEventArgs e)
+        private void xaml_ChkboxVAdressMode_Checked(object sender, RoutedEventArgs e)
         {
             CurrentAddress += 0xA0000000;
             CurrentMemoryStream = ((MachineViewModel)DataContext).Cpu.DebugVirtualMemory;

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using Soft64.Engines;
 
@@ -10,7 +6,8 @@ namespace Soft64Binding.WPF
 {
     public class EmulatorEngineViewModel : MachineComponentViewModel
     {
-        public EmulatorEngineViewModel(MachineViewModel machineModel) : base(machineModel)
+        public EmulatorEngineViewModel(MachineViewModel machineModel)
+            : base(machineModel)
         {
             Status = machineModel.TargetMachine.Engine.Status;
 

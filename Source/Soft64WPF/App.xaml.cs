@@ -18,16 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
 using System;
+using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using Newtonsoft.Json;
+using NLog;
 using Soft64;
 using Soft64.Debugging;
 using Soft64WPF.Windows;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System.IO;
-using System.Dynamic;
-using NLog;
 
 namespace Soft64WPF
 {

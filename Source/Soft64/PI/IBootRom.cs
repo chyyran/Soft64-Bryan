@@ -1,5 +1,4 @@
-﻿using System;
-namespace Soft64.PI
+﻿namespace Soft64.PI
 {
     public interface IBootRom
     {

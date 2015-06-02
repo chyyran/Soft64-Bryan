@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Soft64.MipsR4300;
-using Soft64.MipsR4300.CP0;
 
 namespace Soft64
 {
@@ -53,10 +47,10 @@ namespace Soft64
                 }
 
                 executable.CopyProgramSegment(
-                    entry, 
-                    nextEntryValid, 
-                    nextEntry, 
-                    Machine.Current.DeviceCPU.VirtualMemoryStream, 
+                    entry,
+                    nextEntryValid,
+                    nextEntry,
+                    Machine.Current.DeviceCPU.VirtualMemoryStream,
                     0xA0000000);
             }
         }

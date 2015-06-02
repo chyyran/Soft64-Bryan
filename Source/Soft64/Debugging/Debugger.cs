@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Soft64.Engines;
 
 namespace Soft64.Debugging
 {
@@ -32,11 +27,17 @@ namespace Soft64.Debugging
     public class Debugger : IDisposable
     {
         public event DebuggerEvent DebugBreak;
+
         public event DebuggerEvent DebugResume;
+
         public event DebuggerEvent DebugPause;
+
         public event DebuggerEvent StepOnce;
+
         public event DebuggerEvent StepIn;
+
         public event DebuggerEvent StepOut;
+
         public event DebuggerEvent StepOver;
 
         private DebuggerEngineEvent m_EngineHook;
@@ -73,9 +74,8 @@ namespace Soft64.Debugging
             }
         }
 
-        void Current_LifetimeStateChanged(object sender, LifeStateChangedArgs e)
+        private void Current_LifetimeStateChanged(object sender, LifeStateChangedArgs e)
         {
-
         }
 
         public void RegisterEngineHook(DebuggerEngineEvent hook)

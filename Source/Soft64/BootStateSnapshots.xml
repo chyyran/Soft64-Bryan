@@ -93,7 +93,7 @@
     <GPRRegSet Index="20">0x0000000000000000</GPRRegSet>
     <GPRRegSet Index="23">0x0000000000000006</GPRRegSet>
     <GPRRegSet Index="31">0xFFFFFFFFA4001554</GPRRegSet>
-    
+
     <BootSnap Condition="CIC" Value="X102">
       <GPRRegSet Index="05">0xFFFFFFFFC0F1D859</GPRRegSet>
       <GPRRegSet Index="14">0x000000002DE108EA</GPRRegSet>

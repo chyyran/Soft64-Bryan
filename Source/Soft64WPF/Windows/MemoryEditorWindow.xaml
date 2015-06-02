@@ -27,13 +27,13 @@
                     <Expander.HeaderTemplate>
                         <DataTemplate>
                             <Grid>
-                                <TextBlock Text="{Binding}" RenderTransformOrigin="0.5,0.5" >
+                                <TextBlock Text="{Binding}" RenderTransformOrigin="0.5,0.5">
                                     <TextBlock.RenderTransform>
                                         <TransformGroup>
-                                            <ScaleTransform/>
-                                            <SkewTransform/>
-                                            <RotateTransform Angle="90"/>
-                                            <TranslateTransform/>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="90" />
+                                            <TranslateTransform />
                                         </TransformGroup>
                                     </TextBlock.RenderTransform>
                                 </TextBlock>
@@ -41,7 +41,7 @@
                         </DataTemplate>
                     </Expander.HeaderTemplate>
                     <Grid Width="270" DataContext="{Binding Cpu.TlbCache}">
-                        <TreeView ItemsSource="{Binding TlbEntries}" Background="#FFA6A6A6" Foreground="#FFFFD100" FontSize="10" >
+                        <TreeView ItemsSource="{Binding TlbEntries}" Background="#FFA6A6A6" Foreground="#FFFFD100" FontSize="10">
                             <TreeView.ItemTemplate>
                                 <HierarchicalDataTemplate>
                                     <TreeViewItem>

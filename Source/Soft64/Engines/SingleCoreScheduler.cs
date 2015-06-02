@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +9,7 @@ namespace Soft64.Engines
     /// Runs all tasks on a single thread
     /// </summary>
     /// <remarks>
-    /// Warning: There should be just one self looping task after other tasks have finished, otherwise 
+    /// Warning: There should be just one self looping task after other tasks have finished, otherwise
     /// there is no way to ensure the loop will ever end and execute the tasks after it.  The core
     /// scheduler expects the engine to instantly kill all tasks when stopping the machine.  No resources
     /// need to be cleaned up inside the scheduler because the machine the machine already implements a clean
@@ -23,9 +20,9 @@ namespace Soft64.Engines
         private Thread m_SingleThread;
         private Action m_CallChain;
 
-        public SingleCoreScheduler() : base()
+        public SingleCoreScheduler()
+            : base()
         {
-
         }
 
         protected override System.Threading.Thread GetTaskThread(Task task)
@@ -47,7 +44,7 @@ namespace Soft64.Engines
             if (m_SingleThread == null)
             {
                 RuntimeHelpers.PrepareMethod(this.GetType().GetMethod(
-                    "ThreadCall", 
+                    "ThreadCall",
                     System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic
                     ).MethodHandle);
 
@@ -56,7 +53,7 @@ namespace Soft64.Engines
 
             return m_SingleThread;
         }
-        
+
         [STAThread]
         private void ThreadCall(Object obj)
         {
@@ -73,8 +70,6 @@ namespace Soft64.Engines
 
         public override void Initialize()
         {
-
-
             base.Initialize();
         }
     }

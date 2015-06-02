@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 
 namespace Soft64.Toolkits.WPF
 {
@@ -17,7 +16,6 @@ namespace Soft64.Toolkits.WPF
 
         static HexEditorTextBlock()
         {
-
         }
 
         public HexEditorTextBlock()
@@ -26,7 +24,7 @@ namespace Soft64.Toolkits.WPF
             Loaded += HexEditorTextBlock_Loaded;
         }
 
-        void HexEditorTextBlock_Loaded(object sender, RoutedEventArgs e)
+        private void HexEditorTextBlock_Loaded(object sender, RoutedEventArgs e)
         {
             Text = m_Text;
         }
@@ -69,7 +67,7 @@ namespace Soft64.Toolkits.WPF
         {
             get { return m_Type; }
         }
-        
+
         public Int32 BlockHash
         {
             get { return m_BlockHash; }

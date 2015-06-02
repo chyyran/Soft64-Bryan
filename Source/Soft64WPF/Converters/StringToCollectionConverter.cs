@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace Soft64WPF.Converters
@@ -29,6 +26,6 @@ namespace Soft64WPF.Converters
             throw new NotImplementedException();
         }
 
-        #endregion
+        #endregion IValueConverter Members
     }
 }

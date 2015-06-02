@@ -19,7 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 using System.IO;
-using System.Linq;
 using Soft64.IO;
 
 namespace Soft64
@@ -128,9 +127,9 @@ namespace Soft64
         }
 
         public void CopyProgramSegment(
-            ELFProgramHeaderEntry entry, 
-            Boolean nextSegmentValid, 
-            ELFProgramHeaderEntry nextSegment, 
+            ELFProgramHeaderEntry entry,
+            Boolean nextSegmentValid,
+            ELFProgramHeaderEntry nextSegment,
             Stream destStream,
             Int64 destPosition)
         {

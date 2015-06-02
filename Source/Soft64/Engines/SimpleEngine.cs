@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Soft64.Engines
 {
     public sealed class SimpleEngine : EmulatorEngine
     {
-        public SimpleEngine() : base()
+        public SimpleEngine()
+            : base()
         {
             /* Uses just a single threaded scheduler */
             SetCoreScheduler(new SingleCoreScheduler());
