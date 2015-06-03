@@ -107,13 +107,9 @@ namespace Soft64.Toolkits.WPF
                     row.RowIndex = i;
                     row.Address = position + (m_GridWidth * i);
                     row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
-                }
 
-                Dispatcher.Invoke(() =>
-                {
-                    foreach (var row in rows)
-                        row.UpdateText();
-                });
+                    Dispatcher.InvokeAsync(row.UpdateText);
+                }
             });
         }
 
