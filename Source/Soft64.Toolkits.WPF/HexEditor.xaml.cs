@@ -16,34 +16,6 @@ namespace Soft64.Toolkits.WPF
     /// </summary>
     public partial class HexEditor : UserControl
     {
-        public static readonly DependencyProperty StreamSourceProperty =
-            DependencyProperty.Register("StreamSource", typeof(StreamViewModel), typeof(HexEditor),
-            new PropertyMetadata(StreamVMChanged));
-
-        private static readonly DependencyProperty DataRowsProperty =
-            DependencyProperty.Register("DataRows", typeof(ObservableCollection<HexEditorRow>), typeof(HexEditor),
-            new PropertyMetadata());
-
-        public static readonly DependencyProperty GridLineBrushProperty =
-            DependencyProperty.Register("GridLineBrush", typeof(Brush), typeof(HexEditor),
-            new PropertyMetadata(new SolidColorBrush(Colors.White)));
-
-        public static readonly DependencyProperty BaseAddressProperty =
-            DependencyProperty.Register("BaseAddress", typeof(Int64), typeof(HexEditor),
-            new PropertyMetadata((o, a) =>
-            {
-                HexEditor editor = o as HexEditor;
-                if (editor.m_ClonedStreamVM != null)
-                {
-                    editor.m_ClonedStreamVM.StreamPosition = (Int64)a.NewValue;
-                    editor.Refresh();
-                }
-            }));
-
-        public static readonly DependencyProperty RefreshOnResizeProperty =
-            DependencyProperty.Register("RefreshOnResize", typeof(Boolean), typeof(HexEditor),
-            new PropertyMetadata());
-
         private Int32 m_GridWidth;
         private Int32 m_GridHeight;
         private Boolean m_HexUpperNibble;
@@ -57,24 +29,6 @@ namespace Soft64.Toolkits.WPF
         static HexEditor()
         {
             SetupFontProperties();
-        }
-
-        public Int64 BaseAddress
-        {
-            get { return (Int64)GetValue(BaseAddressProperty); }
-            set { SetValue(BaseAddressProperty, value); }
-        }
-
-        public Brush GridLineBrush
-        {
-            get { return (Brush)GetValue(GridLineBrushProperty); }
-            set { SetValue(GridLineBrushProperty, value); }
-        }
-
-        public Boolean RefreshOnResize
-        {
-            get { return (Boolean)GetValue(RefreshOnResizeProperty); }
-            set { SetValue(RefreshOnResizeProperty, value); }
         }
 
         private static void SetupFontProperties()
@@ -107,17 +61,9 @@ namespace Soft64.Toolkits.WPF
         private void HexEditor_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             /* Compute the number of rows and columns that fit into the avaiable graphics space */
-            m_GridHeight = (Int32)(e.NewSize.Height / m_FontSize.Height) - 1;
-            m_GridWidth = (Int32)(e.NewSize.Width / 2 / m_FontSize.Width);
-
-            /* If some reason grid lengths are invalid, keep sizes to 0 */
-            if (m_GridHeight < 0 || m_GridWidth < 0)
-            {
-                m_GridHeight = 0;
-                m_GridWidth = 0;
-            }
-
-            Dispatcher.Invoke(Refresh);
+            m_GridHeight = Math.Max(0, (Int32)(e.NewSize.Height / m_FontSize.Height) - 1);
+            m_GridWidth = Math.Max(0, (Int32)(e.NewSize.Width / 2 / m_FontSize.Width));
+            Refresh();
         }
 
         private void UpdateHexGrid()
@@ -417,16 +363,62 @@ namespace Soft64.Toolkits.WPF
             }
         }
 
+        public static readonly DependencyProperty StreamSourceProperty =
+            DependencyProperty.Register("StreamSource", typeof(StreamViewModel), typeof(HexEditor),
+            new PropertyMetadata(StreamVMChanged));
+
         public StreamViewModel StreamSource
         {
             get { return (StreamViewModel)GetValue(StreamSourceProperty); }
             set { SetValue(StreamSourceProperty, value); }
         }
 
+        private static readonly DependencyProperty DataRowsProperty =
+            DependencyProperty.Register("DataRows", typeof(ObservableCollection<HexEditorRow>), typeof(HexEditor),
+            new PropertyMetadata());
+
         internal ObservableCollection<HexEditorRow> DataRows
         {
             get { return (ObservableCollection<HexEditorRow>)GetValue(DataRowsProperty); }
             set { SetValue(DataRowsProperty, value); }
+        }
+
+        public static readonly DependencyProperty GridLineBrushProperty =
+            DependencyProperty.Register("GridLineBrush", typeof(Brush), typeof(HexEditor),
+            new PropertyMetadata(new SolidColorBrush(Colors.White)));
+
+        public Brush GridLineBrush
+        {
+            get { return (Brush)GetValue(GridLineBrushProperty); }
+            set { SetValue(GridLineBrushProperty, value); }
+        }
+
+        public static readonly DependencyProperty BaseAddressProperty =
+            DependencyProperty.Register("BaseAddress", typeof(Int64), typeof(HexEditor),
+            new PropertyMetadata((o, a) =>
+            {
+                HexEditor editor = o as HexEditor;
+                if (editor.m_ClonedStreamVM != null)
+                {
+                    editor.m_ClonedStreamVM.StreamPosition = (Int64)a.NewValue;
+                    editor.Refresh();
+                }
+            }));
+
+        public Int64 BaseAddress
+        {
+            get { return (Int64)GetValue(BaseAddressProperty); }
+            set { SetValue(BaseAddressProperty, value); }
+        }
+
+        public static readonly DependencyProperty RefreshOnResizeProperty =
+            DependencyProperty.Register("RefreshOnResize", typeof(Boolean), typeof(HexEditor),
+            new PropertyMetadata());
+
+        public Boolean RefreshOnResize
+        {
+            get { return (Boolean)GetValue(RefreshOnResizeProperty); }
+            set { SetValue(RefreshOnResizeProperty, value); }
         }
 
         public Int32 NumRows
