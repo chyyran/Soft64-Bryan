@@ -107,8 +107,8 @@ namespace Soft64.Toolkits.WPF
         private void HexEditor_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             /* Compute the number of rows and columns that fit into the avaiable graphics space */
-            m_GridHeight = (Int32)Math.Floor((e.NewSize.Height / 1.10) / m_FontSize.Height);
-            m_GridWidth = (Int32)Math.Floor((e.NewSize.Width / 2.5) / m_FontSize.Width);
+            m_GridHeight = (Int32)(e.NewSize.Height / m_FontSize.Height) - 1;
+            m_GridWidth = (Int32)(e.NewSize.Width / 2 / m_FontSize.Width);
 
             /* If some reason grid lengths are invalid, keep sizes to 0 */
             if (m_GridHeight < 0 || m_GridWidth < 0)
