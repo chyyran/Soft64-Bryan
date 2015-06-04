@@ -37,6 +37,7 @@ namespace Soft64.IO
         private List<Stream> m_StreamReferences;
         private HashSet<Stream> m_StreamHashSet;
         private static readonly Type[] s_RequestParamTypes = { typeof(Byte[]), typeof(Int32), typeof(Int32) };
+        private Int32 m_CacheCount = 0;
 
         public _StreamIOCompiler()
         {
@@ -45,9 +46,11 @@ namespace Soft64.IO
 
         public void ClearCache()
         {
+            m_CacheCount = 0;
             m_CompiledOperations = new Dictionary<Int64, CompiledAction>();
             m_StreamReferences = new List<Stream>();
             m_StreamHashSet = new HashSet<Stream>();
+            GC.Collect();
         }
 
         public void ExecuteOperation(
@@ -66,6 +69,7 @@ namespace Soft64.IO
             else
             {
                 CompiledAction compiledAction = null;
+                m_CacheCount++;
 
                 /* Begin building a new memory IO method */
                 Type typeReturn = typeof(void);
@@ -169,6 +173,11 @@ namespace Soft64.IO
         public Boolean ContainsOperation(Int64 address, Int32 bufferOffset, Int32 count)
         {
             return m_CompiledOperations.ContainsKey(GenerateHash(address, bufferOffset, count));
+        }
+
+        public Int32 CacheCount
+        {
+            get { return m_CacheCount; }
         }
     }
 }

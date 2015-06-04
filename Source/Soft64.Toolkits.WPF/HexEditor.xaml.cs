@@ -21,9 +21,9 @@ namespace Soft64.Toolkits.WPF
         private Boolean m_HexUpperNibble;
         private Size m_FontSize;
         private StreamViewModel m_ClonedStreamVM;
-        private Dictionary<Int32, HexEditorTextBlock> m_HexLUT = new Dictionary<int, HexEditorTextBlock>();
-        private Dictionary<Int32, HexEditorTextBlock> m_AsciiLut = new Dictionary<int, HexEditorTextBlock>();
-        private List<HexEditorTextBlock> m_BlockCache = new List<HexEditorTextBlock>();
+        private Dictionary<Int32, HexEditorLabel> m_HexLUT = new Dictionary<int, HexEditorLabel>();
+        private Dictionary<Int32, HexEditorLabel> m_AsciiLut = new Dictionary<int, HexEditorLabel>();
+        private List<HexEditorLabel> m_BlockCache = new List<HexEditorLabel>();
         private Int32 m_OldGridWidth, m_OldGridHeight;
 
         static HexEditor()
@@ -52,7 +52,6 @@ namespace Soft64.Toolkits.WPF
         {
             InitializeComponent();
             DataRows = new ObservableCollection<HexEditorRow>();
-            xaml_rootGrid.MouseLeftButtonDown += xaml_rootGrid_MouseLeftButtonDown;
             this.TextInput += HexEditor_TextInput;
             this.KeyDown += HexEditor_KeyDown;
             this.SizeChanged += HexEditor_SizeChanged;
@@ -132,8 +131,11 @@ namespace Soft64.Toolkits.WPF
             {
                 for (Int32 i = 0; i < (size - count); i++)
                 {
-                    HexEditorTextBlock block = new HexEditorTextBlock();
+                    HexEditorLabel block = new HexEditorLabel();
+                    block.Foreground = Foreground;
+                    block.Padding = new Thickness(0, 0, 0, 0);
                     block.Margin = new Thickness(2, 0, 0, 0);
+                    block.MouseLeftButtonDown += Label_MouseLeftButtonUp;
                     m_BlockCache.Add(block);
                 }
             }
@@ -156,7 +158,7 @@ namespace Soft64.Toolkits.WPF
                 MoveCaret(0, 0, BlockType.Hex);
             }
 
-            HexEditorTextBlock block = xaml_CaretControl.TargetControl as HexEditorTextBlock;
+            HexEditorLabel block = xaml_CaretControl.TargetControl as HexEditorLabel;
 
             Int32 row = block.RowIndex;
             Int32 col = block.ColIndex;
@@ -174,7 +176,7 @@ namespace Soft64.Toolkits.WPF
 
         private void HexEditor_TextInput(object sender, TextCompositionEventArgs e)
         {
-            HexEditorTextBlock block = xaml_CaretControl.TargetControl as HexEditorTextBlock;
+            HexEditorLabel block = xaml_CaretControl.TargetControl as HexEditorLabel;
             Int32 col = block.ColIndex % m_GridWidth;
 
             if (block != null)
@@ -266,7 +268,7 @@ namespace Soft64.Toolkits.WPF
                 row = 0;
             }
 
-            UIElement element = HexEditorTextBlock.GetBlockAt(row, col, type == BlockType.Hex ? HexLUT : AsciiLUT);
+            UIElement element = HexEditorLabel.GetBlockAt(row, col, type == BlockType.Hex ? HexLUT : AsciiLUT);
 
             if (element != null)
             {
@@ -282,16 +284,10 @@ namespace Soft64.Toolkits.WPF
             }
         }
 
-        private void xaml_rootGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Label_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Keyboard.Focus(this);
-
-            TextBlock targettedTextBlock = e.OriginalSource as HexEditorTextBlock;
-
-            if (targettedTextBlock != null)
-            {
-                xaml_CaretControl.TargetControl = targettedTextBlock;
-            }
+            xaml_CaretControl.TargetControl = sender as FrameworkElement;
         }
 
         private static void FontPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs a)
@@ -427,12 +423,12 @@ namespace Soft64.Toolkits.WPF
             get { return m_GridWidth; }
         }
 
-        private Dictionary<Int32, HexEditorTextBlock> HexLUT
+        private Dictionary<Int32, HexEditorLabel> HexLUT
         {
             get { return m_HexLUT; }
         }
 
-        private Dictionary<Int32, HexEditorTextBlock> AsciiLUT
+        private Dictionary<Int32, HexEditorLabel> AsciiLUT
         {
             get { return m_AsciiLut; }
         }

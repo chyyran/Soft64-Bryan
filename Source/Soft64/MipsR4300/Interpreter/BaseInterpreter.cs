@@ -87,13 +87,6 @@ namespace Soft64.MipsR4300.Interpreter
         protected MipsInstruction FetchInstruction()
         {
             Int64 address = (Int64)MipsState.PC;
-
-            /* IF we are using an HLE kernel, we must prep the TLB */
-            //if (ParentMips.UsingOS)
-            //{
-            //    ParentMips.KernelHook.PrepareTLBAccess(address);
-            //}
-
             m_InstructionBinReader.BaseStream.Position = address;
             return new MipsInstruction((UInt64)address, m_InstructionBinReader.ReadUInt32());
         }

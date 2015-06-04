@@ -5,20 +5,20 @@ using System.Windows.Controls;
 
 namespace Soft64.Toolkits.WPF
 {
-    public sealed class HexEditorTextBlock : TextBlock
+    public sealed class HexEditorLabel : Label
     {
         private BlockType m_Type;
         private Int32 m_RowIndex;
         private Int32 m_ColIndex;
-        private Dictionary<Int32, HexEditorTextBlock> m_LUT;
+        private Dictionary<Int32, HexEditorLabel> m_LUT;
         private Int32 m_BlockHash;
         private String m_Text;
 
-        static HexEditorTextBlock()
+        static HexEditorLabel()
         {
         }
 
-        public HexEditorTextBlock()
+        public HexEditorLabel()
         {
             Unloaded += HexEditorTextBlock_Unloaded;
             Loaded += HexEditorTextBlock_Loaded;
@@ -26,10 +26,10 @@ namespace Soft64.Toolkits.WPF
 
         private void HexEditorTextBlock_Loaded(object sender, RoutedEventArgs e)
         {
-            Text = m_Text;
+            this.Content = m_Text;
         }
 
-        public void SetEditorPosition(BlockType type, Int32 row, Int32 col, Dictionary<Int32, HexEditorTextBlock> lut)
+        public void SetEditorPosition(BlockType type, Int32 row, Int32 col, Dictionary<Int32, HexEditorLabel> lut)
         {
             m_Type = type;
             m_RowIndex = row;
@@ -85,9 +85,9 @@ namespace Soft64.Toolkits.WPF
             return (col * 0x1f1f1f1f) ^ row;
         }
 
-        public static HexEditorTextBlock GetBlockAt(Int32 row, Int32 col, Dictionary<Int32, HexEditorTextBlock> lut)
+        public static HexEditorLabel GetBlockAt(Int32 row, Int32 col, Dictionary<Int32, HexEditorLabel> lut)
         {
-            HexEditorTextBlock element = null;
+            HexEditorLabel element = null;
             Int32 targetHash = GetBlockHash(row, col);
             lut.TryGetValue(targetHash, out element);
             return element;

@@ -38,6 +38,7 @@ namespace Soft64.IO
         private Object m_IOLock = new object();
         private _StreamIOCompiler m_OpCompiler;
         private _SafeUnifiedStream m_SafeStream;
+        private const Int32 CACHE_MAX = 450;
 
         protected UnifiedStream()
         {
@@ -133,6 +134,11 @@ namespace Soft64.IO
             }
             else
             {
+                if (m_OpCompiler.CacheCount > CACHE_MAX)
+                {
+                    m_OpCompiler.ClearCache();
+                }
+
                 m_OpCompiler.ExecuteOperation(request, query, writeMode, op);
             }
 

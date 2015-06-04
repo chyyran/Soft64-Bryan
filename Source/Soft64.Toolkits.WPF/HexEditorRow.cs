@@ -15,8 +15,8 @@ namespace Soft64.Toolkits.WPF
         private Int32 m_RowIndex;
         private StackPanel m_HexRootPanel;
         private StackPanel m_AsciiRootPanel;
-        private List<HexEditorTextBlock> m_HexBlocks;
-        private List<HexEditorTextBlock> m_AsciiBlocks;
+        private List<HexEditorLabel> m_HexBlocks;
+        private List<HexEditorLabel> m_AsciiBlocks;
 
         private static readonly HashSet<Char> s_PrintableHashSet = new HashSet<char>((
             from index in Enumerable.Range(0, 128)
@@ -24,8 +24,25 @@ namespace Soft64.Toolkits.WPF
             where Char.IsLetterOrDigit(ch) || Char.IsSymbol(ch) || Char.IsPunctuation(ch)
             select ch));
 
+        private static readonly String[] s_PrintableHexTable;
+        private static readonly String[] s_PrintableAsciiTable;
+
+        static HexEditorRow()
+        {
+            s_PrintableHexTable = new String[256];
+            s_PrintableAsciiTable = new String[256];
+
+            for(Int32 i = 0; i < 256; i++)
+            {
+                s_PrintableHexTable[i] = i.ToString("X2");
+                s_PrintableAsciiTable[i] = new String(GetAscii(Convert.ToByte(i)), 1);
+            }
+        }
+
         public HexEditorRow()
         {
+
+
             m_RowBytes = new List<Byte>();
             m_HexRootPanel = new StackPanel();
             m_HexRootPanel.Orientation = Orientation.Horizontal;
@@ -35,8 +52,8 @@ namespace Soft64.Toolkits.WPF
             m_AsciiRootPanel.Orientation = Orientation.Horizontal;
             m_AsciiRootPanel.Unloaded += m_AsciiRootPanel_Unloaded;
             m_AsciiRootPanel.Loaded += m_AsciiRootPanel_Loaded;
-            m_HexBlocks = new List<HexEditorTextBlock>();
-            m_AsciiBlocks = new List<HexEditorTextBlock>();
+            m_HexBlocks = new List<HexEditorLabel>();
+            m_AsciiBlocks = new List<HexEditorLabel>();
         }
 
         private void m_AsciiRootPanel_Loaded(object sender, RoutedEventArgs e)
@@ -69,27 +86,27 @@ namespace Soft64.Toolkits.WPF
             m_HexRootPanel.Children.Clear();
         }
 
-        public void SetBytes(List<HexEditorTextBlock> blockCache, Byte[] bytes, Dictionary<Int32, HexEditorTextBlock> hexLUT, Dictionary<Int32, HexEditorTextBlock> asciiLUT)
+        public void SetBytes(List<HexEditorLabel> blockCache, Byte[] bytes, Dictionary<Int32, HexEditorLabel> hexLUT, Dictionary<Int32, HexEditorLabel> asciiLUT)
         {
             for (Int32 i = 0; i < bytes.Length; i++)
             {
                 m_RowBytes.Add(bytes[i]);
                 Int32 index = i + (bytes.Length * RowIndex * 2) + (i * 1);
 
-                HexEditorTextBlock hexBlock = blockCache[index];
+                HexEditorLabel hexBlock = blockCache[index];
                 hexBlock.SetEditorPosition(BlockType.Hex, RowIndex, i, hexLUT);
-                hexBlock.BlockText = bytes[i].ToString("X2");
+                hexBlock.BlockText = s_PrintableHexTable[bytes[i]];
 
-                HexEditorTextBlock asciiBlock = blockCache[index + 1];
+                HexEditorLabel asciiBlock = blockCache[index + 1];
                 asciiBlock.SetEditorPosition(BlockType.Ascii, RowIndex, i, asciiLUT);
-                asciiBlock.BlockText = new String(GetAscii(bytes[i]), 1);
+                asciiBlock.BlockText = s_PrintableAsciiTable[bytes[i]];
 
                 m_HexBlocks.Add(hexBlock);
                 m_AsciiBlocks.Add(asciiBlock);
             }
         }
 
-        private Char GetAscii(Byte value)
+        private static Char GetAscii(Byte value)
         {
             if (s_PrintableHashSet.Contains((char)value))
                 return (char)value;
@@ -119,8 +136,8 @@ namespace Soft64.Toolkits.WPF
             Bytes[byteOffset] = b;
             source.Position = Address + byteOffset;
             source.WriteByte(b);
-            m_AsciiBlocks[byteOffset].Text = new String(GetAscii(b), 1);
-            m_HexBlocks[byteOffset].Text = b.ToString("X2");
+            m_AsciiBlocks[byteOffset].Content = s_PrintableAsciiTable[b];
+            m_HexBlocks[byteOffset].Content = s_PrintableHexTable[b];
         }
 
         public Byte GetByteValue(Int32 offset)
@@ -141,10 +158,10 @@ namespace Soft64.Toolkits.WPF
         internal void UpdateText()
         {
             foreach (var h in m_HexBlocks)
-                h.Text = h.BlockText;
+                h.Content = h.BlockText;
 
             foreach (var a in m_AsciiBlocks)
-                a.Text = a.BlockText;
+                a.Content = a.BlockText;
 
             var e = PropertyChanged;
 
