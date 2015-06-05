@@ -3,7 +3,7 @@
   <Options>
     <Solution>Soft64.sln</Solution>
     <CollectionMethod>Sampling</CollectionMethod>
-    <AllocationMethod>Allocation</AllocationMethod>
+    <AllocationMethod>None</AllocationMethod>
     <AddReport>true</AddReport>
     <ResourceBasedAnalysisSelected>true</ResourceBasedAnalysisSelected>
     <UniqueReport>Timestamp</UniqueReport>
@@ -69,7 +69,7 @@
   </Binaries>
   <Reports>
     <Report>
-      <Path>Soft64WPF150603(2).vsp</Path>
+      <Path>Soft64WPF150605.vsp</Path>
     </Report>
   </Reports>
   <Launches>

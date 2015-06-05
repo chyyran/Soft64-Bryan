@@ -22,11 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{72DE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soft64Console", "Soft64Console\Soft64Console.csproj", "{1E0A9417-A6B8-48A9-AD46-E54261BC7933}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{534F7DC2-6134-405E-8D82-33A5A571E041}"
-	ProjectSection(SolutionItems) = preProject
-		WPFPerformence.psess = WPFPerformence.psess
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soft64.Toolkits.WPF", "Soft64.Toolkits.WPF\Soft64.Toolkits.WPF.csproj", "{334C5B35-8FB0-4FD6-89D1-572C94ACFD5E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Toolkits", "Toolkits", "{50A67BE2-619C-4B15-B7C1-B84D9B928D75}"
@@ -92,5 +87,8 @@ Global
 		{1E6F2FEE-6112-404C-868D-66AC7BF099E5} = {EADBA694-34EC-4CB4-BEA7-63F1DE746F05}
 		{334C5B35-8FB0-4FD6-89D1-572C94ACFD5E} = {50A67BE2-619C-4B15-B7C1-B84D9B928D75}
 		{AEEF0B8E-09C6-4A2C-93B9-2894E577D435} = {72DEE66A-FEDD-4DD9-BFB8-12BA0534AA1F}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

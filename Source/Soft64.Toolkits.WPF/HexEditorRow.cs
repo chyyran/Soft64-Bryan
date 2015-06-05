@@ -17,6 +17,8 @@ namespace Soft64.Toolkits.WPF
         private StackPanel m_AsciiRootPanel;
         private List<HexEditorLabel> m_HexBlocks;
         private List<HexEditorLabel> m_AsciiBlocks;
+        private Delegate m_UpdateTextEvent;
+        private Int32 m_UsageCounter = 0;
 
         private static readonly HashSet<Char> s_PrintableHashSet = new HashSet<char>((
             from index in Enumerable.Range(0, 128)
@@ -41,8 +43,6 @@ namespace Soft64.Toolkits.WPF
 
         public HexEditorRow()
         {
-
-
             m_RowBytes = new List<Byte>();
             m_HexRootPanel = new StackPanel();
             m_HexRootPanel.Orientation = Orientation.Horizontal;
@@ -51,22 +51,19 @@ namespace Soft64.Toolkits.WPF
             m_AsciiRootPanel = new StackPanel();
             m_AsciiRootPanel.Orientation = Orientation.Horizontal;
             m_AsciiRootPanel.Unloaded += m_AsciiRootPanel_Unloaded;
-            m_AsciiRootPanel.Loaded += m_AsciiRootPanel_Loaded;
             m_HexBlocks = new List<HexEditorLabel>();
             m_AsciiBlocks = new List<HexEditorLabel>();
+            m_UpdateTextEvent = new Action(() => { });
         }
 
-        private void m_AsciiRootPanel_Loaded(object sender, RoutedEventArgs e)
+        private void AddChildren()
         {
             if (m_AsciiRootPanel.Children.Count <= 0)
             {
                 foreach (var child in m_AsciiBlocks)
                     m_AsciiRootPanel.Children.Add(child);
             }
-        }
 
-        private void m_HexRootPanel_Loaded(object sender, RoutedEventArgs e)
-        {
             if (m_HexRootPanel.Children.Count <= 0)
             {
                 foreach (var child in m_HexBlocks)
@@ -74,6 +71,11 @@ namespace Soft64.Toolkits.WPF
                     m_HexRootPanel.Children.Add(child);
                 }
             }
+        }
+
+        private void m_HexRootPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            AddChildren();
         }
 
         private void m_AsciiRootPanel_Unloaded(object sender, RoutedEventArgs e)
@@ -101,8 +103,27 @@ namespace Soft64.Toolkits.WPF
                 asciiBlock.SetEditorPosition(BlockType.Ascii, RowIndex, i, asciiLUT);
                 asciiBlock.BlockText = s_PrintableAsciiTable[bytes[i]];
 
-                m_HexBlocks.Add(hexBlock);
-                m_AsciiBlocks.Add(asciiBlock);
+                if (m_UsageCounter > bytes.Length)
+                {
+                    Int32 diff = m_UsageCounter - bytes.Length;
+                    m_UsageCounter -= diff;
+                    m_HexBlocks.RemoveRange((m_HexBlocks.Count - diff) - 1, diff);
+                    m_AsciiBlocks.RemoveRange((m_AsciiBlocks.Count - diff) - 1, diff);
+                }
+
+                if (m_UsageCounter < bytes.Length)
+                {
+                    m_UpdateTextEvent =  Delegate.Combine(m_UpdateTextEvent, new Action(() =>
+                    {
+                        hexBlock.Content = hexBlock.BlockText;
+                        asciiBlock.Content = asciiBlock.BlockText;
+                    }));
+
+                    m_HexBlocks.Add(hexBlock);
+                    m_AsciiBlocks.Add(asciiBlock);
+
+                    m_UsageCounter++;
+                }
             }
         }
 
@@ -157,11 +178,7 @@ namespace Soft64.Toolkits.WPF
 
         internal void UpdateText()
         {
-            foreach (var h in m_HexBlocks)
-                h.Content = h.BlockText;
-
-            foreach (var a in m_AsciiBlocks)
-                a.Content = a.BlockText;
+            m_UpdateTextEvent.DynamicInvoke();
 
             var e = PropertyChanged;
 
