@@ -59,7 +59,7 @@
     <Compile Include="HexEditor.xaml.cs">
       <DependentUpon>HexEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HexEditorLabel.cs" />
+    <Compile Include="HexEditorBlock.cs" />
     <Compile Include="InvertColorEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

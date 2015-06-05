@@ -21,9 +21,9 @@ namespace Soft64.Toolkits.WPF
         private Boolean m_HexUpperNibble;
         private Size m_FontSize;
         private StreamViewModel m_ClonedStreamVM;
-        private Dictionary<Int32, HexEditorLabel> m_HexLUT = new Dictionary<int, HexEditorLabel>();
-        private Dictionary<Int32, HexEditorLabel> m_AsciiLut = new Dictionary<int, HexEditorLabel>();
-        private List<HexEditorLabel> m_BlockCache = new List<HexEditorLabel>();
+        private Dictionary<Int32, HexEditorBlock> m_HexLUT = new Dictionary<int, HexEditorBlock>();
+        private Dictionary<Int32, HexEditorBlock> m_AsciiLut = new Dictionary<int, HexEditorBlock>();
+        private List<HexEditorBlock> m_BlockCache = new List<HexEditorBlock>();
         private Int32 m_OldGridWidth, m_OldGridHeight;
 
         static HexEditor()
@@ -131,7 +131,7 @@ namespace Soft64.Toolkits.WPF
             {
                 for (Int32 i = 0; i < (size - count); i++)
                 {
-                    HexEditorLabel block = new HexEditorLabel();
+                    HexEditorBlock block = new HexEditorBlock();
                     block.Foreground = Foreground;
                     block.Padding = new Thickness(0, 0, 0, 0);
                     block.Margin = new Thickness(2, 0, 0, 0);
@@ -158,7 +158,7 @@ namespace Soft64.Toolkits.WPF
                 MoveCaret(0, 0, BlockType.Hex);
             }
 
-            HexEditorLabel block = xaml_CaretControl.TargetControl as HexEditorLabel;
+            HexEditorBlock block = xaml_CaretControl.TargetControl as HexEditorBlock;
 
             Int32 row = block.RowIndex;
             Int32 col = block.ColIndex;
@@ -176,7 +176,7 @@ namespace Soft64.Toolkits.WPF
 
         private void HexEditor_TextInput(object sender, TextCompositionEventArgs e)
         {
-            HexEditorLabel block = xaml_CaretControl.TargetControl as HexEditorLabel;
+            HexEditorBlock block = xaml_CaretControl.TargetControl as HexEditorBlock;
             Int32 col = block.ColIndex % m_GridWidth;
 
             if (block != null)
@@ -268,7 +268,7 @@ namespace Soft64.Toolkits.WPF
                 row = 0;
             }
 
-            UIElement element = HexEditorLabel.GetBlockAt(row, col, type == BlockType.Hex ? HexLUT : AsciiLUT);
+            UIElement element = HexEditorBlock.GetBlockAt(row, col, type == BlockType.Hex ? HexLUT : AsciiLUT);
 
             if (element != null)
             {
@@ -423,12 +423,12 @@ namespace Soft64.Toolkits.WPF
             get { return m_GridWidth; }
         }
 
-        private Dictionary<Int32, HexEditorLabel> HexLUT
+        private Dictionary<Int32, HexEditorBlock> HexLUT
         {
             get { return m_HexLUT; }
         }
 
-        private Dictionary<Int32, HexEditorLabel> AsciiLUT
+        private Dictionary<Int32, HexEditorBlock> AsciiLUT
         {
             get { return m_AsciiLut; }
         }
