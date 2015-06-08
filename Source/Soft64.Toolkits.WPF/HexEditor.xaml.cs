@@ -19,12 +19,15 @@ namespace Soft64.Toolkits.WPF
         private Int32 m_GridWidth;
         private Int32 m_GridHeight;
         private Boolean m_HexUpperNibble;
-        private Size m_FontSize;
+        private Size m_HexFontSize;
+        private Size m_AsciiFontSize;
         private StreamViewModel m_ClonedStreamVM;
         private Dictionary<Int32, HexEditorBlock> m_HexLUT = new Dictionary<int, HexEditorBlock>();
         private Dictionary<Int32, HexEditorBlock> m_AsciiLut = new Dictionary<int, HexEditorBlock>();
         private List<HexEditorBlock> m_BlockCache = new List<HexEditorBlock>();
         private Int32 m_OldGridWidth, m_OldGridHeight;
+        private GeometryCollection m_HexGeo;
+        private GeometryCollection m_AsciiGeo;
 
         static HexEditor()
         {
@@ -50,6 +53,8 @@ namespace Soft64.Toolkits.WPF
 
         public HexEditor()
         {
+            m_HexGeo = new GeometryCollection();
+            m_AsciiGeo = new GeometryCollection();
             InitializeComponent();
             DataRows = new ObservableCollection<HexEditorRow>();
             this.TextInput += HexEditor_TextInput;
@@ -60,10 +65,36 @@ namespace Soft64.Toolkits.WPF
         private void HexEditor_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             /* Compute the number of rows and columns that fit into the avaiable graphics space */
-            m_GridHeight = Math.Max(0, (Int32)(e.NewSize.Height / m_FontSize.Height) - 1);
-            m_GridWidth = Math.Max(0, (Int32)(e.NewSize.Width / 2 / m_FontSize.Width));
+            m_GridHeight = Math.Max(0, (Int32)(e.NewSize.Height / m_HexFontSize.Height) - 1);
+            m_GridWidth = Math.Max(0, (Int32)(e.NewSize.Width / 2 / m_HexFontSize.Width));
             Refresh();
         }
+
+        internal static GlyphRun CreateGlyphRun(Typeface typeface, string text, double size, Point origin)
+        {
+            if (text.Length == 0)
+                return null;
+
+            GlyphTypeface glyphTypeface;
+
+            typeface.TryGetGlyphTypeface(out glyphTypeface);
+
+            var glyphIndexes = new ushort[text.Length];
+            var advanceWidths = new double[text.Length];
+
+            for (int n = 0; n < text.Length; n++)
+            {
+                var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[n]];
+                glyphIndexes[n] = glyphIndex;
+                advanceWidths[n] = glyphTypeface.AdvanceWidths[glyphIndex] * size;
+            }
+
+            var glyphRun = new GlyphRun(glyphTypeface, 0, false, size, glyphIndexes, origin, advanceWidths, null, null,
+                                        null,
+                                        null, null, null);
+            return glyphRun;
+        }
+
 
         private void UpdateHexGrid()
         {
@@ -107,7 +138,10 @@ namespace Soft64.Toolkits.WPF
                     row.Address = position + (m_GridWidth * i);
                     row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
 
-                    Dispatcher.InvokeAsync(row.UpdateText);
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        row.UpdateText(m_HexFontSize, m_AsciiFontSize);
+                    });
                 }
             });
         }
@@ -131,7 +165,7 @@ namespace Soft64.Toolkits.WPF
             {
                 for (Int32 i = 0; i < (size - count); i++)
                 {
-                    HexEditorBlock block = new HexEditorBlock();
+                    HexEditorBlock block = new HexEditorBlock(m_HexGeo, m_AsciiGeo);
                     block.Foreground = Foreground;
                     block.Padding = new Thickness(0, 0, 0, 0);
                     block.Margin = new Thickness(2, 0, 0, 0);
@@ -296,17 +330,40 @@ namespace Soft64.Toolkits.WPF
 
             if (editor != null)
             {
-                var formattedText = new FormattedText(
-                    "00",
-                    CultureInfo.CurrentUICulture,
-                    FlowDirection.LeftToRight,
-                    new Typeface(editor.FontFamily, editor.FontStyle, editor.FontWeight, editor.FontStretch),
-                    editor.FontSize,
-                    Brushes.Black);
+                editor.m_HexGeo.Clear();
+                editor.m_AsciiGeo.Clear();
+                Typeface t = new Typeface(editor.FontFamily, editor.FontStyle, editor.FontWeight, editor.FontStretch);
+                Point p = new Point(0, editor.FontSize);
 
-                editor.m_FontSize = new Size(formattedText.Width, formattedText.Height);
+                for (Int32 i = 0; i < 256; i++)
+                {
+                    GlyphRun r1 = CreateGlyphRun(t, i.ToString("X2"), editor.FontSize, p);
+                    GlyphRun r2 = CreateGlyphRun(t, new String(HexEditorRow.GetAscii((byte)i), 1), editor.FontSize, p);
+                    Geometry g1 = r1.BuildGeometry();
+                    Geometry g2 = r2.BuildGeometry();
+                    g1.Freeze();
+                    g2.Freeze();
+                    editor.m_HexGeo.Add(g1);
+                    editor.m_AsciiGeo.Add(g2);
+                }
+
+                editor.m_HexFontSize = MeasureStringPixels("00", editor);
+                editor.m_AsciiFontSize = MeasureStringPixels("0", editor);
                 editor.Refresh();
             }
+        }
+
+        private static Size MeasureStringPixels(String t, Control c)
+        {
+            var formattedText = new FormattedText(
+                t,
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(c.FontFamily, c.FontStyle, c.FontWeight, c.FontStretch),
+                c.FontSize,
+                Brushes.Black);
+
+             return new Size(formattedText.Width, formattedText.Height);
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -336,10 +393,14 @@ namespace Soft64.Toolkits.WPF
         {
             if (e.PropertyName == "ReadBuffer")
             {
-                UpdateHexGrid();
+                Dispatcher.InvokeAsync(() =>
+                {
+                    UpdateHexGrid();
 
-                m_OldGridWidth = m_GridWidth;
-                m_OldGridHeight = m_GridHeight;
+                    m_OldGridWidth = m_GridWidth;
+                    m_OldGridHeight = m_GridHeight;
+                }, DispatcherPriority.Background);
+
             }
         }
 

@@ -55,7 +55,7 @@
   <ItemGroup>
     <Compile Include="BlockType.cs" />
     <Compile Include="HexEditorRow.cs" />
-    <Compile Include="HexCaret.cs" />
+    <Compile Include="HexEditorCaret.cs" />
     <Compile Include="HexEditor.xaml.cs">
       <DependentUpon>HexEditor.xaml</DependentUpon>
     </Compile>

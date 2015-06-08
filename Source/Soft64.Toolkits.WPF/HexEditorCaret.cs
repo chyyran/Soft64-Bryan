@@ -5,19 +5,19 @@ using System.Windows.Media;
 
 namespace Soft64.Toolkits.WPF
 {
-    public sealed class HexCaret : UserControl
+    public sealed class HexEditorCaret : UserControl
     {
         public static readonly DependencyProperty ControlTargetProperty =
-            DependencyProperty.Register("ControlTarget", typeof(FrameworkElement), typeof(HexCaret),
+            DependencyProperty.Register("ControlTarget", typeof(FrameworkElement), typeof(HexEditorCaret),
             new PropertyMetadata(TargetChanged));
 
-        public HexCaret()
+        public HexEditorCaret()
         {
         }
 
         private static void TargetChanged(DependencyObject o, DependencyPropertyChangedEventArgs a)
         {
-            HexCaret caret = o as HexCaret;
+            HexEditorCaret caret = o as HexEditorCaret;
             caret.Visibility = Visibility.Visible;
 
             if (caret != null && a.NewValue != null)

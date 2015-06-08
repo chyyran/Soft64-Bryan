@@ -2,47 +2,72 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace Soft64.Toolkits.WPF
 {
-    public sealed class HexEditorBlock : TextBlock
+    public sealed class HexEditorBlock : Control
     {
         private BlockType m_Type;
         private Int32 m_RowIndex;
         private Int32 m_ColIndex;
         private Dictionary<Int32, HexEditorBlock> m_LUT;
         private Int32 m_BlockHash;
-        private String m_Text;
+        private GeometryCollection m_HexGeo;
+        private GeometryCollection m_AsciiGeo;
 
         static HexEditorBlock()
         {
         }
 
-        public HexEditorBlock()
+        public HexEditorBlock(GeometryCollection hexGeos, GeometryCollection ascciGeos)
         {
             Unloaded += HexEditorTextBlock_Unloaded;
             Loaded += HexEditorTextBlock_Loaded;
+            Width = 50;
+            Height = 50;
+            m_HexGeo = hexGeos;
+            m_AsciiGeo = ascciGeos;
         }
 
         private void HexEditorTextBlock_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Text = m_Text;
+        }
+
+        protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+        {
+            if (BlockType == WPF.BlockType.Hex)
+            {
+                drawingContext.DrawGeometry(Foreground, null, m_HexGeo[ByteValue]);
+            }
+            else
+            {
+                drawingContext.DrawGeometry(Foreground, null, m_AsciiGeo[ByteValue]);
+            }
         }
 
         public void SetEditorPosition(BlockType type, Int32 row, Int32 col, Dictionary<Int32, HexEditorBlock> lut)
         {
-            m_Type = type;
-            m_RowIndex = row;
-            m_ColIndex = col;
-            m_LUT = lut;
-            m_BlockHash = GetBlockHash(row, col);
-
-            if (m_LUT.ContainsKey(m_BlockHash))
+            try
             {
-                m_LUT.Remove(m_BlockHash);
-            }
+                m_Type = type;
+                m_RowIndex = row;
+                m_ColIndex = col;
+                m_LUT = lut;
+                m_BlockHash = GetBlockHash(row, col);
 
-            m_LUT.Add(m_BlockHash, this);
+                if (m_LUT.ContainsKey(m_BlockHash))
+                {
+                    m_LUT.Remove(m_BlockHash);
+                }
+
+                m_LUT.Add(m_BlockHash, this);
+            }
+            catch
+            {
+                return;
+            }
         }
 
         private void HexEditorTextBlock_Unloaded(object sender, RoutedEventArgs e)
@@ -73,10 +98,10 @@ namespace Soft64.Toolkits.WPF
             get { return m_BlockHash; }
         }
 
-        public String BlockText
+        public Byte ByteValue
         {
-            get { return m_Text; }
-            set { m_Text = value; }
+            get;
+            set;
         }
 
         private static Int32 GetBlockHash(Int32 row, Int32 col)

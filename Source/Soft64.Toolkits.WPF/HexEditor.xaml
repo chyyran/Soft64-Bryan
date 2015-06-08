@@ -41,7 +41,7 @@
             <Canvas.Resources>
                 <root:InvertColorEffect x:Key="invertColorEffect" />
             </Canvas.Resources>
-            <root:HexCaret x:Name="xaml_CaretControl"
+            <root:HexEditorCaret x:Name="xaml_CaretControl"
                     Background="{Binding Background, ElementName=mainControl}"
                     Effect="{StaticResource invertColorEffect}"
                     Opacity="0.5" />

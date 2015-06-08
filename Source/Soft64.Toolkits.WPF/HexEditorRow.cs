@@ -53,7 +53,7 @@ namespace Soft64.Toolkits.WPF
             m_AsciiRootPanel.Unloaded += m_AsciiRootPanel_Unloaded;
             m_HexBlocks = new List<HexEditorBlock>();
             m_AsciiBlocks = new List<HexEditorBlock>();
-            m_UpdateTextEvent = new Action(() => { });
+            m_UpdateTextEvent = new Action<Size, Size>((a, b) => { });
         }
 
         private void AddChildren()
@@ -97,11 +97,11 @@ namespace Soft64.Toolkits.WPF
 
                 HexEditorBlock hexBlock = blockCache[index];
                 hexBlock.SetEditorPosition(BlockType.Hex, RowIndex, i, hexLUT);
-                hexBlock.BlockText = s_PrintableHexTable[bytes[i]];
+                hexBlock.ByteValue = bytes[i];
 
                 HexEditorBlock asciiBlock = blockCache[index + 1];
                 asciiBlock.SetEditorPosition(BlockType.Ascii, RowIndex, i, asciiLUT);
-                asciiBlock.BlockText = s_PrintableAsciiTable[bytes[i]];
+                asciiBlock.ByteValue = bytes[i];
 
                 if (m_UsageCounter > bytes.Length)
                 {
@@ -113,21 +113,14 @@ namespace Soft64.Toolkits.WPF
 
                 if (m_UsageCounter < bytes.Length)
                 {
-                    m_UpdateTextEvent =  Delegate.Combine(m_UpdateTextEvent, new Action(() =>
-                    {
-                        hexBlock.Text = hexBlock.BlockText;
-                        asciiBlock.Text = asciiBlock.BlockText;
-                    }));
-
                     m_HexBlocks.Add(hexBlock);
                     m_AsciiBlocks.Add(asciiBlock);
-
                     m_UsageCounter++;
                 }
             }
         }
 
-        private static Char GetAscii(Byte value)
+        internal static Char GetAscii(Byte value)
         {
             if (s_PrintableHashSet.Contains((char)value))
                 return (char)value;
@@ -157,8 +150,8 @@ namespace Soft64.Toolkits.WPF
             Bytes[byteOffset] = b;
             source.Position = Address + byteOffset;
             source.WriteByte(b);
-            m_AsciiBlocks[byteOffset].Text = s_PrintableAsciiTable[b];
-            m_HexBlocks[byteOffset].Text = s_PrintableHexTable[b];
+            m_AsciiBlocks[byteOffset].ByteValue = b;
+            m_HexBlocks[byteOffset].ByteValue = b;
         }
 
         public Byte GetByteValue(Int32 offset)
@@ -176,9 +169,17 @@ namespace Soft64.Toolkits.WPF
             get { return m_AsciiRootPanel; }
         }
 
-        internal void UpdateText()
+        internal void UpdateText(Size hSize, Size aSize)
         {
-            m_UpdateTextEvent.DynamicInvoke();
+            for (Int32 i = 0; i < m_UsageCounter; i++)
+            {
+                m_HexBlocks[i].Width = hSize.Width;
+                m_HexBlocks[i].Height = hSize.Height;
+                m_AsciiBlocks[i].Width = aSize.Width;
+                m_AsciiBlocks[i].Height = aSize.Height;
+                m_HexBlocks[i].InvalidateVisual();
+                m_AsciiBlocks[i].InvalidateVisual();
+            }
 
             var e = PropertyChanged;
 
