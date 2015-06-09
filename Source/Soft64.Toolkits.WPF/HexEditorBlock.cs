@@ -16,13 +16,19 @@ namespace Soft64.Toolkits.WPF
         private Int32 m_BlockHash;
         private GeometryCollection m_HexGeo;
         private GeometryCollection m_AsciiGeo;
+        private GlyphRun m_Run;
+        private static Brush m_InvisiBrush;
 
         static HexEditorBlock()
         {
+            m_InvisiBrush = new SolidColorBrush(Colors.Transparent);
+            m_InvisiBrush.Freeze();
         }
 
         public HexEditorBlock(GeometryCollection hexGeos, GeometryCollection ascciGeos)
         {
+            m_Run = HexEditor.CreateGlyphRun(new Typeface(FontFamily, FontStyle, FontWeight, FontStretch), "0", FontSize, new Point(0, FontSize));
+
             Unloaded += HexEditorTextBlock_Unloaded;
             Loaded += HexEditorTextBlock_Loaded;
             Width = 50;
@@ -35,8 +41,10 @@ namespace Soft64.Toolkits.WPF
         {
         }
 
-        protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+        protected override void OnRender(DrawingContext drawingContext)
         {
+            drawingContext.DrawRectangle(m_InvisiBrush, null, new Rect(0, 0, ActualWidth, ActualHeight));
+
             if (BlockType == WPF.BlockType.Hex)
             {
                 drawingContext.DrawGeometry(Foreground, null, m_HexGeo[ByteValue]);
@@ -68,6 +76,11 @@ namespace Soft64.Toolkits.WPF
             {
                 return;
             }
+        }
+
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
+            return arrangeBounds;
         }
 
         private void HexEditorTextBlock_Unloaded(object sender, RoutedEventArgs e)

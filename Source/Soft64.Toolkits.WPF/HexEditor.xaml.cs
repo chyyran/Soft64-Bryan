@@ -66,7 +66,7 @@ namespace Soft64.Toolkits.WPF
         {
             /* Compute the number of rows and columns that fit into the avaiable graphics space */
             m_GridHeight = Math.Max(0, (Int32)(e.NewSize.Height / m_HexFontSize.Height) - 1);
-            m_GridWidth = Math.Max(0, (Int32)(e.NewSize.Width / 2 / m_HexFontSize.Width));
+            m_GridWidth = Math.Min(Math.Max(0, (Int32)(e.NewSize.Width / 2 / m_HexFontSize.Width)), 16);
             Refresh();
         }
 
@@ -94,7 +94,6 @@ namespace Soft64.Toolkits.WPF
                                         null, null, null);
             return glyphRun;
         }
-
 
         private void UpdateHexGrid()
         {
@@ -130,20 +129,46 @@ namespace Soft64.Toolkits.WPF
             {
                 for (Int32 i = 0; i < m_GridHeight; i++)
                 {
-                    Byte[] rowBuffer = new Byte[m_GridWidth];
-                    Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
-
-                    HexEditorRow row = rows[i];
-                    row.RowIndex = i;
-                    row.Address = position + (m_GridWidth * i);
-                    row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
-
-                    Dispatcher.InvokeAsync(() =>
+                    try
                     {
-                        row.UpdateText(m_HexFontSize, m_AsciiFontSize);
-                    });
+                        Byte[] rowBuffer = new Byte[m_GridWidth];
+                        Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
+
+                        HexEditorRow row = rows[i];
+                        row.RowIndex = i;
+                        row.Address = position + (m_GridWidth * i);
+                        row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
                 }
+
+                Dispatcher.InvokeAsync(() =>
+                {
+                    for (Int32 i = 0; i < m_GridHeight; i++)
+                    {
+                        DataRows[i].UpdateText();
+                        DoEvents();
+                    }
+                });
             });
+        }
+
+        public void DoEvents()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback(ExitFrame), frame);
+            Dispatcher.PushFrame(frame);
+        }
+
+        public object ExitFrame(object f)
+        {
+            ((DispatcherFrame)f).Continue = false;
+
+            return null;
         }
 
         private void AllocateRows()
@@ -161,7 +186,7 @@ namespace Soft64.Toolkits.WPF
             Int32 size = m_GridWidth * m_GridHeight * 2;
             Int32 count = m_BlockCache.Count;
 
-            if (count <= size)
+            if (count < size)
             {
                 for (Int32 i = 0; i < (size - count); i++)
                 {
@@ -171,6 +196,10 @@ namespace Soft64.Toolkits.WPF
                     block.Margin = new Thickness(2, 0, 0, 0);
                     block.MouseLeftButtonDown += Label_MouseLeftButtonUp;
                     m_BlockCache.Add(block);
+
+                    /* Set its size */
+                    block.Width = i % 2 == 0 ? m_HexFontSize.Width : m_AsciiFontSize.Width;
+                    block.Height = i % 2 == 0 ? m_HexFontSize.Height : m_AsciiFontSize.Height;
                 }
             }
         }
@@ -350,6 +379,12 @@ namespace Soft64.Toolkits.WPF
                 editor.m_HexFontSize = MeasureStringPixels("00", editor);
                 editor.m_AsciiFontSize = MeasureStringPixels("0", editor);
                 editor.Refresh();
+
+                for (Int32 i = 0; i < editor.m_BlockCache.Count; i++)
+                {
+                    editor.m_BlockCache[i].Width = i % 2 == 0 ? editor.m_HexFontSize.Width : editor.m_AsciiFontSize.Width;
+                    editor.m_BlockCache[i].Height = i % 2 == 0 ? editor.m_HexFontSize.Height : editor.m_AsciiFontSize.Height;
+                }
             }
         }
 

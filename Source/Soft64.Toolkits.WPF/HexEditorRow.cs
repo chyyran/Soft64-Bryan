@@ -29,6 +29,8 @@ namespace Soft64.Toolkits.WPF
         private static readonly String[] s_PrintableHexTable;
         private static readonly String[] s_PrintableAsciiTable;
 
+        private event Action InvalidateText;
+
         static HexEditorRow()
         {
             s_PrintableHexTable = new String[256];
@@ -115,6 +117,13 @@ namespace Soft64.Toolkits.WPF
                 {
                     m_HexBlocks.Add(hexBlock);
                     m_AsciiBlocks.Add(asciiBlock);
+
+                    InvalidateText += new Action(() =>
+                    {
+                        hexBlock.InvalidateVisual();
+                        asciiBlock.InvalidateVisual();
+                    });
+
                     m_UsageCounter++;
                 }
             }
@@ -152,6 +161,8 @@ namespace Soft64.Toolkits.WPF
             source.WriteByte(b);
             m_AsciiBlocks[byteOffset].ByteValue = b;
             m_HexBlocks[byteOffset].ByteValue = b;
+            m_AsciiBlocks[byteOffset].InvalidateVisual();
+            m_HexBlocks[byteOffset].InvalidateVisual();
         }
 
         public Byte GetByteValue(Int32 offset)
@@ -169,17 +180,12 @@ namespace Soft64.Toolkits.WPF
             get { return m_AsciiRootPanel; }
         }
 
-        internal void UpdateText(Size hSize, Size aSize)
+        internal void UpdateText()
         {
-            for (Int32 i = 0; i < m_UsageCounter; i++)
-            {
-                m_HexBlocks[i].Width = hSize.Width;
-                m_HexBlocks[i].Height = hSize.Height;
-                m_AsciiBlocks[i].Width = aSize.Width;
-                m_AsciiBlocks[i].Height = aSize.Height;
-                m_HexBlocks[i].InvalidateVisual();
-                m_AsciiBlocks[i].InvalidateVisual();
-            }
+            var a = InvalidateText;
+
+            if (a != null)
+                a();
 
             var e = PropertyChanged;
 
