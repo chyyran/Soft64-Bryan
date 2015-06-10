@@ -1,9 +1,11 @@
-﻿<Window x:Class="Soft64WPF.Windows.CPUDebugger"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ae="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
+        xmlns:Soft64WPF="clr-namespace:Soft64WPF" x:Class="Soft64WPF.Windows.CPUDebugger"
         Title="CPU Debugger" Height="629.3" Width="801"
         DataContext="{Binding ., Source={StaticResource machineVM}}">
-    <Grid>
+    <Grid Background="White">
+        <Soft64WPF:DisassemblyView HorizontalAlignment="Left" Height="579" Margin="10,10,0,0" VerticalAlignment="Top" Width="291"/>
     </Grid>
 </Window>

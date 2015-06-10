@@ -107,6 +107,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\StringToCollectionConverter.cs" />
+    <Compile Include="DisassemblyView.cs" />
     <Compile Include="Helper\WpfRichTextBoxRowColoringRule.cs" />
     <Compile Include="Helper\WpfRichTextBoxTarget.cs" />
     <Compile Include="Helper\WpfRichTextBoxWordColoringRule.cs" />
@@ -223,10 +224,7 @@
   <ItemGroup>
     <Resource Include="Images\arrow_refresh.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
-    <Folder Include="Effects\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="..\..\Resources\BinaryFiles\Tests\Tests_TLB.py">
       <Link>Tests\Tests_TLB.py</Link>
