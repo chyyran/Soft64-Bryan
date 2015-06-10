@@ -27,11 +27,20 @@ namespace Soft64WPF.Windows
         {
             InitializeComponent();
             xaml_HexScrollBar.Scroll += xaml_HexScrollBar_Scroll;
+            
+            MouseWheel += MemoryEditorWindow_MouseWheel;
             xaml_ChkboxVAdressMode.Checked += xaml_ChkboxVAdressMode_Checked;
             xaml_ChkboxVAdressMode.Unchecked += xaml_ChkboxVAdressMode_Unchecked;
             m_PhysicalMem = new N64StreamWrapper();
 
             CurrentMemoryStream = StreamViewModel.NewModelFromStream(m_PhysicalMem);
+        }
+
+        void MemoryEditorWindow_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            Int32 sign = Math.Sign(e.Delta);
+
+            CurrentAddress = CurrentAddress - sign * xaml_HexEditor.NumCols;
         }
 
         private void xaml_ChkboxVAdressMode_Unchecked(object sender, RoutedEventArgs e)
@@ -50,26 +59,22 @@ namespace Soft64WPF.Windows
         {
             if (e.ScrollEventType == ScrollEventType.LargeDecrement)
             {
-                txtBoxBaseAddress.Text =
-                    (Int64.Parse(txtBoxBaseAddress.Text, NumberStyles.AllowHexSpecifier) - xaml_HexEditor.NumRows).ToString("X8");
+                CurrentAddress -= xaml_HexEditor.NumRows;
             }
 
             if (e.ScrollEventType == ScrollEventType.LargeIncrement)
             {
-                txtBoxBaseAddress.Text =
-                    (Int64.Parse(txtBoxBaseAddress.Text, NumberStyles.AllowHexSpecifier) + xaml_HexEditor.NumRows).ToString("X8");
+                CurrentAddress += xaml_HexEditor.NumRows;
             }
 
             if (e.ScrollEventType == ScrollEventType.SmallDecrement)
             {
-                txtBoxBaseAddress.Text =
-                   (Int64.Parse(txtBoxBaseAddress.Text, NumberStyles.AllowHexSpecifier) - xaml_HexEditor.NumCols).ToString("X8");
+                CurrentAddress -= xaml_HexEditor.NumCols;
             }
 
             if (e.ScrollEventType == ScrollEventType.SmallIncrement)
             {
-                txtBoxBaseAddress.Text =
-                   (Int64.Parse(txtBoxBaseAddress.Text, NumberStyles.AllowHexSpecifier) + xaml_HexEditor.NumCols).ToString("X8");
+                CurrentAddress += xaml_HexEditor.NumCols;
             }
 
             xaml_HexScrollBar.Value = 5;
