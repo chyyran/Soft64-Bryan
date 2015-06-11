@@ -107,6 +107,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\StringToCollectionConverter.cs" />
+    <Compile Include="DiassemblyViewLine.cs" />
     <Compile Include="DisassemblyView.cs" />
     <Compile Include="Helper\WpfRichTextBoxRowColoringRule.cs" />
     <Compile Include="Helper\WpfRichTextBoxTarget.cs" />
@@ -125,6 +126,10 @@
     <Compile Include="Windows\PyWindow.xaml.cs">
       <DependentUpon>PyWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="DisassemblyView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Styles\GlassStyleDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
