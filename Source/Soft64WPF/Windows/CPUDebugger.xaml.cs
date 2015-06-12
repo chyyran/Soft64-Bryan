@@ -18,6 +18,7 @@ namespace Soft64WPF.Windows
         public CPUDebugger()
         {
             InitializeComponent();
+            xaml_MenuBtnRefreshDisam.Click += xaml_MenuBtnRefreshDisam_Click;
 
             if (Debugger.Current == null)
             {
@@ -31,6 +32,11 @@ namespace Soft64WPF.Windows
             //    "LifetimeStateChanged",
             //    MachineStateChangedHandler
             //    );
+        }
+
+        void xaml_MenuBtnRefreshDisam_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         private void MachineStateChangedHandler(Object o, LifeStateChangedArgs args)

@@ -6,6 +6,14 @@
         Title="CPU Debugger" Height="629.3" Width="801"
         DataContext="{Binding ., Source={StaticResource machineVM}}">
     <Grid Background="White">
-        <Soft64WPF:DisassemblyView HorizontalAlignment="Left" Height="579" Margin="10,10,0,0" VerticalAlignment="Top" Width="291"/>
+        <StackPanel Orientation="Vertical">
+            <Menu >
+                <MenuItem Header="Debugger">
+                    <MenuItem x:Name="xaml_MenuBtnRefreshDisam" Header="Refresh Disassembly" />
+                </MenuItem>
+            </Menu>
+            <Soft64WPF:DisassemblyView x:Name="xaml_DiassemblyView" HorizontalAlignment="Left" Height="579" Margin="10,10,0,0" VerticalAlignment="Top" Width="291"/>
+        </StackPanel>
+
     </Grid>
 </Window>

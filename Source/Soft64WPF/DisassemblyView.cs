@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Soft64;
 using Soft64.MipsR4300;
 using Soft64.MipsR4300.Debugging;
 using ObservableDisasmLines = System.Collections.ObjectModel.ObservableCollection<Soft64WPF.DiassemblyViewLine>;
@@ -25,18 +26,29 @@ namespace Soft64WPF
 
         public DisassemblyView()
         {
-            m_VMemory = new VMemViewStream();
+            if (Machine.Current != null)
+            {
+                m_VMemory = new VMemViewStream();
+            }
+        }
+
+        public void RefreshDisasm()
+        {
+
         }
 
         private void ReadDiasm()
         {
+            if (m_VMemory == null)
+                return;
+
             m_VMemory.Position = VMemoryOffset;
             MipsInstruction[] instructions = new MipsInstruction[m_LineCount];
             BinaryReader reader = new BinaryReader(m_VMemory);
 
             for (Int32 i = 0; i < m_LineCount; i+=4)
             {
-                instructions[i] = new MipsInstruction(0, reader.ReadUInt32());
+                instructions[i] = new MipsInstruction((UInt64)m_VMemory.Position, reader.ReadUInt32());
             }
 
 
