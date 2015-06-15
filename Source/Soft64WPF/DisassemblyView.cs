@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Soft64;
+using Soft64.IO;
 using Soft64.MipsR4300;
 using Soft64.MipsR4300.Debugging;
 using ObservableDisasmLines = System.Collections.ObjectModel.ObservableCollection<Soft64WPF.DiassemblyViewLine>;
@@ -18,10 +19,11 @@ namespace Soft64WPF
     {
         private Stream m_VMemory;
         private Int32 m_LineCount;
+        private static event EventHandler fontChanged;
 
         static DisassemblyView()
         {
-
+            FontTools.RegisterFontChangeEvents(typeof(DisassemblyView), fontChanged);
         }
 
         public DisassemblyView()
@@ -29,12 +31,33 @@ namespace Soft64WPF
             if (Machine.Current != null)
             {
                 m_VMemory = new VMemViewStream();
+                fontChanged += FontChanged;
+                SizeChanged += DisassemblyView_SizeChanged;
+                VMemoryOffset = Machine.Current.DeviceCPU.State.PC;
             }
+        }
+
+        void DisassemblyView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ComputerLineCount();
+        }
+
+        void FontChanged(object sender, EventArgs e)
+        {
+            if (Object.ReferenceEquals(sender, this))
+            {
+                ComputerLineCount();
+            }
+        }
+
+        private void ComputerLineCount()
+        {
+            m_LineCount = (Int32)(ActualHeight / FontSize);
         }
 
         public void RefreshDisasm()
         {
-
+            ReadDiasm();
         }
 
         private void ReadDiasm()
@@ -42,16 +65,25 @@ namespace Soft64WPF
             if (m_VMemory == null)
                 return;
 
-            m_VMemory.Position = VMemoryOffset;
+            m_VMemory.Position = Machine.Current.DeviceCPU.State.PC;
             MipsInstruction[] instructions = new MipsInstruction[m_LineCount];
-            BinaryReader reader = new BinaryReader(m_VMemory);
+            var beStream = new Int32SwapStream(m_VMemory);
+            BinaryReader reader = new BinaryReader(beStream);
 
-            for (Int32 i = 0; i < m_LineCount; i+=4)
+            for (Int32 i = 0; i < m_LineCount; i++)
             {
                 instructions[i] = new MipsInstruction((UInt64)m_VMemory.Position, reader.ReadUInt32());
             }
+            DisasmLines.Clear();
 
 
+            foreach (var inst in instructions)
+            {
+                var line = new DiassemblyViewLine();
+                line.LoadedInstruction = inst;
+
+                DisasmLines.Add(line);
+            }
         }
 
 

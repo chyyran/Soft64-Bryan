@@ -66,13 +66,13 @@ namespace Soft64.Engines
                     {
                         default: break;
 
+                        case DebuggerEventType.Break: /* high level CPU break to pause whole emulator */
                         case DebuggerEventType.Pause:
                             {
                                 PauseThreads();
                                 break;
                             };
 
-                        case DebuggerEventType.Break: /* high level CPU break to pause whole emulator */
                         case DebuggerEventType.Resume:
                             {
                                 ResumeThreads();

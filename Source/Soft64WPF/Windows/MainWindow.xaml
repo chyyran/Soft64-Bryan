@@ -31,6 +31,7 @@
                     <TextBlock Foreground="White" FontSize="18" FontWeight="Bold" Text="Control" />
                 </MenuItem.Header>
                 <MenuItem x:Name="xamlControl_EmuRunButton" Header="Run" Foreground="Black" />
+                <MenuItem x:Name="xamlControl_EmuRunPostDebugButton" Header="Run To Post-Boot Debug" Foreground="Black" />
                 <MenuItem x:Name="xamlControl_EmuPauseButton" Header="Pause" Foreground="Black" />
                 <MenuItem x:Name="xamlControl_EmuStopButton" Header="Stop" Foreground="Black" />
             </MenuItem>

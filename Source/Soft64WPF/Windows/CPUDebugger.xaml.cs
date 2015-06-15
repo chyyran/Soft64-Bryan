@@ -13,7 +13,13 @@ namespace Soft64WPF.Windows
     /// </summary>
     public partial class CPUDebugger : Window
     {
-        private MachineViewModel machineModel;
+        private MachineViewModel m_MachineModel;
+        
+
+        static CPUDebugger()
+        {
+            
+        }
 
         public CPUDebugger()
         {
@@ -25,7 +31,7 @@ namespace Soft64WPF.Windows
                 throw new InvalidOperationException("No debugger is attached to core");
             }
 
-            machineModel = (MachineViewModel)DataContext;
+            m_MachineModel = (MachineViewModel)DataContext;
 
             //WeakEventManager<Machine, LifeStateChangedArgs>.AddHandler(
             //    Machine.Current,
@@ -36,7 +42,7 @@ namespace Soft64WPF.Windows
 
         void xaml_MenuBtnRefreshDisam_Click(object sender, RoutedEventArgs e)
         {
-            
+            xaml_DiassemblyView.RefreshDisasm();
         }
 
         private void MachineStateChangedHandler(Object o, LifeStateChangedArgs args)

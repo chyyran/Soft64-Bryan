@@ -184,6 +184,9 @@ namespace Soft64
             if (this.CheckStateRequestInvalid(RequestState.Run))
                 throw new MachineException("Failed to call Run on machine instance");
 
+
+            logger.Trace("!!! N64 Emulation Started !!!");
+
             logger.Trace("Running machine");
 
             try

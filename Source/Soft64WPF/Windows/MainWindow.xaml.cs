@@ -28,6 +28,7 @@ using NLog.Config;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
 using Soft64;
+using Soft64.Debugging;
 using Soft64.MipsR4300.Interpreter;
 using Soft64WPF.Helper;
 
@@ -50,9 +51,17 @@ namespace Soft64WPF.Windows
             xaml_ButtonScript.Click += xaml_ButtonScript_Click;
             xaml_ButtonToolCPUDebugger.Click += xaml_ButtonToolCPUDebugger_Click;
             xaml_ButtonToolMemoryEditor.Click += xaml_ButtonToolMemoryEditor_Click;
+            xamlControl_EmuRunPostDebugButton.Click += xamlControl_EmuRunPostDebugButton_Click;
 
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             Loaded += MainWindow_Loaded;
+        }
+
+        void xamlControl_EmuRunPostDebugButton_Click(object sender, RoutedEventArgs e)
+        {
+            Debugger.Current.DebugOnBreak = true;
+            Debugger.Current.BreakOnBootMode = DebuggerBootEvent.PostBoot;
+            RunEmu();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -139,12 +148,19 @@ namespace Soft64WPF.Windows
 
         private void xamlControl_EmuRunButton_Click(object sender, RoutedEventArgs e)
         {
-            logger.Trace("----- N64 Emulation Started -----");
+            RunEmu();
+        }
 
+        private static void RunEmu()
+        {
             /* For now we are using default crap */
-            Machine.Current.DeviceRCP.Engine = new PureInterpreter();
-            Machine.Current.DeviceCPU.Engine = new PureInterpreter();
-            Machine.Current.Initialize();
+            if (Machine.Current.CurrentLifeState < LifetimeState.Initialized)
+            {
+                Machine.Current.DeviceRCP.Engine = new PureInterpreter();
+                Machine.Current.DeviceCPU.Engine = new PureInterpreter();
+                Machine.Current.Initialize();
+            }
+
             Machine.Current.Run();
         }
 

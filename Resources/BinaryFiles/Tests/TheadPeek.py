@@ -6,7 +6,7 @@ from System.Threading import Thread
 from System.Windows import MessageBox
 
 
-scheduler = Machine.Current.CurrentEngine.CurrentScheduler
+scheduler = Machine.Current.Engine.CurrentScheduler
 threads = scheduler.GetThreads()
 str = StringBuilder()
 

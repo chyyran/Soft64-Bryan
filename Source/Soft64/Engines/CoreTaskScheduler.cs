@@ -51,12 +51,15 @@ namespace Soft64.Engines
 
         public void PauseThreads()
         {
-            m_PauseEvent.Reset();
-
-            if (!CheckAndSetPause())
+            if (m_PauseState == (Int32)NOTSET)
             {
-                /* When the atomic operation has failed */
-                throw new InvalidOperationException("Cannot pause the scheduler safely");
+                m_PauseEvent.Reset();
+
+                if (!CheckAndSetPause())
+                {
+                    /* When the atomic operation has failed */
+                    throw new InvalidOperationException("Cannot pause the scheduler safely");
+                }
             }
         }
 
@@ -69,7 +72,13 @@ namespace Soft64.Engines
         [SecurityCritical]
         public void RunThreads()
         {
-            PauseThreads();
+            Boolean resume = false;
+
+            if (m_PauseState <= 0)
+            {
+                PauseThreads();
+                resume = true;
+            }
 
             foreach (var task in m_ScheduledTasks)
             {
@@ -83,7 +92,8 @@ namespace Soft64.Engines
                 }
             }
 
-            ResumeThreads();
+            if (resume)
+                ResumeThreads();
         }
 
         internal void PauseWait()
