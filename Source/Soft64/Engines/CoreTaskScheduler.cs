@@ -17,6 +17,7 @@ namespace Soft64.Engines
         private const Int32 NOTSET = 0;
         private const Int32 SET = 1;
         private AutoResetEvent m_PauseEvent;
+        private Boolean m_PauseNext;
 
         protected CoreTaskScheduler()
         {
@@ -42,6 +43,11 @@ namespace Soft64.Engines
             }
 
             GC.Collect();
+        }
+
+        private void SetPauseNext()
+        {
+            m_PauseNext = true;
         }
 
         private Boolean CheckAndSetPause()
@@ -104,6 +110,12 @@ namespace Soft64.Engines
             }
         }
 
+        protected Boolean PauseNext
+        {
+            get { return m_PauseNext; }
+            set { m_PauseNext = value; }
+        }
+
         public IEnumerable<Thread> GetThreads()
         {
             return m_ThreadList.AsReadOnly();
@@ -125,8 +137,6 @@ namespace Soft64.Engines
         }
 
         protected abstract Thread GetTaskThread(Task task);
-
-        public abstract void ExecuteNext();
 
         public Boolean IsPaused
         {

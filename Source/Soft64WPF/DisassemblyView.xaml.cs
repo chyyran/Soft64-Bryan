@@ -28,13 +28,31 @@ namespace Soft64WPF
 
         public DisassemblyView()
         {
+            InitializeComponent();
+
             if (Machine.Current != null)
             {
                 m_VMemory = new VMemViewStream();
                 fontChanged += FontChanged;
                 SizeChanged += DisassemblyView_SizeChanged;
                 VMemoryOffset = Machine.Current.DeviceCPU.State.PC;
+                xaml_LineItems.ItemsSource = DisasmLines;
+                Loaded += DisassemblyView_Loaded;
+                xaml_LineItems.MouseDown += xaml_LineItems_MouseDown;
             }
+        }
+
+        void xaml_LineItems_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            FrameworkElement c = (FrameworkElement)e.OriginalSource;
+
+
+        }
+
+        void DisassemblyView_Loaded(object sender, RoutedEventArgs e)
+        {
+            ComputerLineCount();
+            RefreshDisasm();
         }
 
         void DisassemblyView_SizeChanged(object sender, SizeChangedEventArgs e)

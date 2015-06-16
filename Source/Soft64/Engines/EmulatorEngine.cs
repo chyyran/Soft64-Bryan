@@ -20,6 +20,7 @@ namespace Soft64.Engines
     {
         private EngineStatus m_OldStatus;
         private EngineStatus m_NewStatus;
+        
 
         public EngineStatusChangedArgs(EngineStatus oldStatus, EngineStatus newStatus)
         {
@@ -46,6 +47,8 @@ namespace Soft64.Engines
         protected List<Task> m_TaskList = new List<Task>();
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private EngineStatus m_Status = EngineStatus.Created;
+        private Boolean m_SingleStep = false;
+        private AutoResetEvent m_SingleStepWaitEvent = new AutoResetEvent(false);
 
         public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
 
@@ -81,12 +84,33 @@ namespace Soft64.Engines
 
                         case DebuggerEventType.StepOnce:
                             {
-                                m_CoreScheduler.ExecuteNext();
+                                m_SingleStep = true;
+                                ResumeThreads();
+                                m_SingleStepWaitEvent.WaitOne();
                                 break;
                             };
                     }
                 });
             }
+        }
+
+        protected void End()
+        {
+            if (m_SingleStep)
+            {
+                m_SingleStep = false;
+                PauseThreads();
+                m_SingleStepWaitEvent.Reset();
+            }
+        }
+
+        protected void Begin()
+        {
+            /* If cancellation invoked, then throw exception */
+            m_TokenSource.Token.ThrowIfCancellationRequested();
+
+            /* This pause event comes from the core scheduler to pause this task when enabled */
+            m_CoreScheduler.PauseWait();
         }
 
         public virtual void Initialize()
@@ -100,7 +124,7 @@ namespace Soft64.Engines
             m_Status = EngineStatus.WaitingForTasks;
         }
 
-        protected abstract void StartTasks(CancellationToken token, TaskFactory factory, Action pauseWaitAction);
+        protected abstract void StartTasks(TaskFactory factory, CancellationToken token);
 
         public void SetCoreScheduler(CoreTaskScheduler scheduler)
         {
@@ -120,7 +144,7 @@ namespace Soft64.Engines
 
             TaskFactory factory = new TaskFactory(m_CoreScheduler);
 
-            StartTasks(m_TokenSource.Token, factory, m_CoreScheduler.PauseWait);
+            StartTasks(factory, m_TokenSource.Token);
             m_CoreScheduler.RunThreads();
 
             OnLifetimeStateChange(m_LifeState, LifetimeState.Running);

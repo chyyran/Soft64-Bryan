@@ -32,13 +32,13 @@ namespace Soft64.Debugging
 
         public event DebuggerEvent DebugPause;
 
-        public event DebuggerEvent StepOnce;
+        public event DebuggerEvent DebugStepOnce;
 
-        public event DebuggerEvent StepIn;
+        public event DebuggerEvent DebugStepIn;
 
-        public event DebuggerEvent StepOut;
+        public event DebuggerEvent DebugStepOut;
 
-        public event DebuggerEvent StepOver;
+        public event DebuggerEvent DebugStepOver;
 
         private DebuggerEngineEvent m_EngineHook;
         private static Debugger s_CurrentDebugger;
@@ -92,6 +92,11 @@ namespace Soft64.Debugging
             {
                 e();
             }
+        }
+
+        public void StepOnce()
+        {
+            OnEvent(DebuggerEventType.StepOnce, DebugStepOnce);
         }
 
         public Boolean DebugOnBreak
@@ -148,17 +153,17 @@ namespace Soft64.Debugging
 
         protected virtual void OnStepIn()
         {
-            OnEvent(DebuggerEventType.StepIn, StepIn);
+            OnEvent(DebuggerEventType.StepIn, DebugStepIn);
         }
 
         protected virtual void OnStepOut()
         {
-            OnEvent(DebuggerEventType.StepOut, StepOut);
+            OnEvent(DebuggerEventType.StepOut, DebugStepOut);
         }
 
         protected virtual void OnStepOver()
         {
-            OnEvent(DebuggerEventType.StepOver, StepOver);
+            OnEvent(DebuggerEventType.StepOver, DebugStepOver);
         }
 
         protected void Dispose(Boolean disposing)

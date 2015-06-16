@@ -19,7 +19,10 @@ namespace Soft64Binding.WPF
 
         private void EngineStatusChangedHandler(Object sender, EngineStatusChangedArgs e)
         {
-            Status = e.NewStatus;
+            Dispatcher.Invoke(() =>
+            {
+                Status = e.NewStatus;
+            });
         }
 
         private static readonly DependencyPropertyKey StatusPropertyKey =

@@ -6,14 +6,19 @@
         Title="CPU Debugger" Height="629.3" Width="801"
         DataContext="{Binding ., Source={StaticResource machineVM}}">
     <Grid Background="White">
-        <StackPanel Orientation="Vertical">
-            <Menu >
-                <MenuItem Header="Debugger">
-                    <MenuItem x:Name="xaml_MenuBtnRefreshDisam" Header="Refresh Disassembly" />
-                </MenuItem>
-            </Menu>
-            <Soft64WPF:DisassemblyView x:Name="xaml_DiassemblyView" HorizontalAlignment="Left" Height="579" Margin="10,10,0,0" VerticalAlignment="Top" Width="291"/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="11*"/>
+            <RowDefinition Height="33"/>
+            <RowDefinition Height="272*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" >
+            <MenuItem Header="Debugger">
+                <MenuItem x:Name="xaml_MenuBtnRefreshDisam" Header="Refresh Disassembly" />
+            </MenuItem>
+        </Menu>
+        <Soft64WPF:DisassemblyView x:Name="xaml_DiassemblyView" HorizontalAlignment="Left" Width="412" Grid.Row="2"/>
+        <Button x:Name="xaml_BtnStep" Content="Step" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="76" RenderTransformOrigin="-2.678,-0.2" Height="22" Click="xaml_BtnStep_Click"/>
+
 
     </Grid>
 </Window>

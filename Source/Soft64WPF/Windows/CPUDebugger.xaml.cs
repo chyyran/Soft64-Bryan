@@ -87,5 +87,11 @@ namespace Soft64WPF.Windows
         {
             Debugger.Current.Resume();
         }
+
+        private void xaml_BtnStep_Click(object sender, RoutedEventArgs e)
+        {
+            Debugger.Current.StepOnce();
+            xaml_DiassemblyView.RefreshDisasm();
+        }
     }
 }

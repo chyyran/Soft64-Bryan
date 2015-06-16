@@ -19,5 +19,15 @@ namespace Soft64WPF
             get { return (MipsInstruction)GetValue(LoadedInstructionProperty); }
             set { SetValue(LoadedInstructionProperty, value); }
         }
+
+        public String DisasmText
+        {
+            get { return LoadedInstruction.ToString(); }
+        }
+
+        public String AddressText
+        {
+            get { return LoadedInstruction.PC.ToString("X8"); }
+        }
     }
 }

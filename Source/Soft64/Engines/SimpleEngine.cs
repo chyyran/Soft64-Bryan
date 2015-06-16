@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Soft64.Engines
@@ -13,21 +14,19 @@ namespace Soft64.Engines
             SetCoreScheduler(new SingleCoreScheduler());
         }
 
-        protected override void StartTasks(System.Threading.CancellationToken token, TaskFactory factory, Action pauseWaitAction)
+        protected override void StartTasks(TaskFactory factory, CancellationToken token)
         {
             /* Create a single loop on the thread */
             Action singleLoop = () =>
             {
                 while (true)
                 {
-                    /* If cancellation invoked, then throw exception */
-                    token.ThrowIfCancellationRequested();
-
-                    /* This pause event comes from the core scheduler to pause this task when enabled */
-                    pauseWaitAction();
+                    Begin();
 
                     /* Execute a step in the CPU */
                     Machine.Current.DeviceCPU.StepOnce();
+
+                    End();
                 }
             };
 

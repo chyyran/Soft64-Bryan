@@ -108,7 +108,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\StringToCollectionConverter.cs" />
     <Compile Include="DiassemblyViewLine.cs" />
-    <Compile Include="DisassemblyView.cs" />
+    <Compile Include="DisassemblyView.xaml.cs" />
     <Compile Include="FontTools.cs" />
     <Compile Include="Helper\WpfRichTextBoxRowColoringRule.cs" />
     <Compile Include="Helper\WpfRichTextBoxTarget.cs" />
