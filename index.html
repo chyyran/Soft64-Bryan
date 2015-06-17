@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Soft64 by bryanperris</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Soft64</h1>
+        <p>N64 Emulator</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/bryanperris/Soft64-Bryan" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/bryanperris/Soft64-Bryan/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/bryanperris/Soft64-Bryan/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>
+<a id="notice" class="anchor" href="#notice" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notice:</h1>
+
+<p>This is not a fully funtional emulator, its work in progress, and only it runs a basic interpereter.  That means no RCP emulation yet until the CPU is functional and fully tested.</p>
+
+<h1>
+<a id="donations" class="anchor" href="#donations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Donations</h1>
+
+<p>If you want to support Soft64 to see the best N64 emulator written, I will take donations at <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=9FCF7548VCMRA&amp;lc=US&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted">here</a></p>
+
+<p>The more donations I recieve, the more time I can afford and build a developer team.</p>
+
+<h1>
+<a id="what-works" class="anchor" href="#what-works" aria-hidden="true"><span class="octicon octicon-link"></span></a>What Works</h1>
+
+<ul>
+<li>WPF hexadecimal editor works very nicely!</li>
+<li>Unified memory system seems to work nicely too (its thread safe too!)</li>
+<li>Bootloader based on PJ64 and Mupen64P both work correctly</li>
+<li>JSON based configuration is easy to use</li>
+<li>Emulator thread management is simple and OOP, works good, and supports local debugger control</li>
+<li>MIPS interpreter works and executes some implemented common opcodes</li>
+<li>ELF will load and run, but its run environment is very loose, no SysV, etc</li>
+<li>Cartridge rom loader is complete pretty much with some nice methods to detect the rom format</li>
+<li>TLB cache looks good, but I doubt it will be used much</li>
+<li>Logging is awsome with Nlog, all great info printed in WPF richtextbox :)</li>
+<li>We got a tracelog to dump to a file to see how the MIPS executes</li>
+</ul>
+
+<h1>
+<a id="project-goals-for-revision-1" class="anchor" href="#project-goals-for-revision-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Goals for revision 1</h1>
+
+<ul>
+<li>Implement high level graphics system</li>
+<li>Implement high level audio system</li>
+<li>Basic controller support</li>
+<li>Full blown WPF based debugger system</li>
+<li>Implement HLE features into the RCP core</li>
+<li>Implement SRAM, and flash memory</li>
+<li>Fully working "Pure" interpreter</li>
+</ul>
+
+<h1>
+<a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer</h1>
+
+<p>You agree to the Soft64 terms when you run Soft64.  By agreeing to these terms, you are fully responsible for the risks with Soft64.  Soft64 does not support any use of unauthorized copyrighted material of any kind.  We will disreguard questions and issues related to software we do not own, we only support the emulator itself.</p>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/bryanperris">bryanperris</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
