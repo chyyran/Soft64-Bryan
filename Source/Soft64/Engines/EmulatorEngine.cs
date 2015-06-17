@@ -48,7 +48,8 @@ namespace Soft64.Engines
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private EngineStatus m_Status = EngineStatus.Created;
         private Boolean m_SingleStep = false;
-        private AutoResetEvent m_SingleStepWaitEvent = new AutoResetEvent(false);
+        private EventWaitHandle m_SingleStepWaitEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+
 
         public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
 
@@ -100,7 +101,7 @@ namespace Soft64.Engines
             {
                 m_SingleStep = false;
                 PauseThreads();
-                m_SingleStepWaitEvent.Reset();
+                m_SingleStepWaitEvent.Set();
             }
         }
 
@@ -174,7 +175,12 @@ namespace Soft64.Engines
             {
                 m_CoreScheduler.PauseThreads();
 
-                OnStatusChange(m_Status, EngineStatus.Paused);
+                /* Use an async task to keep event handlers blocking this method */
+                Task.Factory.StartNew(() =>
+                {
+                    OnStatusChange(m_Status, EngineStatus.Paused);
+                });
+                
                 m_Status = EngineStatus.Paused;
             }
         }
