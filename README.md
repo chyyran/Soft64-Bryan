@@ -1,10 +1,8 @@
+
+Website: http://bryanperris.github.io/Soft64-Bryan/
+
 # Notice: #
 This is not a fully funtional emulator, its work in progress, and only it runs a basic interpereter.  That means no RCP emulation yet until the CPU is functional and fully tested.
-
-# Donations
-If you want to support Soft64 to see the best N64 emulator written, I will take donations at https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=9FCF7548VCMRA&lc=US&item_name=Soft64Project&amount=10%2e00&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted
-
-The more donations I recieve, the more time I can afford and build a developer team.
 
 # What Works
 * WPF hexadecimal editor works very nicely!
