@@ -175,7 +175,7 @@ namespace Soft64.Engines
             {
                 m_CoreScheduler.PauseThreads();
 
-                /* Use an async task to keep event handlers blocking this method */
+                /* Use an async task to keep event handlers from deadlocking this method */
                 Task.Factory.StartNew(() =>
                 {
                     OnStatusChange(m_Status, EngineStatus.Paused);
