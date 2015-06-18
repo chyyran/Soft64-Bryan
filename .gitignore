@@ -12,3 +12,4 @@ Source/Clibs/mupen64plus-core/projects/VisualStudio2013/Debug
 Source/CompareEngine.Mupen/Debug
 *.sdf
 Source/ipch
+*.opensdf
