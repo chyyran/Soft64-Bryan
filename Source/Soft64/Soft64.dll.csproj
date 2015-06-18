@@ -66,6 +66,7 @@
     <Compile Include="DeviceMemory\N64MemoryStream.cs" />
     <Compile Include="Machine.cs" />
     <Compile Include="MachineException.cs" />
+    <Compile Include="MipsR4300\IMipsCompareEngine.cs" />
     <Compile Include="MipsR4300\InterruptTable.cs" />
     <Compile Include="N64MemRegions.cs" />
     <Compile Include="DeviceMemory\ParallelInterface.cs" />
