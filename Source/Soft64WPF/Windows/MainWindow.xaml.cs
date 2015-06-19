@@ -52,9 +52,16 @@ namespace Soft64WPF.Windows
             xaml_ButtonToolCPUDebugger.Click += xaml_ButtonToolCPUDebugger_Click;
             xaml_ButtonToolMemoryEditor.Click += xaml_ButtonToolMemoryEditor_Click;
             xamlControl_EmuRunPostDebugButton.Click += xamlControl_EmuRunPostDebugButton_Click;
+            xaml_ButtonToolCompare.Click += xaml_ButtonToolCompare_Click;
 
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             Loaded += MainWindow_Loaded;
+        }
+
+        void xaml_ButtonToolCompare_Click(object sender, RoutedEventArgs e)
+        {
+            CompareWindow win = new CompareWindow();
+            win.Show();
         }
 
         void xamlControl_EmuRunPostDebugButton_Click(object sender, RoutedEventArgs e)

@@ -56,6 +56,7 @@
                 </MenuItem.Header>
                 <MenuItem x:Name="xaml_ButtonToolMemoryEditor" Header="Memory Editor..." />
                 <MenuItem x:Name="xaml_ButtonToolCPUDebugger"  Header="CPU Debugger..." />
+                <MenuItem x:Name="xaml_ButtonToolCompare"  Header="Compare Engines..." />
             </MenuItem>
         </Menu>
         <TabControl Grid.Row="1" Background="Transparent" BorderBrush="Transparent">

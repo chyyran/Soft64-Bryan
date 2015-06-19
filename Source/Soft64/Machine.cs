@@ -24,6 +24,7 @@ using System.Dynamic;
 using NLog;
 using Soft64.Debugging;
 using Soft64.Engines;
+using Soft64.MipsR4300;
 using Soft64.PIF;
 using Soft64.RCP;
 
@@ -162,6 +163,10 @@ namespace Soft64
                 /* Initilaize the runtime engine */
                 m_CurrentEngine = m_PropEngine;
                 m_CurrentEngine.Initialize();
+
+                /* Prep for compare */
+                if (Machine.Current.MipsCompareEngine != null)
+                    Machine.Current.MipsCompareEngine.Init();
 
                 m_RunState = LifetimeState.Initialized;
             }
@@ -346,6 +351,12 @@ namespace Soft64
         {
             get;
             private set;
+        }
+
+        public IMipsCompareEngine MipsCompareEngine
+        {
+            get;
+            set;
         }
     }
 }

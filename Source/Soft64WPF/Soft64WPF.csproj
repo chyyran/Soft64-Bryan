@@ -116,6 +116,9 @@
     <Compile Include="Windows\CodeWindow.xaml.cs">
       <DependentUpon>CodeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\CompareWindow.xaml.cs">
+      <DependentUpon>CompareWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\CPUDebugger.xaml.cs">
       <DependentUpon>CPUDebugger.xaml</DependentUpon>
     </Compile>
@@ -140,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\CodeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\CompareWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -211,6 +218,7 @@
     <ProjectReference Include="..\CompareEngine.Mupen\CompareEngine.Mupen.vcxproj">
       <Project>{0fa14ef4-7abd-4ccf-8160-5b5212e9feca}</Project>
       <Name>CompareEngine.Mupen</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Soft64.Toolkits.WPF\Soft64.Toolkits.WPF.csproj">
       <Project>{334c5b35-8fb0-4fd6-89d1-572c94acfd5e}</Project>

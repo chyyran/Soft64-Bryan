@@ -21,12 +21,28 @@
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="CompareEngine.Mupen.h" />
     <ClInclude Include="MupenEngine.h" />
+    <ClInclude Include="core_interface.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="osal_dynamiclib.h" />
+    <ClInclude Include="osal_files.h" />
+    <ClInclude Include="osal_preproc.h" />
+    <ClInclude Include="version.h" />
+    <ClInclude Include="compare_core.h" />
+    <ClInclude Include="cheat.h" />
+    <ClInclude Include="plugin.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Stdafx.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="CompareEngine.Mupen.cpp" />
-    <ClCompile Include="MupenEngine.h.cpp" />
+    <ClCompile Include="core_interface.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="osal_dynamiclib_win32.c" />
+    <ClCompile Include="osal_files_win32.c" />
+    <ClCompile Include="compare_core.c" />
+    <ClCompile Include="cheat.c" />
+    <ClCompile Include="plugin.c" />
+    <ClCompile Include="MupenEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

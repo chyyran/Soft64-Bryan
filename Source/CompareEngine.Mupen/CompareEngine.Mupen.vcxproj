@@ -15,6 +15,8 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>CompareEngineMupen</RootNamespace>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -52,14 +54,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>E:\base\dev\git\Soft64-Bryan\Source\Clibs\mupen64plus-core\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Clibs/mupen64plus-core/src;../Clibs/mupen64plus-core/src/main;../Clibs/mupen64plus-core/src/api;../Clibs/SDL-1.2.14/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(OutDir)\mupen64plus.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)\mupen64plus.lib;../Clibs/SDL-1.2.14/lib/SDL.lib;../Clibs/SDL-1.2.14/lib/SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -90,15 +93,31 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cheat.h" />
     <ClInclude Include="CompareEngine.Mupen.h" />
+    <ClInclude Include="compare_core.h" />
+    <ClInclude Include="core_interface.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="MupenEngine.h" />
+    <ClInclude Include="osal_dynamiclib.h" />
+    <ClInclude Include="osal_files.h" />
+    <ClInclude Include="osal_preproc.h" />
+    <ClInclude Include="plugin.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="cheat.c" />
     <ClCompile Include="CompareEngine.Mupen.cpp" />
-    <ClCompile Include="MupenEngine.h.cpp" />
+    <ClCompile Include="compare_core.c" />
+    <ClCompile Include="core_interface.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="MupenEngine.cpp" />
+    <ClCompile Include="osal_dynamiclib_win32.c" />
+    <ClCompile Include="osal_files_win32.c" />
+    <ClCompile Include="plugin.c" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -108,5 +127,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
 </Project>

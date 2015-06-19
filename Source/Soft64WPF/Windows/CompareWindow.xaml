@@ -1,0 +1,9 @@
+﻿<Window x:Class="Soft64WPF.Windows.CompareWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Compare Engines" Height="300" Width="300">
+    <Grid Background="White">
+        <CheckBox x:Name="xaml_ChkBoxMupen" Content="Mupen Engine" HorizontalAlignment="Left" VerticalAlignment="Top" Width="136" Checked="xaml_ChkBoxMupen_Checked"/>
+
+    </Grid>
+</Window>

@@ -99,6 +99,10 @@ namespace Soft64.Engines
         {
             if (m_SingleStep)
             {
+                /* Do compare */
+                if (Machine.Current.MipsCompareEngine != null)
+                    Machine.Current.MipsCompareEngine.CompareState(Machine.Current.DeviceCPU.State);
+
                 m_SingleStep = false;
                 PauseThreads();
                 m_SingleStepWaitEvent.Set();

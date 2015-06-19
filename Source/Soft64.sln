@@ -9,6 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared Files", "Shared File
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soft64WPF", "Soft64WPF\Soft64WPF.csproj", "{6BFF0A81-FC27-4866-8F08-BA87C80F26AC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92D3FEB9-2129-41C5-8577-BCD7D961EF41} = {92D3FEB9-2129-41C5-8577-BCD7D961EF41}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soft64.dll", "Soft64\Soft64.dll.csproj", "{44364805-1711-4454-A237-A4C4DFE2E1F6}"
 EndProject
@@ -29,6 +32,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.PJ64", "Tests.PJ64\Tests.PJ64.csproj", "{AEEF0B8E-09C6-4A2C-93B9-2894E577D435}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CompareEngine.Mupen", "CompareEngine.Mupen\CompareEngine.Mupen.vcxproj", "{0FA14EF4-7ABD-4CCF-8160-5B5212E9FECA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92D3FEB9-2129-41C5-8577-BCD7D961EF41} = {92D3FEB9-2129-41C5-8577-BCD7D961EF41}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C Libs", "C Libs", "{941327FA-5685-447F-8AF8-D1C3C318A263}"
 EndProject
@@ -137,7 +143,6 @@ Global
 		{1E0A9417-A6B8-48A9-AD46-E54261BC7933}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{1E0A9417-A6B8-48A9-AD46-E54261BC7933}.Debug|Win32.ActiveCfg = Debug|Any CPU
 		{1E0A9417-A6B8-48A9-AD46-E54261BC7933}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1E0A9417-A6B8-48A9-AD46-E54261BC7933}.Debug|x86.Build.0 = Debug|Any CPU
 		{1E0A9417-A6B8-48A9-AD46-E54261BC7933}.New_Dynarec_Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1E0A9417-A6B8-48A9-AD46-E54261BC7933}.New_Dynarec_Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E0A9417-A6B8-48A9-AD46-E54261BC7933}.New_Dynarec_Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
