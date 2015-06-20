@@ -10,6 +10,8 @@ namespace Soft64.MipsR4300
     {
         void Init();
 
+        void Run();
+
         Boolean CompareState(ExecutionState state);
 
         void StepOnce();

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
+using System.Threading.Tasks;
 using NLog;
 using Soft64.Debugging;
 using Soft64.Engines;
@@ -165,8 +166,15 @@ namespace Soft64
                 m_CurrentEngine.Initialize();
 
                 /* Prep for compare */
-                if (Machine.Current.MipsCompareEngine != null)
-                    Machine.Current.MipsCompareEngine.Init();
+                try
+                {
+                    if (Machine.Current.MipsCompareEngine != null)
+                        Machine.Current.MipsCompareEngine.Init();
+                }
+                catch (InvalidOperationException e)
+                {
+                    throw new MachineException("Exception occured in compare engine, see inner exception for details", e);
+                }
 
                 m_RunState = LifetimeState.Initialized;
             }
@@ -208,6 +216,16 @@ namespace Soft64
                 logger.Trace("Starting system threads... ");
                 m_CurrentEngine.Run();
                 logger.Trace("Machine is now running ... ");
+
+                if (MipsCompareEngine != null)
+                {
+                    Task.Factory.StartNew(() =>
+                        {
+                            MipsCompareEngine.Run();
+                            logger.Trace("Compare engine is now running ...");
+                        });
+                }
+
                 SetNewRuntimeState(LifetimeState.Running);
             }
             catch (Exception e)
