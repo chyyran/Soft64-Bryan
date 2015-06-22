@@ -56,7 +56,7 @@ namespace CompareEngine
 
 			/* Setup some configuration */
 			/* TODO: I don't know if setting this config crap makes any different as to the preprocessing I am using */
-			m64p_handle* configHandle;
+			m64p_handle* configHandle = 0;
 			ConfigOpenSection("Core", configHandle);
 			ConfigSetParameter(configHandle, "R4300Emulator", M64TYPE_INT, "0");
 			ConfigSetParameter(configHandle, "EnableDebugger", M64TYPE_BOOL, "1");

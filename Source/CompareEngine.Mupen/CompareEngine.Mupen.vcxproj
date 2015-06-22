@@ -45,7 +45,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\Binary</OutDir>
+    <OutDir>..\..\Binary\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -57,12 +57,12 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../Clibs/mupen64plus-core/src;../Clibs/mupen64plus-core/src/main;../Clibs/mupen64plus-core/src/api;../Clibs/SDL-1.2.14/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>mupen64plus-core/src;mupen64plus-core/src/main;mupen64plus-core/src/api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>../Clibs/mupen64plus-core/lib/mupen64plus.lib;../Clibs/SDL-1.2.14/lib/SDL.lib;../Clibs/SDL-1.2.14/lib/SDLmain.lib;../Clibs/freetype-2.3.5-1/lib/freetype.lib;../Clibs/libpng-1.2.37/lib/libpng.lib;../Clibs/zlib-1.2.3/lib/zlib.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mupen64plus-core/lib/mupen64plus.lib;zlib-1.2.3/lib/zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
