@@ -5,22 +5,25 @@ using namespace Soft64;
 using namespace Soft64::MipsR4300;
 using namespace System::Threading;
 
-namespace CompareEngineMupen
+namespace CompareEngine
 {
-	public ref class MupenEngine : public IMipsCompareEngine
+	namespace Mupen
 	{
-	public:
-		MupenEngine();
-		virtual void Init();
-		virtual Boolean CompareState(ExecutionState^ state);
-		virtual void Run();
-		virtual void Release();
+		public ref class MupenEngine : public IMipsCompareEngine
+		{
+		public:
+			MupenEngine();
+			virtual void Init();
+			virtual Boolean CompareState(ExecutionState^ state);
+			virtual void Run();
+			virtual void Release();
 
-	private:
-		EventWaitHandle^ m_CompareWaitEvent;
+		private:
+			EventWaitHandle^ m_CompareWaitEvent;
 
-	internal:
-		static MupenEngine^ CurrentEngine;
-		virtual void CompareCoreWait(unsigned int);
-	};
+		internal:
+			static MupenEngine^ CurrentEngine;
+			virtual void CompareCoreWait(unsigned int);
+		};
+	}
 }

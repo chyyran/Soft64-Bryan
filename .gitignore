@@ -13,3 +13,4 @@ Source/CompareEngine.Mupen/Debug
 *.sdf
 Source/ipch
 *.opensdf
+/Source/Clibs/mupen64plus-core/lib

@@ -215,11 +215,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CompareEngine.Mupen\CompareEngine.Mupen.vcxproj">
-      <Project>{0fa14ef4-7abd-4ccf-8160-5b5212e9feca}</Project>
-      <Name>CompareEngine.Mupen</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Soft64.Toolkits.WPF\Soft64.Toolkits.WPF.csproj">
       <Project>{334c5b35-8fb0-4fd6-89d1-572c94acfd5e}</Project>
       <Name>Soft64.Toolkits.WPF</Name>

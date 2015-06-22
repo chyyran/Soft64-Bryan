@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using CompareEngineMupen;
 using Soft64;
 
 namespace Soft64WPF.Windows
@@ -28,7 +28,8 @@ namespace Soft64WPF.Windows
 
         private void xaml_ChkBoxMupen_Checked(object sender, RoutedEventArgs e)
         {
-            MupenEngine engine = new MupenEngine();
+            Assembly mupenAssembly = AppDomain.CurrentDomain.Load("CompareEngine.Mupen");
+            dynamic engine = mupenAssembly.CreateInstance("CompareEngine.Mupen.MupenEngine");
             Machine.Current.MipsCompareEngine = engine;
         }
     }

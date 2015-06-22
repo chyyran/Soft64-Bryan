@@ -62,7 +62,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(OutDir)\mupen64plus.lib;../Clibs/SDL-1.2.14/lib/SDL.lib;../Clibs/SDL-1.2.14/lib/SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../Clibs/mupen64plus-core/lib/mupen64plus.lib;../Clibs/SDL-1.2.14/lib/SDL.lib;../Clibs/SDL-1.2.14/lib/SDLmain.lib;../Clibs/freetype-2.3.5-1/lib/freetype.lib;../Clibs/libpng-1.2.37/lib/libpng.lib;../Clibs/zlib-1.2.3/lib/zlib.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -93,35 +93,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cheat.h" />
-    <ClInclude Include="compare_core.h" />
-    <ClInclude Include="core_interface.h" />
-    <ClInclude Include="main.h" />
     <ClInclude Include="MupenEngine.h" />
-    <ClInclude Include="osal_dynamiclib.h" />
-    <ClInclude Include="osal_files.h" />
-    <ClInclude Include="osal_preproc.h" />
-    <ClInclude Include="plugin.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="cheat.c" />
-    <ClCompile Include="compare_core.c" />
-    <ClCompile Include="core_interface.c" />
-    <ClCompile Include="main.c" />
     <ClCompile Include="MupenEngine.cpp" />
-    <ClCompile Include="osal_dynamiclib_win32.c" />
-    <ClCompile Include="osal_files_win32.c" />
-    <ClCompile Include="plugin.c" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
