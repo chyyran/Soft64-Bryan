@@ -29,8 +29,16 @@ namespace Soft64WPF.Windows
         private void xaml_ChkBoxMupen_Checked(object sender, RoutedEventArgs e)
         {
             Assembly mupenAssembly = AppDomain.CurrentDomain.Load("CompareEngine.Mupen");
-            dynamic engine = mupenAssembly.CreateInstance("CompareEngine.Mupen.MupenEngine");
-            Machine.Current.MipsCompareEngine = engine;
+
+            if (mupenAssembly != null)
+            {
+                dynamic engine = mupenAssembly.CreateInstance("CompareEngine.Mupen.MupenEngine");
+                Machine.Current.MipsCompareEngine = engine;
+            }
+            else
+            {
+                MessageBox.Show("Error: Cannot load mupen compare engine assembly", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
