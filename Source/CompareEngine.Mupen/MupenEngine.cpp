@@ -22,6 +22,7 @@ using namespace System::Runtime::InteropServices;
 namespace CompareEngineMupen
 {
 	void CompareCoreCallback(unsigned int);
+	int CompareInt64(void *, Int64);
 
 	MupenEngine::MupenEngine()
 	{
@@ -44,6 +45,7 @@ namespace CompareEngineMupen
 		}
 
 		/* init the mupen core */
+		/* TODO: Force mupen core to statically link into this assembly */
 		m64p_error rval = (*CoreStartup)(CORE_API_VERSION, ".\\", ".\\", "Core", NULL, NULL, NULL);
 		if (rval != M64ERR_SUCCESS)
 		{
@@ -51,6 +53,7 @@ namespace CompareEngineMupen
 		}
 
 		/* Setup some configuration */
+		/* TODO: I don't know if setting this config crap makes any different as to the preprocessing I am using */
 		m64p_handle* configHandle;
 		(*ConfigOpenSection)("Core", configHandle);
 		(*ConfigSetParameter)(configHandle, "R4300Emulator", M64TYPE_INT, "0");
@@ -89,18 +92,22 @@ namespace CompareEngineMupen
 
 	Boolean MupenEngine::CompareState(ExecutionState^ state)
 	{
+		/* TODO: Store mupen's values into an ExecutionState object, and compare that against the parameter */
 
+		int comparePc = CompareInt64((DebugGetCPUDataPtr)(M64P_CPU_PC), state->PC);
 
-		return false;
+		return
+			comparePc;
 	}
 
-	void MupenEngine::StepOnce()
+	void MupenEngine::Release()
 	{
-
+		this->m_CompareWaitEvent->Set();
 	}
 
 	void MupenEngine::CompareCoreWait(unsigned int data)
 	{
+		/* Block mupen execution thread */
 		this->m_CompareWaitEvent->WaitOne();
 	}
 
@@ -114,5 +121,19 @@ namespace CompareEngineMupen
 	void CompareCoreCallback(unsigned int data)
 	{
 		MupenEngine::CurrentEngine->CompareCoreWait(data);
+	}
+
+	int CompareInt64(void *ptrValue, Int64 value)
+	{
+		__int64 cValue = *(__int64*)ptrValue;
+
+		if (value.Equals(cValue))
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 }

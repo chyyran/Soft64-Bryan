@@ -14,6 +14,6 @@ namespace Soft64.MipsR4300
 
         Boolean CompareState(ExecutionState state);
 
-        void StepOnce();
+        void Release();
     }
 }

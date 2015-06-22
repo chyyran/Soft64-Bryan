@@ -94,7 +94,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cheat.h" />
-    <ClInclude Include="CompareEngine.Mupen.h" />
     <ClInclude Include="compare_core.h" />
     <ClInclude Include="core_interface.h" />
     <ClInclude Include="main.h" />
@@ -110,7 +109,6 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="cheat.c" />
-    <ClCompile Include="CompareEngine.Mupen.cpp" />
     <ClCompile Include="compare_core.c" />
     <ClCompile Include="core_interface.c" />
     <ClCompile Include="main.c" />

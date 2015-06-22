@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using NLog;
 using Soft64;
 using Soft64.Debugging;
 using Soft64.MipsR4300.Debugging;
@@ -14,6 +15,7 @@ namespace Soft64WPF.Windows
     public partial class CPUDebugger : Window
     {
         private MachineViewModel m_MachineModel;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
 
         static CPUDebugger()
@@ -52,44 +54,16 @@ namespace Soft64WPF.Windows
             }
         }
 
-        private void ScanCode()
-        {
-            Stream vmemory = Machine.Current.DeviceCPU.VirtualMemoryStream;
-            Int64 begin = 0xA4000040;
-            Int64 current = vmemory.Position;
-            Stream view = new VMemViewStream();
-            view.Position = begin;
-            BinaryReader reader = new BinaryReader(view);
-
-            while (vmemory.Position < vmemory.Length)
-            {
-                try
-                {
-                    UInt64 read = reader.ReadUInt64();
-
-                    /* Parse instructions */
-                }
-                catch
-                {
-                    break;
-                }
-            }
-        }
-
-        private void xaml_BtnPause_Click(object sender, RoutedEventArgs e)
-        {
-            Debugger.Current.Pause();
-
-            ScanCode();
-        }
-
-        private void xaml_BtnResume_Click(object sender, RoutedEventArgs e)
-        {
-            Debugger.Current.Resume();
-        }
-
         private void xaml_BtnStep_Click(object sender, RoutedEventArgs e)
         {
+            if (Machine.Current.MipsCompareEngine != null)
+            {
+                Boolean result = Machine.Current.MipsCompareEngine.CompareState(Machine.Current.DeviceCPU.State);
+                Machine.Current.MipsCompareEngine.Release();
+
+                logger.Debug("Core Compare Result [0x{0:X8}]: {1}", Machine.Current.DeviceCPU.State.PC, result);
+            }
+
             Debugger.Current.StepOnce();
             xaml_DiassemblyView.RefreshDisasm();
         }

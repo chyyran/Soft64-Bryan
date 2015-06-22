@@ -14,7 +14,7 @@ namespace CompareEngineMupen
 		virtual void Init();
 		virtual Boolean CompareState(ExecutionState^ state);
 		virtual void Run();
-		virtual void StepOnce();
+		virtual void Release();
 
 	private:
 		EventWaitHandle^ m_CompareWaitEvent;
