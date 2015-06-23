@@ -29,16 +29,7 @@ namespace Soft64.MipsR4300.CP0
     [CLSCompliant(false)]
     public class TLBCache : IEnumerable<TLBEntryInfo>, IList<TLBEntry>
     {
-        private WordSize m_WordSize;
         private CP0Registers m_Cp0Regs;
-        private UInt64 m_PageMask; // TLB Entry Size
-        private UInt64 m_EntryHi;  // VPN2
-        private UInt64 m_EntryLo0; // PFN Odd
-        private UInt64 m_EntryLo1; // PFN Even
-        private UInt64 m_Index;    // Selected TLB Entry
-        private UInt64 m_Wired;    // Range of read-only TLB Entries
-        private UInt64 m_Random;   // Randomly selected TLB Entry
-        private UInt64 m_BadVAddr; // Stores the virtual address that caused an exception
         private TLBEntry[] m_Entries;
         private Dictionary<VirtualPageNumber2, TLBEntry> m_VPN2Dictionary = new Dictionary<VirtualPageNumber2, TLBEntry>();
         private Dictionary<VirtualPageNumber2, TLBEntry> m_GlobalVPN2Dictionary = new Dictionary<VirtualPageNumber2, TLBEntry>();
@@ -57,14 +48,14 @@ namespace Soft64.MipsR4300.CP0
 
         public virtual void Initialize()
         {
-            m_PageMask = 0;
-            m_EntryHi = 0;
-            m_EntryLo0 = 0;
-            m_EntryLo1 = 0;
-            m_Index = 0;
-            m_Wired = 0;
-            m_Random = 31;
-            m_BadVAddr = 0xFFFFFFFF;
+            m_Cp0Regs[CP0RegName.PageMask] = 0;
+            m_Cp0Regs[CP0RegName.EntryHi] = 0;
+            m_Cp0Regs[CP0RegName.EntryLo0] = 0;
+            m_Cp0Regs[CP0RegName.EntryLo1] = 0;
+            m_Cp0Regs[CP0RegName.Index] = 0;
+            m_Cp0Regs[CP0RegName.Wired] = 0;
+            m_Cp0Regs[CP0RegName.Random] = 31;
+            m_Cp0Regs[CP0RegName.BadVAddr] = 0xFFFFFFFF;
             ClearEntries();
             m_VPN2Dictionary.Clear();
             m_GlobalVPN2Dictionary.Clear();
@@ -84,17 +75,17 @@ namespace Soft64.MipsR4300.CP0
 
             UpdateRandom();
 
-            VirtualPageNumber2 vpn2 = new VirtualPageNumber2(m_EntryHi);
+            VirtualPageNumber2 vpn2 = new VirtualPageNumber2(m_Cp0Regs[CP0RegName.EntryHi]);
 
             if (ContainsEntry(vpn2))
             {
                 /* Get the entry index */
-                m_Index = GetIndex(vpn2);
+                m_Cp0Regs[CP0RegName.Index] = GetIndex(vpn2);
             }
             else
             {
                 /* Set P bit to 1 indicating the probe has failed */
-                m_Index = 0x80000000;
+                m_Cp0Regs[CP0RegName.Index] = 0x80000000;
             }
         }
 
@@ -106,17 +97,17 @@ namespace Soft64.MipsR4300.CP0
         {
             if (m_DisableTLB) return;
 
-            if (!CheckSafeEntry((Byte)m_Index))
+            if (!CheckSafeEntry((Byte)m_Cp0Regs[CP0RegName.Index]))
             {
                 UpdateRandom();
-                AddEntry((Int32)m_Index, CreateEntryFromRegs());
+                AddEntry((Int32)m_Cp0Regs[CP0RegName.Index], CreateEntryFromRegs());
             }
             else
             {
                 throw new TLBException(TLBExceptionType.Mod);
             }
 
-            OnCacheChanged((Int32)m_Index);
+            OnCacheChanged((Int32)m_Cp0Regs[CP0RegName.Index]);
         }
 
         /// <summary>
@@ -126,8 +117,8 @@ namespace Soft64.MipsR4300.CP0
         {
             if (m_DisableTLB) return;
             UpdateRandom();
-            AddEntry((Int32)m_Random, CreateEntryFromRegs());
-            OnCacheChanged((Int32)m_Index);
+            AddEntry((Int32)m_Cp0Regs[CP0RegName.Random], CreateEntryFromRegs());
+            OnCacheChanged((Int32)m_Cp0Regs[CP0RegName.Index]);
         }
 
         public virtual void Read()
@@ -136,14 +127,14 @@ namespace Soft64.MipsR4300.CP0
 
             UpdateRandom();
 
-            TLBEntry entry = GetEntry((Int32)m_Index);
+            TLBEntry entry = GetEntry((Int32)m_Cp0Regs[CP0RegName.Index]);
 
             if (entry != null)
             {
-                m_PageMask = entry.PageMask;
-                m_EntryHi = entry.VPN2.EntryHi;
-                m_EntryLo0 = entry.PfnOdd;
-                m_EntryLo1 = entry.PfnEven;
+                m_Cp0Regs[CP0RegName.PageMask] = entry.PageMask;
+                m_Cp0Regs[CP0RegName.EntryHi] = entry.VPN2.EntryHi;
+                m_Cp0Regs[CP0RegName.EntryLo0] = entry.PfnOdd;
+                m_Cp0Regs[CP0RegName.EntryLo1] = entry.PfnEven;
             }
         }
 
@@ -179,8 +170,8 @@ namespace Soft64.MipsR4300.CP0
 
         public long TranslateVirtualAddress(long virtualAddress)
         {
-            VirtualPageNumber2 vpn2 = new VirtualPageNumber2(m_EntryHi);
-            PageSize pageSize = new PageSize(m_PageMask);
+            VirtualPageNumber2 vpn2 = new VirtualPageNumber2(m_Cp0Regs[CP0RegName.EntryHi]);
+            PageSize pageSize = new PageSize(m_Cp0Regs[CP0RegName.PageMask]);
             TLBEntry entry = null;
 
             /* Note:
@@ -250,8 +241,8 @@ namespace Soft64.MipsR4300.CP0
         {
             if (m_DisableTLB) return;
 
-            m_Wired = (UInt32)wired;
-            m_Random = 46;
+            m_Cp0Regs[CP0RegName.Wired] = (UInt32)wired;
+            m_Cp0Regs[CP0RegName.Random] = 46;
         }
 
         private bool ContainsEntry(VirtualPageNumber2 vpn2)
@@ -278,83 +269,78 @@ namespace Soft64.MipsR4300.CP0
 
         private TLBEntry CreateEntryFromRegs()
         {
-            TLBEntry entry = new TLBEntry(this.m_WordSize);
-            entry.PageMask = m_PageMask;
-            entry.VPN2 = new VirtualPageNumber2(m_EntryHi);
-            entry.PfnOdd = m_EntryLo0;
-            entry.PfnEven = m_EntryLo1;
+            TLBEntry entry = new TLBEntry(Machine.Current.DeviceCPU.State.WordSizeMode);
+            entry.PageMask = m_Cp0Regs[CP0RegName.PageMask];
+            entry.VPN2 = new VirtualPageNumber2(m_Cp0Regs[CP0RegName.EntryHi]);
+            entry.PfnOdd = m_Cp0Regs[CP0RegName.EntryLo0];
+            entry.PfnEven = m_Cp0Regs[CP0RegName.EntryLo1];
             return entry;
         }
 
         private Boolean CheckSafeEntry(Byte index)
         {
-            return index <= m_Wired;
+            return index <= m_Cp0Regs[CP0RegName.Wired];
         }
 
         private void UpdateRandom()
         {
-            if (CheckSafeEntry((Byte)m_Random))
+            if (CheckSafeEntry((Byte)m_Cp0Regs[CP0RegName.Random]))
             {
-                m_Random = m_Wired + 1;
+                m_Cp0Regs[CP0RegName.Random] = m_Cp0Regs[CP0RegName.Wired] + 1;
             }
             else
             {
-                m_Random++;
+                m_Cp0Regs[CP0RegName.Random]++;
 
-                if (m_Random >= 47)
-                    m_Random = m_Wired + 1;
+                if (m_Cp0Regs[CP0RegName.Random] >= 47)
+                    m_Cp0Regs[CP0RegName.Random] = m_Cp0Regs[CP0RegName.Wired] + 1;
             }
         }
 
         public UInt64 PageMask
         {
-            get { return m_PageMask; }
-            set { m_PageMask = value; }
+            get { return m_Cp0Regs[CP0RegName.PageMask]; }
+            set { m_Cp0Regs[CP0RegName.PageMask] = value; }
         }
 
         public UInt64 EntryHi
         {
-            get { return m_EntryHi; }
-            set { m_EntryHi = value; }
+            get { return m_Cp0Regs[CP0RegName.EntryHi]; }
+            set { m_Cp0Regs[CP0RegName.EntryHi] = value; }
         }
 
         public UInt64 EntryLo0
         {
-            get { return m_EntryLo0; }
-            set { m_EntryLo0 = value; }
+            get { return m_Cp0Regs[CP0RegName.EntryLo0]; }
+            set { m_Cp0Regs[CP0RegName.EntryLo0] = value; }
         }
 
         public UInt64 EntryLo1
         {
-            get { return m_EntryLo1; }
-            set { m_EntryLo1 = value; }
+            get { return m_Cp0Regs[CP0RegName.EntryLo1]; }
+            set { m_Cp0Regs[CP0RegName.EntryLo1] = value; }
         }
 
         public UInt64 Index
         {
-            get { return m_Index; }
-            set { m_Index = value; }
+            get { return m_Cp0Regs[CP0RegName.Index]; }
+            set { m_Cp0Regs[CP0RegName.Index] = value; }
         }
 
         public UInt64 Wired
         {
-            get { return m_Wired; }
+            get { return m_Cp0Regs[CP0RegName.Wired]; }
             set { SetWired((Int32)value); }
         }
 
         public UInt64 Random
         {
-            get { return m_Random; }
+            get { return m_Cp0Regs[CP0RegName.Random]; }
         }
 
         public UInt64 BadVAddr
         {
-            get { return m_BadVAddr; }
-        }
-
-        public WordSize Mode
-        {
-            get { return m_WordSize; }
+            get { return m_Cp0Regs[CP0RegName.BadVAddr]; }
         }
 
         private void OnCacheChanged(Int32 index)

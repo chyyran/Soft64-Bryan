@@ -160,14 +160,12 @@ namespace Soft64.MipsR4300.CP0
     public sealed class CP0Registers : IEnumerable<CP0RegName>
     {
         private UInt64[] m_Regs;
-        private MipsR4300Core m_CPU;
         private StatusRegister m_SR;
         private CP0Registers32 m_R32;
 
-        public CP0Registers(MipsR4300Core cpu)
+        public CP0Registers()
         {
             m_Regs = new UInt64[32];
-            m_CPU = cpu;
             m_SR = new StatusRegister();
             m_R32 = new CP0Registers32(this);
         }
@@ -183,15 +181,15 @@ namespace Soft64.MipsR4300.CP0
             {
                 switch (index)
                 {
-                    case CP0RegName.BadVAddr: return m_CPU.VirtualMemoryStream.TLB.BadVAddr;
-                    case CP0RegName.EntryHi: return m_CPU.VirtualMemoryStream.TLB.EntryHi;
-                    case CP0RegName.EntryLo0: return m_CPU.VirtualMemoryStream.TLB.EntryLo0;
-                    case CP0RegName.EntryLo1: return m_CPU.VirtualMemoryStream.TLB.EntryLo1;
-                    case CP0RegName.Index: return m_CPU.VirtualMemoryStream.TLB.Index;
-                    case CP0RegName.PageMask: return m_CPU.VirtualMemoryStream.TLB.PageMask;
-                    case CP0RegName.Random: return m_CPU.VirtualMemoryStream.TLB.Random;
-                    case CP0RegName.Wired: return m_CPU.VirtualMemoryStream.TLB.Wired;
-                    case CP0RegName.SR: return m_SR.Reg64;
+                    case CP0RegName.BadVAddr: return m_Regs[8];
+                    case CP0RegName.EntryHi: return m_Regs[10];
+                    case CP0RegName.EntryLo0: return m_Regs[2];
+                    case CP0RegName.EntryLo1: return m_Regs[3];
+                    case CP0RegName.Index: return m_Regs[0];
+                    case CP0RegName.PageMask: return m_Regs[5];
+                    case CP0RegName.Random: return m_Regs[1];
+                    case CP0RegName.Wired: return m_Regs[6];
+                    case CP0RegName.SR: return m_Regs[12];
                     default: return m_Regs[(int)index];
                 }
             }
@@ -200,13 +198,15 @@ namespace Soft64.MipsR4300.CP0
             {
                 switch (index)
                 {
-                    case CP0RegName.EntryHi: m_CPU.VirtualMemoryStream.TLB.EntryHi = value; break;
-                    case CP0RegName.EntryLo0: m_CPU.VirtualMemoryStream.TLB.EntryLo0 = value; break;
-                    case CP0RegName.EntryLo1: m_CPU.VirtualMemoryStream.TLB.EntryLo1 = value; break;
-                    case CP0RegName.Index: m_CPU.VirtualMemoryStream.TLB.Index = value; break;
-                    case CP0RegName.PageMask: m_CPU.VirtualMemoryStream.TLB.PageMask = value; break;
-                    case CP0RegName.Wired: m_CPU.VirtualMemoryStream.TLB.Wired = value; break;
-                    case CP0RegName.SR: m_SR.Reg64 = value; break;
+                    case CP0RegName.BadVAddr: m_Regs[8] = value; break;
+                    case CP0RegName.EntryHi: m_Regs[10] = value; break;
+                    case CP0RegName.EntryLo0: m_Regs[2] = value; break;
+                    case CP0RegName.EntryLo1: m_Regs[3] = value; break;
+                    case CP0RegName.Index: m_Regs[0] = value; break;
+                    case CP0RegName.PageMask: m_Regs[5] = value; break;
+                    case CP0RegName.Wired: m_Regs[6] = value; break;
+                    case CP0RegName.Random: m_Regs[1] = value; break;
+                    case CP0RegName.SR: m_Regs[12] = value; break;
                     default: m_Regs[(int)index] = value; break;
                 }
             }

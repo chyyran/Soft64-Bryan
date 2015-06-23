@@ -21,7 +21,6 @@ using System;
 
 namespace Soft64.MipsR4300
 {
-    [CLSCompliant(false)]
     public sealed class GPRRegisters
     {
         private UInt64[] m_Registers;

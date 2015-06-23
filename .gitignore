@@ -16,3 +16,5 @@ Source/ipch
 *.vsps
 *.suo
 *.user
+/Source/CompareEngine.Mupen/mupen64plus-core/projects/VisualStudio2013/Debug/mupen64plus-core.tlog
+/Source/CompareEngine.Mupen/mupen64plus-core/projects/VisualStudio2013/Debug

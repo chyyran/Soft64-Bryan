@@ -117,9 +117,9 @@ namespace Soft64.MipsR4300
             return WordSizeMode == WordSize.MIPS64;
         }
 
-        public ExecutionState(MipsR4300Core currentCPU)
+        public ExecutionState()
         {
-            CP0Regs = new CP0Registers(currentCPU);
+            CP0Regs = new CP0Registers();
             Fpr = new FprRegisters();
             GPRRegs64 = new GPRRegisters();
         }
