@@ -94,5 +94,21 @@ namespace Soft64.MipsR4300
             /* Initialize the engine */
             m_ExecEngine.Initialize();
         }
+
+        public MipsSnapshot CreateSnapshot()
+        {
+            MipsSnapshot snapshot = new MipsSnapshot();
+
+            snapshot.PC = m_State.PC;
+            snapshot.Lo = m_State.Lo;
+            snapshot.Hi = m_State.Hi;
+
+            for (Int32 i = 0; i < 32; i++ )
+            {
+                snapshot.GPR[i] = m_State.GPRRegs64[i];
+            }
+
+            return snapshot;
+        }
     }
 }

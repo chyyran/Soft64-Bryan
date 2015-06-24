@@ -59,12 +59,22 @@ namespace Soft64WPF.Windows
         {
             if (Machine.Current.MipsCompareEngine != null)
             {
-                MipsSnapshot snapshot = Machine.Current.MipsCompareEngine.TakeSnapshot();
+                MipsSnapshot snapshotA = Machine.Current.DeviceCPU.CreateSnapshot();
+                MipsSnapshot snapshotB = Machine.Current.MipsCompareEngine.TakeSnapshot();
+
+                /* Have WPF UI compare snapshot and show results */
+                CompareSnapshot(snapshotA, snapshotB);
+
                 Machine.Current.MipsCompareEngine.ThreadUnlock();
             }
 
             Debugger.Current.StepOnce();
             xaml_DiassemblyView.RefreshDisasm();
+        }
+
+        private void CompareSnapshot(MipsSnapshot snapshotA, MipsSnapshot snapshotB)
+        {
+            throw new NotImplementedException();
         }
     }
 }
