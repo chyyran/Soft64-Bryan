@@ -8,7 +8,7 @@ using Soft64.MipsR4300.CP1;
 
 namespace Soft64.MipsR4300
 {
-    public abstract class MipsSnapshot
+    public class MipsSnapshot
     {
         private Int64 m_PC;
         private Boolean m_Mode;
@@ -21,26 +21,11 @@ namespace Soft64.MipsR4300
         private UInt32 m_FCR0;
         private UInt32 m_FCR31;
 
-        protected MipsSnapshot()
+        public MipsSnapshot()
         {
             m_GPR = new GPRRegisters();
             m_CP0 = new CP0Registers();
             m_CP1 = new FprRegisters();
-        }
-
-        protected void WriteGPR(Int32 index, UInt64 value)
-        {
-            m_GPR[index] = value;
-        }
-
-        protected void WriteCP0(Int32 index, UInt64 value)
-        {
-            m_CP0[index] = value;
-        }
-
-        protected void WriteCP1(Int32 index, UInt64 value)
-        {
-            m_CP1[index] = value;
         }
 
         public Int64 PC
@@ -67,7 +52,7 @@ namespace Soft64.MipsR4300
         {
             get
             {
-                return CP0;
+                return m_CP0;
             }
         }
 

@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Soft64.MipsR4300
 {
-    public interface IMipsCompareEngine
+    public interface IMipsCompareEngine : IDisposable
     {
         void Init();
 
         void Run();
 
-        Boolean CompareState(ExecutionState state);
+        MipsSnapshot TakeSnapshot();
 
-        void Release();
+        void ThreadUnlock();
     }
 }

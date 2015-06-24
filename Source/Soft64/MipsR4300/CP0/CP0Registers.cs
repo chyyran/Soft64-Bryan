@@ -155,7 +155,6 @@ namespace Soft64.MipsR4300.CP0
         ErrorEPC,
     };
 
-    [CLSCompliant(false)]
     [Serializable]
     public sealed class CP0Registers : IEnumerable<CP0RegName>
     {

@@ -4,6 +4,7 @@ using System.Windows;
 using NLog;
 using Soft64;
 using Soft64.Debugging;
+using Soft64.MipsR4300;
 using Soft64.MipsR4300.Debugging;
 using Soft64Binding.WPF;
 
@@ -58,10 +59,8 @@ namespace Soft64WPF.Windows
         {
             if (Machine.Current.MipsCompareEngine != null)
             {
-                Boolean result = Machine.Current.MipsCompareEngine.CompareState(Machine.Current.DeviceCPU.State);
-                Machine.Current.MipsCompareEngine.Release();
-
-                logger.Debug("Core Compare Result [0x{0:X8}]: {1}", Machine.Current.DeviceCPU.State.PC, result);
+                MipsSnapshot snapshot = Machine.Current.MipsCompareEngine.TakeSnapshot();
+                Machine.Current.MipsCompareEngine.ThreadUnlock();
             }
 
             Debugger.Current.StepOnce();

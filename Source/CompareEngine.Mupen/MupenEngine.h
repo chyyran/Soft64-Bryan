@@ -13,10 +13,12 @@ namespace CompareEngine
 		{
 		public:
 			MupenEngine();
+			~MupenEngine();
+			!MupenEngine();
 			virtual void Init();
-			virtual Boolean CompareState(ExecutionState^ state);
+			virtual MipsSnapshot^ TakeSnapshot();
 			virtual void Run();
-			virtual void Release();
+			virtual void ThreadUnlock();
 
 		private:
 			EventWaitHandle^ m_CompareWaitEvent;

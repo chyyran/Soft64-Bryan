@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Soft64.Debugging;
+using Soft64.MipsR4300;
 
 namespace Soft64.Engines
 {
@@ -99,10 +100,6 @@ namespace Soft64.Engines
         {
             if (m_SingleStep)
             {
-                /* Do compare */
-                if (Machine.Current.MipsCompareEngine != null)
-                    Machine.Current.MipsCompareEngine.CompareState(Machine.Current.DeviceCPU.State);
-
                 m_SingleStep = false;
                 PauseThreads();
                 m_SingleStepWaitEvent.Set();

@@ -92,17 +92,26 @@ namespace CompareEngine
 			CoreAttachPlugin(M64PLUGIN_RSP, NULL);
 		}
 
-		Boolean MupenEngine::CompareState(ExecutionState^ state)
+		MipsSnapshot^ MupenEngine::TakeSnapshot()
 		{
-			/* TODO: Store mupen's values into an ExecutionState object, and compare that against the parameter */
+			MipsSnapshot^ snapshot = gcnew MipsSnapshot();
 
-			int comparePc = CompareInt64(DebugGetCPUDataPtr(M64P_CPU_PC), state->PC);
+			/* Read CPU date into snapshot */
+			snapshot->PC = *(unsigned __int64*)DebugGetCPUDataPtr(M64P_CPU_PC);
+			snapshot->Hi = *(unsigned __int64*)DebugGetCPUDataPtr(M64P_CPU_REG_HI);
+			snapshot->Lo = *(unsigned __int64*)DebugGetCPUDataPtr(M64P_CPU_REG_LO);
+			
+			/* GPR Registers */
+			unsigned __int64 * gprPtr = (unsigned __int64 *)DebugGetCPUDataPtr(M64P_CPU_REG_REG);
+			for (int i = 0; i < 32; i++)
+			{
+				snapshot->GPR[i] = *(gprPtr + i);
+			}
 
-			return
-				comparePc;
+			return snapshot;
 		}
 
-		void MupenEngine::Release()
+		void MupenEngine::ThreadUnlock()
 		{
 			this->m_CompareWaitEvent->Set();
 		}
@@ -119,24 +128,23 @@ namespace CompareEngine
 			CoreDoCommand(M64CMD_EXECUTE, 0, NULL);
 		}
 
+		MupenEngine::~MupenEngine()
+		{
+
+		}
+
+		MupenEngine::!MupenEngine()
+		{
+			this->m_CompareWaitEvent->Close();
+			CoreDoCommand(M64CMD_STOP, 0, NULL);
+			DebugSetCoreCompare(NULL, NULL);
+			CoreDoCommand(M64CMD_ROM_CLOSE, 0, NULL);
+			CoreShutdown();
+		}
 
 		void CompareCoreCallback(unsigned int data)
 		{
 			MupenEngine::CurrentEngine->CompareCoreWait(data);
-		}
-
-		int CompareInt64(void *ptrValue, Int64 value)
-		{
-			__int64 cValue = *(__int64*)ptrValue;
-
-			if (value.Equals(cValue))
-			{
-				return 1;
-			}
-			else
-			{
-				return 0;
-			}
 		}
 	}
 }
