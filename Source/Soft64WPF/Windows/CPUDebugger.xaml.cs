@@ -17,6 +17,7 @@ namespace Soft64WPF.Windows
     {
         private MachineViewModel m_MachineModel;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private CompareWindow m_CompareWindow;
         
 
         static CPUDebugger()
@@ -27,6 +28,7 @@ namespace Soft64WPF.Windows
         public CPUDebugger()
         {
             InitializeComponent();
+            m_CompareWindow = new CompareWindow();
             xaml_MenuBtnRefreshDisam.Click += xaml_MenuBtnRefreshDisam_Click;
 
             if (Debugger.Current == null)
@@ -57,24 +59,14 @@ namespace Soft64WPF.Windows
 
         private void xaml_BtnStep_Click(object sender, RoutedEventArgs e)
         {
-            if (Machine.Current.MipsCompareEngine != null)
-            {
-                MipsSnapshot snapshotA = Machine.Current.DeviceCPU.CreateSnapshot();
-                MipsSnapshot snapshotB = Machine.Current.MipsCompareEngine.TakeSnapshot();
-
-                /* Have WPF UI compare snapshot and show results */
-                CompareSnapshot(snapshotA, snapshotB);
-
-                Machine.Current.MipsCompareEngine.ThreadUnlock();
-            }
-
+            m_CompareWindow.DoComparision();
             Debugger.Current.StepOnce();
             xaml_DiassemblyView.RefreshDisasm();
         }
 
-        private void CompareSnapshot(MipsSnapshot snapshotA, MipsSnapshot snapshotB)
+        private void xaml_BtnCompare_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            m_CompareWindow.Show();
         }
     }
 }

@@ -20,12 +20,14 @@ namespace Soft64.MipsR4300
         private Boolean m_LLbit;
         private UInt32 m_FCR0;
         private UInt32 m_FCR31;
+        private String m_Name;
 
-        public MipsSnapshot()
+        public MipsSnapshot(String name)
         {
             m_GPR = new GPRRegisters();
             m_CP0 = new CP0Registers();
             m_CP1 = new FprRegisters();
+            m_Name = name + " Snapshot";
         }
 
         public Int64 PC
@@ -92,6 +94,11 @@ namespace Soft64.MipsR4300
         {
             get { return m_FCR31; }
             set { m_FCR31 = value; }
+        }
+
+        public String Name
+        {
+            get { return m_Name; }
         }
     }
 }

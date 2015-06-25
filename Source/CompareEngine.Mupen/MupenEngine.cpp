@@ -94,7 +94,7 @@ namespace CompareEngine
 
 		MipsSnapshot^ MupenEngine::TakeSnapshot()
 		{
-			MipsSnapshot^ snapshot = gcnew MipsSnapshot();
+			MipsSnapshot^ snapshot = gcnew MipsSnapshot("Mupen64Plus");
 
 			/* Read CPU date into snapshot */
 			snapshot->PC = *(unsigned __int64*)DebugGetCPUDataPtr(M64P_CPU_PC);

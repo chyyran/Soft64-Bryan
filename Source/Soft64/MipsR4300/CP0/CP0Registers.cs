@@ -205,7 +205,7 @@ namespace Soft64.MipsR4300.CP0
                     case CP0RegName.PageMask: m_Regs[5] = value; break;
                     case CP0RegName.Wired: m_Regs[6] = value; break;
                     case CP0RegName.Random: m_Regs[1] = value; break;
-                    case CP0RegName.SR: m_Regs[12] = value; break;
+                    case CP0RegName.SR: m_Regs[12] = value; m_SR.Reg64 = value; break;
                     default: m_Regs[(int)index] = value; break;
                 }
             }

@@ -97,7 +97,7 @@ namespace Soft64.MipsR4300
 
         public MipsSnapshot CreateSnapshot()
         {
-            MipsSnapshot snapshot = new MipsSnapshot();
+            MipsSnapshot snapshot = new MipsSnapshot("Soft64");
 
             snapshot.PC = m_State.PC;
             snapshot.Lo = m_State.Lo;

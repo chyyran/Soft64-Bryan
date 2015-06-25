@@ -17,8 +17,9 @@
             </MenuItem>
         </Menu>
         <Soft64WPF:DisassemblyView x:Name="xaml_DiassemblyView" HorizontalAlignment="Left" Width="412" Grid.Row="2"/>
-        <Button x:Name="xaml_BtnStep" Content="Step" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="76" RenderTransformOrigin="-2.678,-0.2" Height="22" Click="xaml_BtnStep_Click"/>
-
-
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <Button x:Name="xaml_BtnStep" Content="Step"  Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="76" Height="22" Click="xaml_BtnStep_Click"/>
+            <Button x:Name="xaml_BtnCompare" Content="Compare ..." Margin="10,5,0,0" HorizontalAlignment="Left"  Grid.Row="1" Width="76" Height="22" VerticalAlignment="Top" Click="xaml_BtnCompare_Click" />
+        </StackPanel>
     </Grid>
 </Window>

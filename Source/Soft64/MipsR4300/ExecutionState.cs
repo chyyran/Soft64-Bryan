@@ -97,13 +97,16 @@ namespace Soft64.MipsR4300
         {
             get
             {
-                switch (CP0Regs.HLStatusRegister.KSUMode)
-                {
-                    case RingMode.Kernel: return !CP0Regs.HLStatusRegister.KernelX ? WordSize.MIPS32 : WordSize.MIPS64;
-                    case RingMode.Supervisor: return !CP0Regs.HLStatusRegister.SupervisorX ? WordSize.MIPS32 : WordSize.MIPS64;
-                    case RingMode.User: return !CP0Regs.HLStatusRegister.UserX ? WordSize.MIPS32 : WordSize.MIPS64;
-                    default: return WordSize.MIPS64;
-                }
+                //switch (CP0Regs.HLStatusRegister.KSUMode)
+                //{
+                //    case RingMode.Kernel: return !CP0Regs.HLStatusRegister.KernelX ? WordSize.MIPS32 : WordSize.MIPS64;
+                //    case RingMode.Supervisor: return !CP0Regs.HLStatusRegister.SupervisorX ? WordSize.MIPS32 : WordSize.MIPS64;
+                //    case RingMode.User: return !CP0Regs.HLStatusRegister.UserX ? WordSize.MIPS32 : WordSize.MIPS64;
+                //    default: return WordSize.MIPS64;
+                //}
+
+                /* Above may only be configuration for virtual memory management */
+                return WordSize.MIPS64;
             }
         }
 
