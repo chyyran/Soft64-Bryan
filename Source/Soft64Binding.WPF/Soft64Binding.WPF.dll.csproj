@@ -54,6 +54,7 @@
     <Compile Include="CpuViewModel.cs" />
     <Compile Include="DebuggerViewModel.cs" />
     <Compile Include="EmulatorEngineViewModel.cs" />
+    <Compile Include="ExecutionStateViewModel.cs" />
     <Compile Include="MachineViewModel.cs" />
     <Compile Include="N64StreamWrapper.cs" />
     <Compile Include="RcpViewModel.cs" />
