@@ -34,8 +34,6 @@ namespace Soft64WPF
 
         public RegisterObserver()
         {
-            m_RegisterBox = new TextBox();
-            m_RegisterBox.SetBinding(TextBox.TextProperty, TargetBinding);
             TargetBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
             TargetBinding.ValidatesOnDataErrors = true;
             TargetBinding.ValidationRules.Add(new DataErrorValidationRule());
@@ -95,7 +93,13 @@ namespace Soft64WPF
 
         public FrameworkElement TextBoxElement
         {
-            get { return m_RegisterBox; }
+            get 
+            
+            {
+                m_RegisterBox = new TextBox();
+                m_RegisterBox.SetBinding(TextBox.TextProperty, TargetBinding);
+                return m_RegisterBox;
+            }
         }
     }
 }
