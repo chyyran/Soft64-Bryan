@@ -45,9 +45,9 @@
                 </Style>
                 
                 <Soft64WPF:RegisterObserverCollection x:Key="registers">
-                    <Soft64WPF:RegisterObserver RegName="PC" Path="Cpu.State.RegisterPC.Value" />
-                    <Soft64WPF:RegisterObserver RegName="Hi" Path="Cpu.State.RegisterHi.Value" />
-                    <Soft64WPF:RegisterObserver RegName="Lo" Path="Cpu.State.RegisterLo.Value" />
+                    <Soft64WPF:RegisterObserver RegName="PC" Path="Cpu.State.RegisterPC.Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="Hi" Path="Cpu.State.RegisterHi.Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="Lo" Path="Cpu.State.RegisterLo.Value" Source="{Binding .}" />
                 </Soft64WPF:RegisterObserverCollection>
                 
                 </Grid.Resources>
@@ -62,8 +62,9 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <DockPanel Margin="5">
-                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Left"/>
-                                <TextBox Text="{Binding TargetBinding, Mode=OneTime}" HorizontalAlignment="Right" />
+                                <TextBlock Text="{Binding RegName}" HorizontalAlignment="Left"/>
+                                <ContentPresenter Content="{Binding TextBoxElement}" HorizontalAlignment="Right" />
+                                <!--<TextBox Text="{Binding TargetBinding, Mode=OneWay, BindsDirectlyToSource=True}" HorizontalAlignment="Right" />-->
                             </DockPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

@@ -9,30 +9,36 @@ using System.Windows.Data;
 
 namespace Soft64WPF
 {
-    public sealed class RegisterObserver : FrameworkElement
+    public sealed class RegisterObserver : DependencyObject
     {
+        private TextBox m_RegisterBox;
+
         public static readonly DependencyProperty RegNameProperty =
             DependencyProperty.Register("RegName", typeof(String), typeof(RegisterObserver),
             new PropertyMetadata(""));
 
         private static readonly DependencyPropertyKey TargetBindingPropertyKey =
             DependencyProperty.RegisterReadOnly("TargetBinding", typeof(Binding), typeof(RegisterObserver),
-            new PropertyMetadata());
+            new PropertyMetadata(new Binding()));
 
         public static readonly DependencyProperty TargetBindingProperty =
             TargetBindingPropertyKey.DependencyProperty;
 
         public static readonly DependencyProperty PathProperty =
             DependencyProperty.Register("Path", typeof(String), typeof(RegisterObserver),
-            new PropertyMetadata(""));
+            new PropertyMetadata("", PathChange));
+
+        public static readonly DependencyProperty SourceProperty =
+            DependencyProperty.Register("Source", typeof(Object), typeof(RegisterObserver),
+            new PropertyMetadata(null, SourceChange));
 
         public RegisterObserver()
         {
-            Binding binding = new Binding();
-            binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            binding.ValidatesOnDataErrors = true;
-            binding.ValidationRules.Add(new DataErrorValidationRule());
-            binding.Source = DataContext;
+            m_RegisterBox = new TextBox();
+            m_RegisterBox.SetBinding(TextBox.TextProperty, TargetBinding);
+            TargetBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            TargetBinding.ValidatesOnDataErrors = true;
+            TargetBinding.ValidationRules.Add(new DataErrorValidationRule());
         }
 
         private static void PathChange(DependencyObject o, DependencyPropertyChangedEventArgs a)
@@ -44,6 +50,21 @@ namespace Soft64WPF
                 if (observer != null)
                 {
                     observer.TargetBinding.Path = new PropertyPath(a.NewValue as String);
+                    observer.InvalidateProperty(RegisterObserver.TargetBindingProperty);
+                }
+            }
+        }
+
+        private static void SourceChange(DependencyObject o, DependencyPropertyChangedEventArgs a)
+        {
+            if (o != null)
+            {
+                RegisterObserver observer = o as RegisterObserver;
+
+                if (observer != null)
+                {
+                    observer.TargetBinding.Source = a.NewValue;
+                    observer.InvalidateProperty(RegisterObserver.TargetBindingProperty);
                 }
             }
         }
@@ -64,6 +85,17 @@ namespace Soft64WPF
         {
             get { return (String)GetValue(PathProperty); }
             set { SetValue(PathProperty, value); }
+        }
+
+        public Object Source
+        {
+            get { return (Object)GetValue(SourceProperty); }
+            set { SetValue(SourceProperty, value); }
+        }
+
+        public FrameworkElement TextBoxElement
+        {
+            get { return m_RegisterBox; }
         }
     }
 }
