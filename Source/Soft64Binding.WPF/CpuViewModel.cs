@@ -14,6 +14,7 @@ namespace Soft64Binding.WPF
             VirtualMemory = StreamViewModel.NewModelFromStream(cpu.VirtualMemoryStream);
             DebugVirtualMemory = StreamViewModel.NewModelFromStream(new VMemViewStream());
             TlbCache = new TlbCacheViewModel(machineViewModel);
+            State = new ExecutionStateViewModel(machineViewModel.TargetMachine.DeviceCPU.State);
         }
 
         private static readonly DependencyPropertyKey VirtualMemoryPropertyKey =
@@ -53,6 +54,19 @@ namespace Soft64Binding.WPF
         {
             get { return (StreamViewModel)GetValue(DebugVirtualMemoryProperty); }
             private set { SetValue(DebugVirtualMemoryPropertyKey, value); }
+        }
+
+        private static readonly DependencyPropertyKey StatePropertyKey =
+            DependencyProperty.RegisterReadOnly("State", typeof(ExecutionStateViewModel), typeof(CpuViewModel),
+            new PropertyMetadata());
+
+        public static readonly DependencyProperty StateProperty =
+            StatePropertyKey.DependencyProperty;
+
+        public ExecutionStateViewModel State
+        {
+            get { return (ExecutionStateViewModel)GetValue(StateProperty); }
+            private set { SetValue(StatePropertyKey, value); }
         }
     }
 }

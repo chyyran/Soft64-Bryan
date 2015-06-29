@@ -106,6 +106,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\Hex64Converter.cs" />
     <Compile Include="Converters\StringToCollectionConverter.cs" />
     <Compile Include="DiassemblyViewLine.cs" />
     <Compile Include="DisassemblyView.xaml.cs" />
@@ -113,6 +114,8 @@
     <Compile Include="Helper\WpfRichTextBoxRowColoringRule.cs" />
     <Compile Include="Helper\WpfRichTextBoxTarget.cs" />
     <Compile Include="Helper\WpfRichTextBoxWordColoringRule.cs" />
+    <Compile Include="RegisterObserver.cs" />
+    <Compile Include="RegisterObserverCollection.cs" />
     <Compile Include="Windows\CodeWindow.xaml.cs">
       <DependentUpon>CodeWindow.xaml</DependentUpon>
     </Compile>

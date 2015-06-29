@@ -48,6 +48,7 @@ namespace Soft64WPF.Windows
         void xaml_MenuBtnRefreshDisam_Click(object sender, RoutedEventArgs e)
         {
             xaml_DiassemblyView.RefreshDisasm();
+            m_MachineModel.Cpu.State.Load();
         }
 
         private void MachineStateChangedHandler(Object o, LifeStateChangedArgs args)
@@ -62,6 +63,7 @@ namespace Soft64WPF.Windows
             m_CompareWindow.DoComparision();
             Debugger.Current.StepOnce();
             xaml_DiassemblyView.RefreshDisasm();
+            m_MachineModel.Cpu.State.Load();
         }
 
         private void xaml_BtnCompare_Click(object sender, RoutedEventArgs e)

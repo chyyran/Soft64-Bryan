@@ -19,68 +19,101 @@ namespace Soft64Binding.WPF
 
         public void Load()
         {
-            RegisterPC = (UInt64)m_State.PC;
-            RegisterHi = m_State.Hi;
-            RegisterLo = m_State.Lo;
+            RegisterPC.RegValue = (UInt64)m_State.PC;
+            RegisterHi.RegValue = m_State.Hi;
+            RegisterLo.RegValue = m_State.Lo;
 
             for (Int32 i = 0; i < 32; i++)
             {
-                GPRegisters[i] = m_State.GPRRegs64[i];
+                GPRegisters[i].RegValue = m_State.GPRRegs64[i];
             }
         }
 
-        public void Save()
+        public void Store()
         {
-            m_State.PC = (Int64)RegisterPC;
-            m_State.Hi = RegisterHi;
-            m_State.Lo = RegisterLo;
+            m_State.PC = (Int64)RegisterPC.RegValue;
+            m_State.Hi = RegisterHi.RegValue;
+            m_State.Lo = RegisterLo.RegValue;
 
             for (Int32 i = 0; i < 32; i++)
             {
-                m_State.GPRRegs64[i] = GPRegisters[i];
+                m_State.GPRRegs64[i] = GPRegisters[i].RegValue;
             }
         }
 
         public static readonly DependencyProperty RegisterPCProperty =
-            DependencyProperty.Register("RegisterPC", typeof(UInt64), typeof(EmulatorEngineViewModel),
-            new PropertyMetadata());
+            DependencyProperty.Register("RegisterPC", typeof(RegisterValue), typeof(EmulatorEngineViewModel),
+            new PropertyMetadata(new RegisterValue()));
 
-        public UInt64 RegisterPC
+        public RegisterValue RegisterPC
         {
-            get { return (UInt64)GetValue(RegisterPCProperty); }
+            get { return (RegisterValue)GetValue(RegisterPCProperty); }
             set { SetValue(RegisterPCProperty, value); }
         }
 
         public static readonly DependencyProperty RegisterHiProperty =
-            DependencyProperty.Register("RegisterHi", typeof(UInt64), typeof(EmulatorEngineViewModel),
-            new PropertyMetadata());
+            DependencyProperty.Register("RegisterHi", typeof(RegisterValue), typeof(EmulatorEngineViewModel),
+            new PropertyMetadata(new RegisterValue()));
 
-        public UInt64 RegisterHi
+        public RegisterValue RegisterHi
         {
-            get { return (UInt64)GetValue(RegisterHiProperty); }
+            get { return (RegisterValue)GetValue(RegisterHiProperty); }
             set { SetValue(RegisterHiProperty, value); }
         }
 
         public static readonly DependencyProperty RegisterLoProperty =
-            DependencyProperty.Register("RegisterLo", typeof(UInt64), typeof(EmulatorEngineViewModel),
-            new PropertyMetadata());
+            DependencyProperty.Register("RegisterLo", typeof(RegisterValue), typeof(EmulatorEngineViewModel),
+            new PropertyMetadata(new RegisterValue()));
 
-        public UInt64 RegisterLo
+        public RegisterValue RegisterLo
         {
-            get { return (UInt64)GetValue(RegisterLoProperty); }
+            get { return (RegisterValue)GetValue(RegisterLoProperty); }
             set { SetValue(RegisterLoProperty, value); }
         }
 
         public static readonly DependencyPropertyKey GPRegistersPropertyKey =
-            DependencyProperty.RegisterReadOnly("GPRegisters", typeof(UInt64[]), typeof(EmulatorEngineViewModel),
-            new PropertyMetadata(new UInt64[32]));
+            DependencyProperty.RegisterReadOnly("GPRegisters", typeof(RegisterValue[]), typeof(EmulatorEngineViewModel),
+            new PropertyMetadata(new RegisterValue[32] {
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+                new RegisterValue(),
+            }));
 
         public static readonly DependencyProperty GPRegistersProperty =
             GPRegistersPropertyKey.DependencyProperty;
 
-        public UInt64[] GPRegisters
+        public RegisterValue[] GPRegisters
         {
-            get { return (UInt64[])GetValue(GPRegistersProperty); }
+            get { return (RegisterValue[])GetValue(GPRegistersProperty); }
         }
     }
 }
