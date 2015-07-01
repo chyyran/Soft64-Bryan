@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -124,8 +125,7 @@ namespace Soft64.Toolkits.WPF
             HexEditorRow[] rows = new HexEditorRow[DataRows.Count];
             DataRows.CopyTo(rows, 0);
 
-            /* Create an async task to fill in the data */
-            Task.Factory.StartNew(() =>
+            Dispatcher.InvokeAsync(new Action(() =>
             {
                 for (Int32 i = 0; i < m_GridHeight; i++)
                 {
@@ -138,26 +138,51 @@ namespace Soft64.Toolkits.WPF
                         row.RowIndex = i;
                         row.Address = position + (m_GridWidth * i);
                         row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
+                        row.UpdateText();
                     }
                     catch
                     {
                         continue;
                     }
                 }
+            }), DispatcherPriority.Normal);
 
-                Dispatcher.InvokeAsync(() =>
-                {
-                    for (Int32 i = 0; i < m_GridHeight; i++)
-                    {
-                        DataRows[i].UpdateText();
-                        DoEvents();
-                    }
-                });
-            });
+            /* Create an async task to fill in the data */
+            //Task.Factory.StartNew(() =>
+            //{
+            //    for (Int32 i = 0; i < m_GridHeight; i++)
+            //    {
+            //        try
+            //        {
+            //            Byte[] rowBuffer = new Byte[m_GridWidth];
+            //            Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
+
+            //            HexEditorRow row = rows[i];
+            //            row.RowIndex = i;
+            //            row.Address = position + (m_GridWidth * i);
+            //            row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
+            //        }
+            //        catch
+            //        {
+            //            continue;
+            //        }
+            //    }
+
+            //    Dispatcher.InvokeAsync(() =>
+            //    {
+            //        for (Int32 i = 0; i < m_GridHeight; i++)
+            //        {
+            //            DataRows[i].UpdateText();
+            //            DoEvents();
+            //        }
+            //    });
+            //});
         }
 
         public void DoEvents()
         {
+            Thread.Sleep(500);
+
             DispatcherFrame frame = new DispatcherFrame();
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
                 new DispatcherOperationCallback(ExitFrame), frame);
