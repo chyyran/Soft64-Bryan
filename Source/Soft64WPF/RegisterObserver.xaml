@@ -1,0 +1,8 @@
+﻿<ContentControl x:Class="Soft64WPF.RegisterObserver"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel Margin="5,1,5,0">
+        <TextBlock x:Name="xaml_RegNameBlock" HorizontalAlignment="Left"/>
+        <TextBox  x:Name="xaml_RegValueBox" HorizontalAlignment="Right" />
+    </DockPanel>
+</ContentControl>

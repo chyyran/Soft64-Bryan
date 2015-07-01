@@ -7,53 +7,93 @@
         xmlns:c="clr-namespace:Soft64WPF.Converters"
         xmlns:om="clr-namespace:System.Collections.ObjectModel;assembly=System"
         xmlns:win="clr-namespace:System.Windows;assembly=PresentationFramework"
-        Title="CPU Debugger" Height="629.3" Width="801"
+        Title="CPU Debugger" Height="484.225" Width="801"
         DataContext="{Binding ., Source={StaticResource machineVM}}">
     <Grid Background="White">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="32*"/>
-            <ColumnDefinition Width="29*"/>
+            <ColumnDefinition Width="416"/>
+            <ColumnDefinition Width="270"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="11*"/>
             <RowDefinition Height="33"/>
             <RowDefinition Height="272*"/>
         </Grid.RowDefinitions>
-        <Menu Grid.Row="0" Grid.ColumnSpan="2" >
+        <Menu Grid.Row="0" Grid.ColumnSpan="3" >
             <MenuItem Header="Debugger">
                 <MenuItem x:Name="xaml_MenuBtnRefreshDisam" Header="Refresh Disassembly" />
             </MenuItem>
         </Menu>
         <Soft64WPF:DisassemblyView x:Name="xaml_DiassemblyView" HorizontalAlignment="Left" Width="412" Grid.Row="2"/>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2">
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="3">
             <Button x:Name="xaml_BtnStep" Content="Step"  Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="76" Height="22" Click="xaml_BtnStep_Click"/>
             <Button x:Name="xaml_BtnCompare" Content="Compare ..." Margin="10,5,0,0" HorizontalAlignment="Left"  Grid.Row="1" Width="76" Height="22" VerticalAlignment="Top" Click="xaml_BtnCompare_Click" />
         </StackPanel>
-        
+
         <!-- Registers -->
-        <Grid Grid.Row="2" Grid.Column="1" Margin="10,0,190,0">
+        <Grid Grid.Row="2" Grid.Column="1" Margin="10,0,5,0">
             <Grid.Resources>
                 <c:Hex64Converter x:Key="hex64converter" />
                 <Style TargetType="TextBox" >
-                    <Setter Property="Width" Value="120" />
+                    <Setter Property="Width" Value="137" />
                     <Setter Property="Margin" Value="5,0,0,0" />
+                    <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+
                     <Style.Triggers>
                         <Trigger Property="Validation.HasError" Value="True">
                             <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-                
+
+                <Style TargetType="TextBlock">
+                    <!--<Setter Property="FontWeight" Value="Bold" />-->
+                    <Setter Property="Foreground" Value="Black" />
+                </Style>
+
                 <Soft64WPF:RegisterObserverCollection x:Key="registers">
                     <Soft64WPF:RegisterObserver RegName="PC" Path="Cpu.State.RegisterPC.Value" Source="{Binding .}" />
                     <Soft64WPF:RegisterObserver RegName="Hi" Path="Cpu.State.RegisterHi.Value" Source="{Binding .}" />
                     <Soft64WPF:RegisterObserver RegName="Lo" Path="Cpu.State.RegisterLo.Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR0 (zero)" Path="Cpu.State.GPRegisters[0].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR1 (at)" Path="Cpu.State.GPRegisters[1].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR2 (v0)" Path="Cpu.State.GPRegisters[2].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR3 (v1)" Path="Cpu.State.GPRegisters[3].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR4 (a0)" Path="Cpu.State.GPRegisters[4].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR5 (a1)" Path="Cpu.State.GPRegisters[5].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR6 (a2)" Path="Cpu.State.GPRegisters[6].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR7 (a3)" Path="Cpu.State.GPRegisters[7].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR8 (t0)" Path="Cpu.State.GPRegisters[8].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR9 (t1)" Path="Cpu.State.GPRegisters[9].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR10 (t2)" Path="Cpu.State.GPRegisters[10].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR11 (t3)" Path="Cpu.State.GPRegisters[11].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR12 (t4)" Path="Cpu.State.GPRegisters[12].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR13 (t5)" Path="Cpu.State.GPRegisters[13].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR14 (t6)" Path="Cpu.State.GPRegisters[14].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR15 (t7)" Path="Cpu.State.GPRegisters[15].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR16 (s0)" Path="Cpu.State.GPRegisters[16].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR17 (s1)" Path="Cpu.State.GPRegisters[17].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR18 (s2)" Path="Cpu.State.GPRegisters[18].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR19 (s3)" Path="Cpu.State.GPRegisters[19].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR20 (s4)" Path="Cpu.State.GPRegisters[20].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR21 (s5)" Path="Cpu.State.GPRegisters[21].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR22 (s6)" Path="Cpu.State.GPRegisters[22].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR23 (s7)" Path="Cpu.State.GPRegisters[23].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR24 (t8)" Path="Cpu.State.GPRegisters[24].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR25 (t9)" Path="Cpu.State.GPRegisters[25].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR26 (k0)" Path="Cpu.State.GPRegisters[26].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR27 (k1)" Path="Cpu.State.GPRegisters[27].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR28 (gp)" Path="Cpu.State.GPRegisters[28].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR29 (sp)" Path="Cpu.State.GPRegisters[29].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR30 (fp)" Path="Cpu.State.GPRegisters[30].Value" Source="{Binding .}" />
+                    <Soft64WPF:RegisterObserver RegName="GPR31 (ra)" Path="Cpu.State.GPRegisters[31].Value" Source="{Binding .}" />
                 </Soft64WPF:RegisterObserverCollection>
-                
-                </Grid.Resources>
+
+            </Grid.Resources>
 
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{StaticResource registers}" Background="#FF5DCD81" FontWeight="Bold" FontFamily="Consolas" FontSize="14">
+                <ItemsControl ItemsSource="{StaticResource registers}" Background="#FF555555" FontFamily="Consolas" Foreground="White" TextOptions.TextFormattingMode="Display">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Vertical" />
@@ -61,11 +101,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <DockPanel Margin="5">
-                                <TextBlock Text="{Binding RegName}" HorizontalAlignment="Left"/>
-                                <ContentPresenter Content="{Binding TextBoxElement}" HorizontalAlignment="Right" />
-                                <!--<TextBox Text="{Binding TargetBinding, Mode=OneWay, BindsDirectlyToSource=True}" HorizontalAlignment="Right" />-->
-                            </DockPanel>
+                            <ContentPresenter Content="{Binding}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
