@@ -18,8 +18,8 @@
         <DockPanel LastChildFill="True">
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="White">
                 <Button Click="xaml_BtnRefreshHex_Click" Content="Refresh" />
-                <TextBox Text="04000040" Name="txtBoxBaseAddress" />
-                <CheckBox Content="Virtual Addressing" x:Name="xaml_ChkboxVAdressMode" />
+                <TextBox Text="04000040" Name="txtBoxBaseAddress" Margin="5,0,0,0" />
+                <CheckBox Content="Virtual Addressing" x:Name="xaml_ChkboxVAdressMode" VerticalAlignment="Center" Margin="7,0,0,0" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                 <ScrollBar x:Name="xaml_HexScrollBar"  Minimum="0" Maximum="10" Value="5" SmallChange="1" ViewportSize="3" />

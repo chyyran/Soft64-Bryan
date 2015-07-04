@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,8 @@ namespace Soft64.Toolkits.WPF
         private Int32 m_OldGridWidth, m_OldGridHeight;
         private GeometryCollection m_HexGeo;
         private GeometryCollection m_AsciiGeo;
+        private Task m_ReadTask;
+        private CancellationTokenSource m_TokenSource;
 
         static HexEditor()
         {
@@ -113,6 +116,28 @@ namespace Soft64.Toolkits.WPF
             }
         }
 
+        private void ReadTask(Byte[] buffer, HexEditorRow[] rows, Int64 position)
+        {
+            for (Int32 i = 0; i < m_GridHeight; i++)
+            {
+                try
+                {
+                    Byte[] rowBuffer = new Byte[m_GridWidth];
+                    Array.Copy(buffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
+
+                    HexEditorRow row = rows[i];
+                    row.RowIndex = i;
+                    row.Address = position + (m_GridWidth * i);
+                    row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
+                    row.UpdateText();
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+        }
+
         private void ReadDataBytes()
         {
             Byte[] readBuffer = m_ClonedStreamVM.ReadBuffer;
@@ -125,7 +150,25 @@ namespace Soft64.Toolkits.WPF
             HexEditorRow[] rows = new HexEditorRow[DataRows.Count];
             DataRows.CopyTo(rows, 0);
 
-            Dispatcher.InvokeAsync(new Action(() =>
+            /* Begin the IO operation */
+            if (m_ReadTask == null || m_ReadTask.IsCompleted)
+            {
+                ReadAsync(readBuffer, position, rows);
+            }
+
+            if (m_ReadTask.Status == TaskStatus.Running || m_ReadTask.IsFaulted)
+            {
+                m_TokenSource.Cancel();
+                m_ReadTask.Wait();
+                ReadAsync(readBuffer, position, rows);
+            }
+        }
+
+        private void ReadAsync(Byte[] readBuffer, Int64 position, HexEditorRow[] rows)
+        {
+            m_TokenSource = new CancellationTokenSource();
+
+            m_ReadTask = new Task(() =>
             {
                 for (Int32 i = 0; i < m_GridHeight; i++)
                 {
@@ -138,62 +181,23 @@ namespace Soft64.Toolkits.WPF
                         row.RowIndex = i;
                         row.Address = position + (m_GridWidth * i);
                         row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
-                        row.UpdateText();
+
+                        Dispatcher.InvokeAsync(() =>
+                        {
+                            row.UpdateText();
+                        }, DispatcherPriority.Background);
+
+                        if (m_TokenSource.Token.IsCancellationRequested)
+                            return;
                     }
                     catch
                     {
                         continue;
                     }
                 }
-            }), DispatcherPriority.Normal);
+            }, m_TokenSource.Token);
 
-            /* Create an async task to fill in the data */
-            //Task.Factory.StartNew(() =>
-            //{
-            //    for (Int32 i = 0; i < m_GridHeight; i++)
-            //    {
-            //        try
-            //        {
-            //            Byte[] rowBuffer = new Byte[m_GridWidth];
-            //            Array.Copy(readBuffer, m_GridWidth * i, rowBuffer, 0, m_GridWidth);
-
-            //            HexEditorRow row = rows[i];
-            //            row.RowIndex = i;
-            //            row.Address = position + (m_GridWidth * i);
-            //            row.SetBytes(m_BlockCache, rowBuffer, HexLUT, AsciiLUT);
-            //        }
-            //        catch
-            //        {
-            //            continue;
-            //        }
-            //    }
-
-            //    Dispatcher.InvokeAsync(() =>
-            //    {
-            //        for (Int32 i = 0; i < m_GridHeight; i++)
-            //        {
-            //            DataRows[i].UpdateText();
-            //            DoEvents();
-            //        }
-            //    });
-            //});
-        }
-
-        public void DoEvents()
-        {
-            Thread.Sleep(500);
-
-            DispatcherFrame frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
-                new DispatcherOperationCallback(ExitFrame), frame);
-            Dispatcher.PushFrame(frame);
-        }
-
-        public object ExitFrame(object f)
-        {
-            ((DispatcherFrame)f).Continue = false;
-
-            return null;
+            m_ReadTask.Start();
         }
 
         private void AllocateRows()
@@ -382,7 +386,7 @@ namespace Soft64.Toolkits.WPF
         {
             HexEditor editor = o as HexEditor;
 
-            if (editor != null)
+            if (editor != null && !DesignerProperties.GetIsInDesignMode(editor))
             {
                 editor.m_HexGeo.Clear();
                 editor.m_AsciiGeo.Clear();
