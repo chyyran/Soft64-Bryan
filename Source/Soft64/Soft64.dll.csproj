@@ -61,13 +61,14 @@
     <Compile Include="MipsR4300\Analyzing\MemoryEnitityType.cs" />
     <Compile Include="MipsR4300\Analyzing\MemoryScan.cs" />
     <Compile Include="MipsR4300\Cache.cs" />
+    <Compile Include="MipsR4300\CP0\CauseRegister.cs" />
+    <Compile Include="MipsR4300\CP0\MipsExceptionHandler.cs" />
     <Compile Include="MipsR4300\CP0\TLBCacheChangeEventArgs.cs" />
     <Compile Include="MipsR4300\Debugging\VMemViewStream.cs" />
     <Compile Include="DeviceMemory\N64MemoryStream.cs" />
     <Compile Include="Machine.cs" />
     <Compile Include="MachineException.cs" />
     <Compile Include="MipsR4300\IMipsCompareEngine.cs" />
-    <Compile Include="MipsR4300\InterruptTable.cs" />
     <Compile Include="MipsR4300\MipsSnapshot.cs" />
     <Compile Include="N64MemRegions.cs" />
     <Compile Include="DeviceMemory\ParallelInterface.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="MipsR4300\Analyzing\OpcodeType.cs" />
     <Compile Include="MipsR4300\Analyzing\OperandFormat.cs" />
     <Compile Include="MipsR4300\CP0\CP0Registers.cs" />
-    <Compile Include="MipsR4300\CP0\ExceptionTable.cs" />
     <Compile Include="MipsR4300\CP0\PageCoherencyMode.cs" />
     <Compile Include="MipsR4300\CP0\PageFrameNumber.cs" />
     <Compile Include="MipsR4300\CP0\PageSize.cs" />
@@ -156,6 +156,7 @@
     <Compile Include="PI\RomChecksum.cs" />
     <Compile Include="ELFExecutable.cs" />
     <Compile Include="ELFProgramHeaderEntry.cs" />
+    <Compile Include="RegisterMap.cs" />
     <Compile Include="SoftBootManager.cs" />
     <Compile Include="VirtualCartridge.cs" />
     <Compile Include="RomFormat.cs" />
