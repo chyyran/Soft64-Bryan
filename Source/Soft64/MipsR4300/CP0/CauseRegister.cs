@@ -31,6 +31,64 @@ namespace Soft64.MipsR4300.CP0
             set { RegisterValue = (UInt32)value; }
         }
 
+        public Boolean IP0
+        {
+            get { return AutoRegisterProps.GetIP0(); }
+            set { AutoRegisterProps.SetIP0(value); }
+        }
+
+        public Boolean IP1
+        {
+            get { return AutoRegisterProps.GetIP1(); }
+            set { AutoRegisterProps.SetIP1(value); }
+        }
+
+        public Boolean IP2
+        {
+            get { return AutoRegisterProps.GetIP2(); }
+            set { AutoRegisterProps.SetIP2(value); }
+        }
+
+        public Boolean IP3
+        {
+            get { return AutoRegisterProps.GetIP3(); }
+            set { AutoRegisterProps.SetIP3(value); }
+        }
+
+        public Boolean IP4
+        {
+            get { return AutoRegisterProps.GetIP4(); }
+            set { AutoRegisterProps.SetIP4(value); }
+        }
+
+        public Boolean IP5
+        {
+            get { return AutoRegisterProps.GetIP5(); }
+            set { AutoRegisterProps.SetIP5(value); }
+        }
+
+        public Boolean IP6
+        {
+            get { return AutoRegisterProps.GetIP6(); }
+            set { AutoRegisterProps.SetIP6(value); }
+        }
+
+        public Boolean IP7
+        {
+            get { return AutoRegisterProps.GetIP7(); }
+            set { AutoRegisterProps.SetIP7(value); }
+        }
+        public Byte CE
+        {
+            get { return AutoRegisterProps.GetCE(); }
+            set { AutoRegisterProps.SetCE(value); }
+        }
+        public Byte BD
+        {
+            get { return AutoRegisterProps.BD(); }
+            set { AutoRegisterProps.BD(value); }
+        }
+
         public Byte ExcCode
         {
             get { return AutoRegisterProps.GetExcCode(); }

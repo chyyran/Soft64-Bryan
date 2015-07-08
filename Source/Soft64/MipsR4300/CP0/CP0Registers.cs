@@ -169,7 +169,6 @@ namespace Soft64.MipsR4300.CP0
             m_SR = new StatusRegister();
             m_R32 = new CP0Registers32(this);
             m_CauseReg = new CauseRegister();
-            m_CauseReg.ExcCode = 5;
         }
 
         public CP0Registers32 _32
@@ -192,6 +191,7 @@ namespace Soft64.MipsR4300.CP0
                     case CP0RegName.Random: return m_Regs[1];
                     case CP0RegName.Wired: return m_Regs[6];
                     case CP0RegName.SR: return m_Regs[12];
+                    case CP0RegName.Cause: return m_CauseReg.RegisterValue64;
                     default: return m_Regs[(int)index];
                 }
             }
@@ -209,6 +209,7 @@ namespace Soft64.MipsR4300.CP0
                     case CP0RegName.Wired: m_Regs[6] = value; break;
                     case CP0RegName.Random: m_Regs[1] = value; break;
                     case CP0RegName.SR: m_Regs[12] = value; m_SR.Reg64 = value; break;
+                    case CP0RegName.Cause: m_CauseReg.RegisterValue64 = value; break;
                     default: m_Regs[(int)index] = value; break;
                 }
             }
