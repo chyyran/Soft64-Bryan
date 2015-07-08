@@ -161,12 +161,15 @@ namespace Soft64.MipsR4300.CP0
         private UInt64[] m_Regs;
         private StatusRegister m_SR;
         private CP0Registers32 m_R32;
+        private CauseRegister m_CauseReg;
 
         public CP0Registers()
         {
             m_Regs = new UInt64[32];
             m_SR = new StatusRegister();
             m_R32 = new CP0Registers32(this);
+            m_CauseReg = new CauseRegister();
+            m_CauseReg.ExcCode = 5;
         }
 
         public CP0Registers32 _32
