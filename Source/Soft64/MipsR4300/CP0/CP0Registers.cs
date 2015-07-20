@@ -250,9 +250,14 @@ namespace Soft64.MipsR4300.CP0
             return RingMode.User;
         }
 
-        public StatusRegister HLStatusRegister
+        public StatusRegister StatusReg
         {
             get { return m_SR; }
+        }
+
+        public CauseRegister CauseReg
+        {
+            get { return m_CauseReg; }
         }
 
         public void Clear()

@@ -14,8 +14,8 @@ namespace Soft64
             CPUProcessor cpu = Machine.Current.DeviceCPU;
 
             /* Setup the CPU for the executable */
-            cpu.State.CP0Regs.HLStatusRegister.RingFlags = RingMode.Kernel; /* Running whole program in lowest ring mode */
-            cpu.State.CP0Regs.HLStatusRegister.KernelAddressingMode = true;            /* We want kernel 64 bit addressing */
+            cpu.State.CP0Regs.StatusReg.RingFlags = RingMode.Kernel; /* Running whole program in lowest ring mode */
+            cpu.State.CP0Regs.StatusReg.KernelAddressingMode = true;            /* We want kernel 64 bit addressing */
             cpu.State.GPRRegs64[29] = 0x00000000A4001000;                 /* Create a stack pointer pointing into IMEM */
 
             /* Set the entry point */
