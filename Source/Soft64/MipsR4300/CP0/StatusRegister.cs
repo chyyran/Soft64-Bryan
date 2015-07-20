@@ -22,182 +22,242 @@ using System.Runtime.InteropServices;
 
 namespace Soft64.MipsR4300.CP0
 {
-    public sealed class StatusRegister
+    [RegisterField("IE", 1, 0, typeof(Boolean))]
+    [RegisterField("EXL", 1, 1, typeof(Boolean))]
+    [RegisterField("ERL", 1, 2, typeof(Boolean))]
+    [RegisterField("KSU", 2, 3, typeof(Byte))]
+    [RegisterField("UX", 1, 5, typeof(Boolean))]
+    [RegisterField("SX", 1, 6, typeof(Boolean))]
+    [RegisterField("KX", 1, 7, typeof(Boolean))]
+    [RegisterField("IM0", 1, 8, typeof(Boolean))]
+    [RegisterField("IM1", 1, 9, typeof(Boolean))]
+    [RegisterField("IM2", 1, 10, typeof(Boolean))]
+    [RegisterField("IM3", 1, 11, typeof(Boolean))]
+    [RegisterField("IM4", 1, 12, typeof(Boolean))]
+    [RegisterField("IM5", 1, 13, typeof(Boolean))]
+    [RegisterField("IM6", 1, 14, typeof(Boolean))]
+    [RegisterField("IM7", 1, 15, typeof(Boolean))]
+    [RegisterField("BEV", 1, 22, typeof(Boolean))]
+    [RegisterField("TS", 1, 21, typeof(Boolean))]
+    [RegisterField("SR", 1, 20, typeof(Boolean))]
+    [RegisterField("CH", 1, 18, typeof(Boolean))]
+    [RegisterField("CE", 1, 17, typeof(Boolean))]
+    [RegisterField("DE", 1, 16, typeof(Boolean))]
+    [RegisterField("RE", 1, 25, typeof(Boolean))]
+    [RegisterField("FR", 1, 26, typeof(Boolean))]
+    [RegisterField("RP", 1, 27, typeof(Boolean))]
+    [RegisterField("CU0", 1, 28, typeof(Boolean))]
+    [RegisterField("CU1", 1, 29, typeof(Boolean))]
+    [RegisterField("CU2", 1, 30, typeof(Boolean))]
+    [RegisterField("CU3", 1, 31, typeof(Boolean))]
+    public sealed class StatusRegister : SmartRegister<UInt32>
     {
-        private _SRReg m_RegStructure;
-
-        public StatusRegister()
+        public StatusRegister() : base()
         {
-            m_RegStructure = default(_SRReg);
         }
 
-        public UInt32 Reg32
+        public Boolean CopUsable0
+        {
+            get { return AutoRegisterProps.GetCU0(); }
+            set { AutoRegisterProps.SetCU0(value); }
+        }
+
+        public Boolean CopUsable1
+        {
+            get { return AutoRegisterProps.GetCU1(); }
+            set { AutoRegisterProps.SetCU1(value); }
+        }
+
+        public Boolean CopUsable2
+        {
+            get { return AutoRegisterProps.GetCU2(); }
+            set { AutoRegisterProps.SetCU2(value); }
+        }
+
+        public Boolean CopUsable3
+        {
+            get { return AutoRegisterProps.GetCU3(); }
+            set { AutoRegisterProps.SetCU3(value); }
+        }
+
+        public Boolean ReducePower
+        {
+            get { return AutoRegisterProps.GetRP(); }
+            set { AutoRegisterProps.SetRP(value); }
+        }
+
+        public Boolean AdditionalFPR
+        {
+            get { return AutoRegisterProps.GetFR(); }
+            set { AutoRegisterProps.SetFR(value); }
+        }
+
+        public Boolean ReverseEndianess
+        {
+            get { return AutoRegisterProps.GetRE(); }
+            set { AutoRegisterProps.SetRE(value); }
+        }
+
+        public Boolean ExceptionVectorMode
+        {
+            get { return AutoRegisterProps.GetBEV(); }
+            set { AutoRegisterProps.SetBEV(value); }
+        }
+
+        public Boolean TlbShutdown
+        {
+            get { return AutoRegisterProps.GetTS(); }
+            set { AutoRegisterProps.SetTS(value); }
+        }
+
+        public Boolean ResetMode
+        {
+            get { return AutoRegisterProps.GetSR(); }
+            set { AutoRegisterProps.SetSR(value); }
+        }
+
+        public Boolean CacheHit
+        {
+            get { return AutoRegisterProps.GetCH(); }
+            set { AutoRegisterProps.SetCH(value); }
+        }
+
+        public Boolean EccCheckBits
+        {
+            get { return AutoRegisterProps.GetCE(); }
+            set { AutoRegisterProps.SetCE(value); }
+        }
+
+        public Boolean DE
+        {
+            get { return AutoRegisterProps.GetDE(); }
+            set { AutoRegisterProps.SetDE(value); }
+        }
+
+        public Boolean InterruptMask0
+        {
+            get { return AutoRegisterProps.GetIM0(); }
+            set { AutoRegisterProps.SetIM0(value); }
+        }
+
+        public Boolean InterruptMask1
+        {
+            get { return AutoRegisterProps.GetIM1(); }
+            set { AutoRegisterProps.SetIM1(value); }
+        }
+
+        public Boolean InterruptMask2
+        {
+            get { return AutoRegisterProps.GetIM2(); }
+            set { AutoRegisterProps.SetIM2(value); }
+        }
+
+        public Boolean InterruptMask3
+        {
+            get { return AutoRegisterProps.GetIM3(); }
+            set { AutoRegisterProps.SetIM3(value); }
+        }
+
+        public Boolean InterruptMask4
+        {
+            get { return AutoRegisterProps.GetIM4(); }
+            set { AutoRegisterProps.SetIM4(value); }
+        }
+
+        public Boolean InterruptMask5
+        {
+            get { return AutoRegisterProps.GetIM5(); }
+            set { AutoRegisterProps.SetIM5(value); }
+        }
+
+        public Boolean InterruptMask6
+        {
+            get { return AutoRegisterProps.GetIM6(); }
+            set { AutoRegisterProps.SetIM6(value); }
+        }
+
+        public Boolean InterruptMask7
+        {
+            get { return AutoRegisterProps.GetIM7(); }
+            set { AutoRegisterProps.SetIM7(value); }
+        }
+
+        public Boolean KernelAddressingMode
+        {
+            get { return AutoRegisterProps.GetKX(); }
+            set { AutoRegisterProps.SetKX(value); }
+        }
+
+        public Boolean SupervisorAddressingMode
+        {
+            get { return AutoRegisterProps.GetSX(); }
+            set { AutoRegisterProps.SetSX(value); }
+        }
+
+        public Boolean UserAddressingMode
+        {
+            get { return AutoRegisterProps.GetUX(); }
+            set { AutoRegisterProps.SetUX(value); }
+        }
+
+        public Byte KSU
+        {
+            get { return AutoRegisterProps.GetKSU(); }
+            set { AutoRegisterProps.SetKSU(value); }
+        }
+
+        public RingMode RingFlags
         {
             get
             {
-                return RegFlip(m_RegStructure.Reg);
+                switch (KSU)
+                {
+                    default:
+                    case 0: return RingMode.Kernel;
+                    case 1: return RingMode.Supervisor;
+                    case 2: return RingMode.User;
+                }
             }
+
             set
             {
-                m_RegStructure.Reg = RegFlip(value);
+                switch (value)
+                {
+                    default:
+                    case RingMode.Kernel: KSU = 0; break;
+                    case RingMode.Supervisor: KSU = 1; break;
+                    case RingMode.User: KSU = 2; break;
+                }
             }
         }
 
-        public UInt64 Reg64
+        public Boolean ErrorLevel
         {
-            get { return (UInt64)Reg32; }
-            set { Reg32 = (UInt32)value; }
+            get { return AutoRegisterProps.GetERL(); }
+            set { AutoRegisterProps.SetERL(value); }
+        }
+
+        public Boolean ExceptionLevel
+        {
+            get { return AutoRegisterProps.GetEXL(); }
+            set { AutoRegisterProps.SetEXL(value); }
+        }
+
+        public Boolean EnableInterrupts
+        {
+            get { return AutoRegisterProps.GetIE(); }
+            set { AutoRegisterProps.SetIE(value); }
+        }
+
+        public UInt64 RegisterValue64
+        {
+            get { return RegisterValue; }
+            set { RegisterValue = (UInt32)value; }
         }
 
         private UInt32 RegFlip(UInt32 value)
         {
             return ((value & 0xFF) << 24) | ((value & 0xFF00) << 8) | ((value & 0xFF000) >> 8) | ((value & 0xFF000000) >> 24);
         }
-
-        public Boolean InterruptEnable
-        {
-            get { return m_RegStructure.IE; }
-            set { m_RegStructure.IE = value; }
-        }
-
-        public Boolean ExceptionLevel
-        {
-            get { return m_RegStructure.EXL; }
-            set { m_RegStructure.EXL = value; }
-        }
-
-        public Boolean ErrorLevel
-        {
-            get { return m_RegStructure.ERL; }
-            set { m_RegStructure.ERL = value; }
-        }
-
-        public RingMode KSUMode
-        {
-            get
-            {
-                switch (m_RegStructure.KSU & 3)
-                {
-                    case 0: return RingMode.Kernel;
-                    case 1: return RingMode.Supervisor;
-                    case 2: return RingMode.User;
-                    default: return RingMode.Kernel;
-                }
-            }
-
-            set
-            {
-                if (value < RingMode.User || value > RingMode.Kernel)
-                    throw new ArgumentOutOfRangeException();
-
-                switch (value)
-                {
-                    case RingMode.Kernel: m_RegStructure.KSU = 0; break;
-                    case RingMode.Supervisor: m_RegStructure.KSU = 1; break;
-                    case RingMode.User: m_RegStructure.KSU = 2; break;
-                    default: break;
-                }
-            }
-        }
-
-        public Boolean UserX
-        {
-            get { return m_RegStructure.UX; }
-            set { m_RegStructure.UX = value; }
-        }
-
-        public Boolean SupervisorX
-        {
-            get { return m_RegStructure.SX; }
-            set { m_RegStructure.SX = value; }
-        }
-
-        public Boolean KernelX
-        {
-            get { return m_RegStructure.KX; }
-            set { m_RegStructure.KX = value; }
-        }
-
-        public Byte InterruptMask
-        {
-            get { return m_RegStructure.IM; }
-            set { m_RegStructure.IM = value; }
-        }
-
-        public UInt16 DiagnosticField
-        {
-            get { return (UInt16)(m_RegStructure.DS & 0x1FF); }
-            set { m_RegStructure.DS = (UInt16)(value & 0x1FF); }
-        }
-
-        public Boolean ReducedPower
-        {
-            get { return m_RegStructure.RP; }
-            set { m_RegStructure.RP = value; }
-        }
-
-        public Boolean FPURegsMode
-        {
-            get { return m_RegStructure.FR; }
-            set { m_RegStructure.FR = value; }
-        }
-
-        public Boolean ReverseEndianess
-        {
-            get { return m_RegStructure.RE; }
-            set { m_RegStructure.RE = value; }
-        }
-
-        public Byte CPUsableFlags
-        {
-            get { return m_RegStructure.CU; }
-            set { m_RegStructure.CU = value; }
-        }
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    internal struct _SRReg
-    {
-        [FieldOffset(0)]
-        public UInt32 Reg;
-
-        [FieldOffset(0)]
-        public Boolean IE;
-
-        [FieldOffset(1)]
-        public Boolean EXL;
-
-        [FieldOffset(2)]
-        public Boolean ERL;
-
-        [FieldOffset(3)]
-        public Byte KSU;
-
-        [FieldOffset(5)]
-        public Boolean UX;
-
-        [FieldOffset(6)]
-        public Boolean SX;
-
-        [FieldOffset(7)]
-        public Boolean KX;
-
-        [FieldOffset(8)]
-        public Byte IM;
-
-        [FieldOffset(16)]
-        public UInt16 DS;
-
-        [FieldOffset(25)]
-        public Boolean RE;
-
-        [FieldOffset(26)]
-        public Boolean FR;
-
-        [FieldOffset(27)]
-        public Boolean RP;
-
-        [FieldOffset(28)]
-        public Byte CU;
     }
 }

@@ -208,7 +208,7 @@ namespace Soft64.MipsR4300.CP0
                     case CP0RegName.PageMask: m_Regs[5] = value; break;
                     case CP0RegName.Wired: m_Regs[6] = value; break;
                     case CP0RegName.Random: m_Regs[1] = value; break;
-                    case CP0RegName.SR: m_Regs[12] = value; m_SR.Reg64 = value; break;
+                    case CP0RegName.SR: m_Regs[12] = value; m_SR.RegisterValue64 = value; break;
                     case CP0RegName.Cause: m_CauseReg.RegisterValue64 = value; break;
                     default: m_Regs[(int)index] = value; break;
                 }
@@ -258,7 +258,8 @@ namespace Soft64.MipsR4300.CP0
         public void Clear()
         {
             Array.Clear(m_Regs, 0, m_Regs.Length);
-            m_SR.Reg64 = 0;
+            m_SR.RegisterValue = 0;
+            m_CauseReg.RegisterValue = 0;
         }
 
         public UInt64 Index
