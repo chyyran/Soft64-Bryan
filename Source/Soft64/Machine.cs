@@ -254,6 +254,7 @@ namespace Soft64
 
         public void AquirePMemLockAndRun(Action action)
         {
+            /* TODO: Implement a Stream class in place of this mess which uses enforces lock based sychronation */
             lock (m_PhysicalMemLock)
             {
             }

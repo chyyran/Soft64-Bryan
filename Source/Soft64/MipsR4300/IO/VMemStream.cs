@@ -46,11 +46,48 @@ namespace Soft64.MipsR4300.IO
         private StringBuilder m_StrBuilder = new StringBuilder();
         private Boolean m_DebugIO = false;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private ReadOp ReadOperationHandler;
+        private WriteOp WriteOperationHandler;
+
+        delegate Int32 ReadOp(Byte[] buffer, Int32 offset, Int32 count);
+        delegate void WriteOp(Byte[] buffer, Int32 offset, Int32 count);
+
 
         public VMemStream(CP0Registers cp0regs)
         {
             m_Cp0Regs = cp0regs;
             m_TLBCache = new TLBCache(m_Cp0Regs);
+            SetupOperations(false);
+        }
+
+        public void SetupOperations(Boolean monitorOps)
+        {
+            if (monitorOps)
+            {
+                ReadOperationHandler = (b, o, c) =>
+                    {
+                        Machine.Current.DeviceCPU.ResourceMonitor.CPUMemRead(Position);
+                        return base.Read(b, o, c);
+                    };
+
+                WriteOperationHandler = (b, o, c) =>
+                {
+                    Machine.Current.DeviceCPU.ResourceMonitor.CPUMemWrite(Position);
+                    base.Write(b, o, c);
+                };
+            }
+            else
+            {
+                ReadOperationHandler = (b, o, c) =>
+                {
+                    return base.Read(b, o, c);
+                };
+
+                WriteOperationHandler = (b, o, c) =>
+                {
+                    base.Write(b, o, c);
+                };
+            }
         }
 
         public void Initialize()
@@ -103,35 +140,6 @@ namespace Soft64.MipsR4300.IO
             }
         }
 
-        [Conditional("DEBUG")]
-        private void LogRead(int count)
-        {
-            if (!m_DebugIO)
-                return;
-
-            m_StrBuilder.Clear();
-            m_StrBuilder.Append("VMem ");
-            m_StrBuilder.Append(count);
-            m_StrBuilder.Append(" Byte Read: ");
-            m_StrBuilder.Append(Position.ToString("X8"));
-
-            //SystemEventLog.WriteDebug(m_StrBuilder.ToString(), LogType.Memory);
-        }
-
-        [Conditional("DEBUG")]
-        private void LogWrite(int count)
-        {
-            if (!m_DebugIO)
-                return;
-
-            m_StrBuilder.Clear();
-            m_StrBuilder.Append("VMem ");
-            m_StrBuilder.Append(count);
-            m_StrBuilder.Append(" Byte Write: ");
-            m_StrBuilder.Append(Position.ToString("X8"));
-
-            //SystemEventLog.WriteDebug(m_StrBuilder.ToString(), LogType.Memory);
-        }
 
         public bool DebugMode
         {

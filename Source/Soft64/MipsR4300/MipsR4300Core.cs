@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 using Soft64.MipsR4300.CP0;
+using Soft64.MipsR4300.Debugging;
 using Soft64.MipsR4300.IO;
 
 namespace Soft64.MipsR4300
@@ -28,11 +29,13 @@ namespace Soft64.MipsR4300
         private ExecutionState m_State;           /* Processor Register State */
         private ExecutionEngine m_ExecEngine;     /* Processor Execution Engine */
         private VMemStream m_MMU;                 /* Processor Memory Management Unit */
+        private IOMonitor m_IOMonitor;
 
         public MipsR4300Core()
         {
             m_State = new ExecutionState();
             m_MMU = new VMemStream(m_State.CP0Regs);
+            m_IOMonitor = new IOMonitor();
         }
 
         public virtual void Initialize()
@@ -55,6 +58,11 @@ namespace Soft64.MipsR4300
         public VMemStream VirtualMemoryStream
         {
             get { return m_MMU; }
+        }
+
+        public IOMonitor ResourceMonitor
+        {
+            get { return m_IOMonitor; }
         }
 
         private void SetInitialState()
