@@ -117,13 +117,17 @@ namespace Soft64.MipsR4300.IO
         {
             try
             {
-                LogRead(count);
-                return base.Read(buffer, offset, count);
+                return ReadOperationHandler(buffer, offset, count);
             }
-            catch (TLBException tlb_e)
+            catch (TLBException e)
             {
-                /* TODO: Set exception bits in CP0 */
-                return 0;
+                switch (e.ExceptionType)
+                {
+                    case TLBExceptionType.Mod: Machine.Current.DeviceCPU.State.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
+                    default: Machine.Current.DeviceCPU.State.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbLoad; break;
+                }
+
+                return count;
             }
         }
 
@@ -131,12 +135,15 @@ namespace Soft64.MipsR4300.IO
         {
             try
             {
-                LogWrite(count);
-                base.Write(buffer, offset, count);
+                WriteOperationHandler(buffer, offset, count);
             }
-            catch (TLBException tlb_e)
+            catch (TLBException e)
             {
-                /* TODO: Set exception bits in CP0 */
+                switch (e.ExceptionType)
+                {
+                    case TLBExceptionType.Mod: Machine.Current.DeviceCPU.State.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
+                    default: Machine.Current.DeviceCPU.State.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                }
             }
         }
 
