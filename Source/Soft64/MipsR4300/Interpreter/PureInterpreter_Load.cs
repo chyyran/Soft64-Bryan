@@ -24,6 +24,7 @@ namespace Soft64.MipsR4300.Interpreter
     public partial class PureInterpreter
     {
         /* TODO: check over GPR selected regs */
+        /* TODO: Using UInt32 hack to cast sign extended 64bit integers into 32bits so addressing works */
 
         [OpcodeHook("LUI")]
         private void Inst_Lui(MipsInstruction inst)
@@ -42,7 +43,7 @@ namespace Soft64.MipsR4300.Interpreter
             UInt64 baseValue = MipsState.GPRRegs64[inst.Rs];
             UInt32 imm = inst.Immediate.SignExtended32();
             UInt64 address = baseValue + imm;
-            DataBinaryReader.BaseStream.Position = (Int64)(address);
+            DataBinaryReader.BaseStream.Position = (Int64)(UInt32)(address);
             UInt32 read = DataBinaryReader.ReadUInt32();
 
             if ((address & 3) != 0)
@@ -71,7 +72,7 @@ namespace Soft64.MipsR4300.Interpreter
                 throw new InvalidOperationException("Address error");
             }
 
-            DataBinaryReader.BaseStream.Position = (Int64)(address);
+            DataBinaryReader.BaseStream.Position = (Int64)(UInt32)(address);
             MipsState.GPRRegs64[inst.Rt] = DataBinaryReader.ReadUInt64();
         }
     }

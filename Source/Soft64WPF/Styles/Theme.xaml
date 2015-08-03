@@ -12,9 +12,9 @@
     <FontFamily x:Key="Theme_InfoFont_1">/Soft64WPF;component/Fonts/#Emulogic</FontFamily>
 
     <!-- Control Specific Styles -->
-    <Style TargetType="Window">
+    <!--<Style TargetType="Window">
         <Setter Property="Background" Value="{StaticResource Theme_DarkAccentColor_1}" />
-    </Style>
+    </Style>-->
 
     <!--<Style TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource Theme_LightAccentColor_1}" />

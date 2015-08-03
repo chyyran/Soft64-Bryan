@@ -70,5 +70,11 @@ namespace Soft64WPF.Windows
         {
             m_CompareWindow.Show();
         }
+
+        private void xaml_BtnResHooks_Click(object sender, RoutedEventArgs e)
+        {
+            ResourceDebugger resDebugger = new ResourceDebugger();
+            resDebugger.Show();
+        }
     }
 }

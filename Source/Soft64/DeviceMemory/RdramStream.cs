@@ -18,15 +18,103 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
 using System;
+using System.IO;
 using Soft64.IO;
 
 namespace Soft64.DeviceMemory
 {
-    public sealed class RdramStream : BlockStream
+    public enum RdramInterfaceRegs
+    {
+        Config,
+        DeviceID,
+        Delay,
+        Mode,
+        RefInterval,
+        RefRow,
+        RasInterval,
+        MinInterval,
+        AddressSelect,
+        DeviceManufacturer,
+    }
+    // TODO: Implement rdram control system, and reg properties
+
+    /// <summary>
+    /// RDRAM stream device which supports register interface
+    /// </summary>
+    public sealed class RdramStream : Stream
+    {
+        private _RdramStream m_RamStream = new _RdramStream();
+        private UInt32[] m_Regs = new UInt32[10];
+        private Int64 m_Position;
+
+        public override bool CanRead
+        {
+            get { return true; }
+        }
+
+        public override bool CanSeek
+        {
+            get { return true; }
+        }
+
+        public override bool CanWrite
+        {
+            get { return true; }
+        }
+
+        public override void Flush()
+        {
+            m_RamStream.Flush();
+        }
+
+        public override long Length
+        {
+            get { return m_RamStream.Length; }
+        }
+
+        public override long Position
+        {
+            get
+            {
+                return m_Position;
+            }
+            set
+            {
+                m_Position = value;
+            }
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            m_RamStream.Read(buffer, offset, count);
+            return count;
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            return m_RamStream.Seek(offset, origin);
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            m_RamStream.Write(buffer, offset, count);
+        }
+    }
+
+
+    /// <summary>
+    /// Actual ram stream
+    /// </summary>
+    public sealed class _RdramStream : BlockStream
     {
         private Byte[][] m_MemoryBlocks;
 
-        public RdramStream()
+        public _RdramStream()
         {
             m_MemoryBlocks = new Byte[BlockCount][];
         }

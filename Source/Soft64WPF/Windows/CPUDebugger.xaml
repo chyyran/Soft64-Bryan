@@ -29,6 +29,7 @@
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="3">
             <Button x:Name="xaml_BtnStep" Content="Step"  Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="76" Height="22" Click="xaml_BtnStep_Click"/>
             <Button x:Name="xaml_BtnCompare" Content="Compare ..." Margin="10,5,0,0" HorizontalAlignment="Left"  Grid.Row="1" Width="76" Height="22" VerticalAlignment="Top" Click="xaml_BtnCompare_Click" />
+            <Button x:Name="xaml_BtnResHooks" Content="Resource Debugger" Margin="10,5,0,0" HorizontalAlignment="Left" Width="121" Height="22" VerticalAlignment="Top" Click="xaml_BtnResHooks_Click" />
         </StackPanel>
 
         <!-- Registers -->

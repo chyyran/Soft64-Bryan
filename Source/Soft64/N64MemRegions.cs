@@ -43,7 +43,8 @@ namespace Soft64
         CD1A2,
         PIFMem,
         CD1A3,
-        SysAD
+        SysAD,
+        TLBMapped
     }
 
     public static class N64MemRegionsExtensions
@@ -60,7 +61,7 @@ namespace Soft64
                 case N64MemRegions.SPDMem: return 0x04000000;
                 case N64MemRegions.SPIMem: return 0x04001000;
                 case N64MemRegions.SPRegs: return 0x04040000;
-                case N64MemRegions.DPCmdRegs: return 0x04200000;
+                case N64MemRegions.DPCmdRegs: return 0x04100000;
                 case N64MemRegions.DPSpanRegs: return 0x04200000;
                 case N64MemRegions.MIRegs: return 0x04300000;
                 case N64MemRegions.VIRegs: return 0x04400000;
