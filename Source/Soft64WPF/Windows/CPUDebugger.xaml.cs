@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using NLog;
@@ -28,8 +30,12 @@ namespace Soft64WPF.Windows
         public CPUDebugger()
         {
             InitializeComponent();
+
             m_CompareWindow = new CompareWindow();
             xaml_MenuBtnRefreshDisam.Click += xaml_MenuBtnRefreshDisam_Click;
+            xaml_MenuBtnSaveChanges.Click += xaml_MenuBtnSaveChanges_Click;
+
+            Loaded += CPUDebugger_Loaded;
 
             if (Debugger.Current == null)
             {
@@ -43,6 +49,19 @@ namespace Soft64WPF.Windows
             //    "LifetimeStateChanged",
             //    MachineStateChangedHandler
             //    );
+        }
+
+        void CPUDebugger_Loaded(object sender, RoutedEventArgs e)
+        {
+            xaml_DiassemblyView.RefreshDisasm();
+            m_MachineModel.Cpu.State.Load();
+        }
+
+        void xaml_MenuBtnSaveChanges_Click(object sender, RoutedEventArgs e)
+        {
+            m_MachineModel.Cpu.State.Store();
+            xaml_DiassemblyView.RefreshDisasm();
+            m_MachineModel.Cpu.State.Load();
         }
 
         void xaml_MenuBtnRefreshDisam_Click(object sender, RoutedEventArgs e)

@@ -23,6 +23,7 @@
         <Menu Grid.Row="0" Grid.ColumnSpan="3" >
             <MenuItem Header="Debugger">
                 <MenuItem x:Name="xaml_MenuBtnRefreshDisam" Header="Refresh Disassembly" />
+                <MenuItem x:Name="xaml_MenuBtnSaveChanges" Header="Write Modifications" />
             </MenuItem>
         </Menu>
         <Soft64WPF:DisassemblyView x:Name="xaml_DiassemblyView" HorizontalAlignment="Left" Width="412" Grid.Row="2"/>
