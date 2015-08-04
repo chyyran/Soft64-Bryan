@@ -23,7 +23,7 @@ namespace Soft64.MipsR4300.Interpreter
 {
     public static class ALUHelper
     {
-        public static UInt32 SignExtended32(this UInt16 value)
+        public static Int32 SignExtended32(this UInt16 value)
         {
             UInt32 signedExtended = value & 0x0000FFFFU;
 
@@ -33,10 +33,10 @@ namespace Soft64.MipsR4300.Interpreter
                 signedExtended |= 0xFFFF0000;
             }
 
-            return signedExtended;
+            return (Int32)signedExtended;
         }
 
-        public static UInt64 SignExtended64(this UInt16 value)
+        public static Int64 SignExtended64(this UInt16 value)
         {
             UInt64 signedExtended = value & 0x000000000000FFFFU;
 
@@ -45,7 +45,7 @@ namespace Soft64.MipsR4300.Interpreter
                 signedExtended |= 0xFFFFFFFFFFFF0000;
             }
 
-            return signedExtended;
+            return (Int64)signedExtended;
         }
 
         public static UInt32 ZeroExtended32(this UInt16 value)
@@ -58,7 +58,7 @@ namespace Soft64.MipsR4300.Interpreter
             return 0UL | value;
         }
 
-        public static UInt64 SignExtended64(this UInt32 value)
+        public static Int64 SignExtended64(this UInt32 value)
         {
             UInt64 signedExtended = value & 0x00000000FFFFFFFF;
 
@@ -67,7 +67,17 @@ namespace Soft64.MipsR4300.Interpreter
                 signedExtended |= 0xFFFFFFFF00000000;
             }
 
-            return signedExtended;
+            return (Int64)signedExtended;
+        }
+
+        /// <summary>
+        /// Resolves the signed 64 bit address into unsigned 32 bit address.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public static Int64 ResolveAddress(this Int64 address)
+        {
+            return (Int64)(UInt32)address;
         }
     }
 }

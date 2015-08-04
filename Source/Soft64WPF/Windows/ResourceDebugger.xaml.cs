@@ -32,10 +32,12 @@ namespace Soft64WPF.Windows
             if (xaml_CheckBoxCPUMem.IsChecked == true)
             {
                 Machine.Current.DeviceCPU.ResourceMonitor.CPUMemoryRead += CPUMemoryCallbackRead;
+                Machine.Current.DeviceCPU.ResourceMonitor.CPUMemoryWrite += CPUMemoryCallbackWrite;
             }
             else
             {
                 Machine.Current.DeviceCPU.ResourceMonitor.CPUMemoryRead -= CPUMemoryCallbackRead;
+                Machine.Current.DeviceCPU.ResourceMonitor.CPUMemoryWrite -= CPUMemoryCallbackWrite;
             }
         }
 
@@ -44,6 +46,14 @@ namespace Soft64WPF.Windows
             Dispatcher.InvokeAsync(() =>
             {
                 xaml_ResLog.AppendText(String.Format("CPU VMemory Read Access @ {0:X8} [{1}]\n", address, region.ToString()));
+            });
+        }
+
+        private void CPUMemoryCallbackWrite(N64MemRegions region, Int64 address)
+        {
+            Dispatcher.InvokeAsync(() =>
+            {
+                xaml_ResLog.AppendText(String.Format("CPU VMemory Write Access @ {0:X8} [{1}]\n", address, region.ToString()));
             });
         }
     }

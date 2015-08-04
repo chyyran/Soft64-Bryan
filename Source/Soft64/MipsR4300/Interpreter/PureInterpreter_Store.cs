@@ -26,16 +26,16 @@ namespace Soft64.MipsR4300.Interpreter
         [OpcodeHook("SW")]
         private void Inst_Sw(MipsInstruction inst)
         {
-            UInt64 baseValue = MipsState.GPRRegs64[inst.Rs];
-            UInt32 imm = (UInt32)inst.Immediate.SignExtended32();
-            UInt64 address = baseValue + imm;
+            Int64 baseValue = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
+            Int32 imm = inst.Immediate.SignExtended32();
+            Int64 address = baseValue + imm;
 
             if ((address & 3) != 0)
             {
                 throw new InvalidOperationException("Address error");
             }
 
-            DataBinaryReader.BaseStream.Position = (Int64)(address);
+            DataBinaryReader.BaseStream.Position = address.ResolveAddress();
             DataBinaryWriter.Write(MipsState.GPRRegs64.GPRRegs32[inst.Rt]);
         }
 
@@ -45,16 +45,16 @@ namespace Soft64.MipsR4300.Interpreter
             if (MipsState.Is32BitMode())
                 throw new InvalidOperationException("Instruction reserved");
 
-            UInt64 baseValue = MipsState.GPRRegs64[inst.Rs];
-            UInt32 imm = (UInt32)inst.Immediate.SignExtended32();
-            UInt64 address = baseValue + imm;
+            Int64 baseValue = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
+            Int32 imm = inst.Immediate.SignExtended32();
+            Int64 address = baseValue + imm;
 
             if ((address & 7) != 0)
             {
                 throw new InvalidOperationException("Address error");
             }
 
-            DataBinaryReader.BaseStream.Position = (Int64)(address);
+            DataBinaryReader.BaseStream.Position = address.ResolveAddress();
             DataBinaryWriter.Write(MipsState.GPRRegs64[inst.Rt]);
         }
     }

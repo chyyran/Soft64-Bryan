@@ -34,45 +34,50 @@ namespace Soft64.MipsR4300.Interpreter
             if (MipsState.Is32BitMode())
                 MipsState.GPRRegs64.GPRRegs32[inst.Rt] = word;
             else
-                MipsState.GPRRegs64[inst.Rt] = word.SignExtended64();
+                MipsState.GPRRegs64.GPRRegs64S[inst.Rt] = word.SignExtended64();
         }
 
         [OpcodeHook("LW")]
         private void Inst_Lw(MipsInstruction inst)
         {
-            UInt64 baseValue = MipsState.GPRRegs64[inst.Rs];
-            UInt32 imm = inst.Immediate.SignExtended32();
-            UInt64 address = baseValue + imm;
-            DataBinaryReader.BaseStream.Position = (Int64)(UInt32)(address);
+            Int64 baseValue = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
+            Int32 imm = inst.Immediate.SignExtended32();
+            Int64 address = baseValue + imm;
+            DataBinaryReader.BaseStream.Position = address.ResolveAddress();
             UInt32 read = DataBinaryReader.ReadUInt32();
 
             if ((address & 3) != 0)
             {
-                throw new InvalidOperationException("Address error");
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorLoad;
+                return;
             }
 
             if (MipsState.Is32BitMode())
                 MipsState.GPRRegs64.GPRRegs32[inst.Rt] = read;
             else
-                MipsState.GPRRegs64[inst.Rt] = read.SignExtended64();
+                MipsState.GPRRegs64.GPRRegs64S[inst.Rt] = read.SignExtended64();
         }
 
         [OpcodeHook("LD")]
         private void Inst_Ld(MipsInstruction inst)
         {
             if (MipsState.Is32BitMode())
-                throw new InvalidOperationException("Instruction reserved");
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+                return;
+            }
 
-            UInt64 baseValue = MipsState.GPRRegs64[inst.Rs];
-            UInt32 imm = inst.Immediate.SignExtended32();
-            UInt64 address = baseValue + imm;
+            Int64 baseValue = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
+            Int32 imm = inst.Immediate.SignExtended32();
+            Int64 address = baseValue + imm;
 
             if ((address & 7) != 0)
             {
-                throw new InvalidOperationException("Address error");
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorLoad;
+                return;
             }
 
-            DataBinaryReader.BaseStream.Position = (Int64)(UInt32)(address);
+            DataBinaryReader.BaseStream.Position = address.ResolveAddress();
             MipsState.GPRRegs64[inst.Rt] = DataBinaryReader.ReadUInt64();
         }
     }

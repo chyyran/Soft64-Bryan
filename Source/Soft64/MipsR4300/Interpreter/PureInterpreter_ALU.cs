@@ -49,17 +49,21 @@ namespace Soft64.MipsR4300.Interpreter
         {
             if (MipsState.Is32BitMode())
             {
-                Int32 val = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] + (Int16)inst.Immediate;
+                Int32 val = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] + inst.Immediate.SignExtended32();
 
                 if (val <= Int32.MaxValue)
                     MipsState.GPRRegs64.GPRRegs32[inst.Rt] = (UInt32)val;
+                else
+                    MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow;
             }
             else
             {
-                Int64 val = MipsState.GPRRegs64.GPRRegs64S[inst.Rt] + (Int16)inst.Immediate;
+                Int64 val = MipsState.GPRRegs64.GPRRegs64S[inst.Rs] + inst.Immediate.SignExtended64();
 
                 if (val <= Int64.MaxValue)
                     MipsState.GPRRegs64[inst.Rt] = (UInt64)val;
+                else
+                    MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow;
             }
         }
 
@@ -67,7 +71,10 @@ namespace Soft64.MipsR4300.Interpreter
         private void Inst_Daddu(MipsInstruction inst)
         {
             if (!MipsState.Is64BitMode())
-                throw new InvalidOperationException("Reserved instruction");
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+                return;
+            }
 
             unchecked
             {
@@ -124,11 +131,11 @@ namespace Soft64.MipsR4300.Interpreter
         {
             if (MipsState.Is32BitMode())
             {
-                MipsState.GPRRegs64.GPRRegs32[inst.Rt] = MipsState.GPRRegs64.GPRRegs32[inst.Rs] ^ inst.Immediate.SignExtended32();
+                MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rt] = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] ^ inst.Immediate.SignExtended32();
             }
             else
             {
-                MipsState.GPRRegs64[inst.Rt] = MipsState.GPRRegs64[inst.Rs] ^ inst.Immediate.SignExtended64();
+                MipsState.GPRRegs64.GPRRegs64S[inst.Rt] = MipsState.GPRRegs64.GPRRegs64S[inst.Rs] ^ inst.Immediate.SignExtended64();
             }
         }
 
@@ -143,7 +150,7 @@ namespace Soft64.MipsR4300.Interpreter
             }
             else
             {
-                MipsState.GPRRegs64[inst.Rd] = result.SignExtended64();
+                MipsState.GPRRegs64.GPRRegs64S[inst.Rd] = result.SignExtended64();
             }
         }
 
@@ -158,7 +165,7 @@ namespace Soft64.MipsR4300.Interpreter
             }
             else
             {
-                MipsState.GPRRegs64[inst.Rd] = result.SignExtended64();
+                MipsState.GPRRegs64.GPRRegs64S[inst.Rd] = result.SignExtended64();
             }
         }
     }

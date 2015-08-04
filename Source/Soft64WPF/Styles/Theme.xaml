@@ -55,12 +55,12 @@
         <Setter Property="FontStretch" Value="Normal" />
     </Style>-->
 
-    <Style TargetType="ListBox">
+    <!--<Style TargetType="ListBox">
         <Setter Property="Background" Value="{StaticResource Theme_DarkAccentColor_1}" />
         <Setter Property="Foreground" Value="{StaticResource Theme_LightAccentColor_1}" />
         <Setter Property="FontFamily" Value="{StaticResource Theme_MonoFont_1}" />
         <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
         <Setter Property="FontSize" Value="10" />
-    </Style>
+    </Style>-->
 </ResourceDictionary>

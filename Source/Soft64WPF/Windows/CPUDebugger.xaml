@@ -7,7 +7,7 @@
         xmlns:c="clr-namespace:Soft64WPF.Converters"
         xmlns:om="clr-namespace:System.Collections.ObjectModel;assembly=System"
         xmlns:win="clr-namespace:System.Windows;assembly=PresentationFramework"
-        Title="CPU Debugger" Height="484.225" Width="801"
+        Title="CPU Debugger" Height="695.225" Width="801"
         DataContext="{Binding ., Source={StaticResource machineVM}}">
     <Grid Background="White">
         <Grid.ColumnDefinitions>

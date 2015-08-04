@@ -20,9 +20,7 @@ namespace Soft64.MipsR4300.Debugging
 
         internal void CPUMemRead(Int64 address)
         {
-            N64MemRegions region = N64MemRegions.Unused;
-
-            region = GetRegion(address, region);
+            N64MemRegions region = GetRegion(address);
 
             var e = CPUMemoryRead;
 
@@ -32,8 +30,23 @@ namespace Soft64.MipsR4300.Debugging
             }
         }
 
-        private static N64MemRegions GetRegion(Int64 _address, N64MemRegions region)
+        internal void CPUMemWrite(Int64 address)
         {
+            N64MemRegions region = N64MemRegions.Unused;
+
+            region = GetRegion(address);
+
+            var e = CPUMemoryWrite;
+
+            if (e != null)
+            {
+                e(region, address);
+            }
+        }
+
+        private static N64MemRegions GetRegion(Int64 _address)
+        {
+            N64MemRegions region = N64MemRegions.Unused;
             UInt64 address = (UInt64)_address;
 
             if (address >= 0x00000000 && address <= 0x7FFFFFFF ||
@@ -91,11 +104,6 @@ namespace Soft64.MipsR4300.Debugging
 
             }
             return region;
-        }
-
-        internal void CPUMemWrite(Int64 address)
-        {
-
         }
 
         public Boolean Enabled { get; set; }
