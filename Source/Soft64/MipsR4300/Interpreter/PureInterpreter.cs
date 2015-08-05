@@ -78,12 +78,14 @@ namespace Soft64.MipsR4300.Interpreter
                     m_BranchDelaySlotAction();
                     m_BranchDelaySlotAction = null;
                 }
+                else
+                {
+                    /* Increment the PC */
+                    MipsState.PC += 4;
+                }
 
                 /* If we are going to do a branch delay slot executon next round, set the debug flag */
                 BranchDelaySlot = m_BranchDelaySlotAction != null;
-
-                /* Increment the PC */
-                MipsState.PC += 4;
             }
             catch (Exception e)
             {

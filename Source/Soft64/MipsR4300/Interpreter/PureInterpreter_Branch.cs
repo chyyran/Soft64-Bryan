@@ -94,14 +94,8 @@ namespace Soft64.MipsR4300.Interpreter
         [OpcodeHook("JR")]
         private void Inst_Jr(MipsInstruction inst)
         {
-            UInt64 target = MipsState.GPRRegs64[inst.Rs];
-
-            if ((target & 3) != 0)
-            {
-                throw new InvalidOperationException("Address error");
-            }
-
-            m_BranchDelaySlotAction = () => MipsState.PC = (Int64)target;
+            Int64 target = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
+            m_BranchDelaySlotAction = () => MipsState.PC = target.ResolveAddress();
         }
 
         [OpcodeHook("BNEL")]
