@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using NLog;
@@ -26,10 +27,12 @@ namespace Soft64.MipsR4300.Interpreter
 {
     public partial class PureInterpreter : BaseInterpreter
     {
-        private InterpreterTable m_OpTable;
-        private Action m_BranchDelaySlotAction;
-        private Boolean m_NullifiedInstruction;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private InterpreterTable m_OpTable;
+        private Boolean m_NullifiedInstruction;
+        private Int64 m_BranchDelaySlot;
+        private Boolean m_IsBranch;
+        private Int64 m_BranchTarget;
 
         internal sealed class OpcodeHookAttribute : Attribute
         {
@@ -44,9 +47,7 @@ namespace Soft64.MipsR4300.Interpreter
         public PureInterpreter()
         {
             m_OpTable = new InterpreterTable();
-
             HookOpcodeMethods();
-
             m_OpTable.InitializeCallTables();
         }
 
@@ -55,47 +56,58 @@ namespace Soft64.MipsR4300.Interpreter
             /* Fetch the instruction into a UInt32 */
             try
             {
-                MipsInstruction inst = FetchInstruction();
+                /* Go to branch */
+                if (m_IsBranch)
+                    MipsState.PC = m_BranchTarget;
 
-#if !FAST_UNSAFE_BUILD
+                /* Fetch instruction at PC */
+                MipsInstruction inst = FetchInstruction(MipsState.PC);
 
-                if (logger.IsDebugEnabled)
-                    logger.Debug("{0:X8} {1:X4} {2:X4} {3}", Machine.Current.DeviceCPU.State.PC, inst.Instruction >> 16, inst.Instruction & 0xFFFF, inst.ToString());
-#endif
-
-                /* Check if we are executing a branch delay slot */
-                Boolean doBranchDelay = m_BranchDelaySlotAction != null;
-
-                /* Execute the instruction unless its nullifed */
-                if (!m_NullifiedInstruction)
-                    m_OpTable.CallInstruction(inst);
-                else
-                    m_NullifiedInstruction = true;
-
-                /* Perform the branch jump if we have executed a branch delay slot */
-                if (doBranchDelay)
+                /* If we branched, execute the delay slot */
+                if (m_IsBranch)
                 {
-                    m_BranchDelaySlotAction();
-                    m_BranchDelaySlotAction = null;
+                    MipsInstruction bsdInst = FetchInstruction(m_BranchDelaySlot);
+                    TraceOp(m_BranchDelaySlot, bsdInst);
+                    m_OpTable.CallInstruction(bsdInst);
+                    m_IsBranch = false;
                 }
                 else
                 {
-                    /* Increment the PC */
-                    MipsState.PC += 4;
+
+                    /* Execute the instruction unless its nullifed */
+                    if (!m_NullifiedInstruction)
+                    {
+                        TraceOp(MipsState.PC, inst);
+                        m_OpTable.CallInstruction(inst);
+                    }
+                    else
+                    {
+                        m_NullifiedInstruction = false;
+                    }
+
+                    /* If branching has been set, skip PC increment */
+                    if (!m_IsBranch)
+                        MipsState.PC += 4;
+                    else
+                        MipsState.PC += 8;
                 }
 
-                /* If we are going to do a branch delay slot executon next round, set the debug flag */
-                BranchDelaySlot = m_BranchDelaySlotAction != null;
             }
             catch (Exception e)
             {
                 MipsState.PC -= 4; /* Move the counter back to the instruction that has faulted */
-
                 HasFaulted = true;
 
                 /* Important: This ensures that the engine thread comes to an halt seeing the thrown exception */
                 throw e;
             }
+        }
+
+        [Conditional("DEBUG")]
+        public void TraceOp(Int64 pc, MipsInstruction inst)
+        {
+            if (logger.IsDebugEnabled)
+                logger.Debug("{0:X8} {1:X4} {2:X4} {3}", pc, inst.Instruction >> 16, inst.Instruction & 0xFFFF, inst.ToString());
         }
 
         public void LinkAddress(UInt64 address)

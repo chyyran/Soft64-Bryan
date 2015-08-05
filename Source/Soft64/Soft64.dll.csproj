@@ -141,7 +141,6 @@
     <Compile Include="MipsR4300\Interpreter\PureInterpreter_Main.cs" />
     <Compile Include="MipsR4300\Interpreter\PureInterpreter_Store.cs" />
     <Compile Include="MipsR4300\Interpreter\PureInterpreter_TLB.cs" />
-    <Compile Include="MipsR4300\IO\DebugVMemStream.cs" />
     <Compile Include="MipsR4300\IO\PhysicalMapStream.cs" />
     <Compile Include="MipsR4300\IO\VMemStream.cs" />
     <Compile Include="MipsR4300\MipsInstruction.cs" />

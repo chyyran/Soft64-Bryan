@@ -45,15 +45,8 @@ namespace Soft64.MipsR4300.Interpreter
             m_VMStream = ParentMips.VirtualMemoryStream;
             m_BigEndianVMStream = new Int32SwapStream(m_VMStream);
             m_InstructionBinReader = new BinaryReader(m_BigEndianVMStream);
-
-#if DEBUG
-            DebugVMemStream debugVmem = new DebugVMemStream(ParentMips.VirtualMemoryStream);
-            m_DataBinReader = new BinaryReader(debugVmem);
-            m_DataBinWriter = new BinaryWriter(debugVmem);
-#else
             m_DataBinReader = new BinaryReader(m_VMStream);
             m_DataBinWriter = new BinaryWriter(m_VMStream);
-#endif
         }
 
         public abstract override void Step();
@@ -84,9 +77,8 @@ namespace Soft64.MipsR4300.Interpreter
             set { m_VMStream.Position = value; }
         }
 
-        protected MipsInstruction FetchInstruction()
+        protected MipsInstruction FetchInstruction(Int64 address)
         {
-            Int64 address = (Int64)MipsState.PC;
             m_InstructionBinReader.BaseStream.Position = address;
             return new MipsInstruction((UInt64)address, m_InstructionBinReader.ReadUInt32());
         }

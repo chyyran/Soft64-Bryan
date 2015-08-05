@@ -36,24 +36,24 @@ namespace Soft64.MipsR4300.Interpreter
         private void Inst_Bne(MipsInstruction inst)
         {
             Boolean condition = false;
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
 
             if (MipsState.Is32BitMode())
                 condition = MipsState.GPRRegs64.GPRRegs32[inst.Rs] != MipsState.GPRRegs64.GPRRegs32[inst.Rt];
             else
                 condition = MipsState.GPRRegs64[inst.Rs] != MipsState.GPRRegs64[inst.Rt];
 
-            m_BranchDelaySlotAction = () =>
-            {
-                if (condition)
-                    MipsState.PC = BranchComputeTargetAddress(inst.PC, inst.Immediate);
-            };
+            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.PC, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
         }
 
         [OpcodeHook("J")]
         private void Inst_J(MipsInstruction inst)
         {
             UInt64 target = (inst.Offset << 2) | ((inst.PC + 4) & 0xFFFF0000);
-            m_BranchDelaySlotAction = () => MipsState.PC = (Int64)target;
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
+            m_BranchTarget = ((Int64)target).ResolveAddress();
         }
 
         [OpcodeHook("JAL")]
@@ -61,7 +61,9 @@ namespace Soft64.MipsR4300.Interpreter
         {
             UInt64 target = ((inst.PC + 4) & 0xFFFF0000) | (inst.Offset << 2);
             LinkAddress(inst.PC + 8);
-            m_BranchDelaySlotAction = () => MipsState.PC = (Int64)target;
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
+            m_BranchTarget = ((Int64)target).ResolveAddress();
         }
 
         [OpcodeHook("BEQL")]
@@ -69,6 +71,8 @@ namespace Soft64.MipsR4300.Interpreter
         {
             Boolean condition;
             Int64 target = 0;
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
 
             if (MipsState.Is32BitMode())
             {
@@ -81,27 +85,24 @@ namespace Soft64.MipsR4300.Interpreter
                 target = ((Int64)MipsState.PC + 4) + (Int64)(inst.Immediate.SignExtended64() << 2);
             }
 
-            if (condition)
-            {
-                m_BranchDelaySlotAction = () => MipsState.PC = target;
-            }
-            else
-            {
-                m_BranchDelaySlotAction = null;
-            }
+            m_BranchTarget = condition ? target.ResolveAddress() : MipsState.PC + 8;
         }
 
         [OpcodeHook("JR")]
         private void Inst_Jr(MipsInstruction inst)
         {
             Int64 target = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
-            m_BranchDelaySlotAction = () => MipsState.PC = target.ResolveAddress();
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
+            m_BranchTarget = target.ResolveAddress();
         }
 
         [OpcodeHook("BNEL")]
         private void Inst_Bnel(MipsInstruction inst)
         {
             Boolean condition = false;
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
 
             if (MipsState.Is32BitMode())
                 condition = MipsState.GPRRegs64.GPRRegs32[inst.Rs] != MipsState.GPRRegs64.GPRRegs32[inst.Rt];
@@ -110,11 +111,7 @@ namespace Soft64.MipsR4300.Interpreter
 
             m_NullifiedInstruction = !condition;
 
-            m_BranchDelaySlotAction = () =>
-            {
-                if (condition)
-                    MipsState.PC = BranchComputeTargetAddress(inst.PC, inst.Immediate);
-            };
+            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.PC, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Soft64;
+using Soft64.Engines;
 using Soft64.MipsR4300;
 
 namespace Soft64WPF.Windows
@@ -26,6 +27,18 @@ namespace Soft64WPF.Windows
         public CompareWindow()
         {
             InitializeComponent();
+
+            WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
+                Machine.Current.Engine,
+                "EngineStatusChanged",
+                EngineStateChangedHandler
+                );
+        }
+
+        private void EngineStateChangedHandler(Object o, EngineStatusChangedArgs args)
+        {
+            if (args.NewStatus == EngineStatus.Paused)
+                Dispatcher.InvokeAsync(DoComparision);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -38,6 +51,11 @@ namespace Soft64WPF.Windows
                 {
                     dynamic engine = mupenAssembly.CreateInstance("CompareEngine.Mupen.MupenEngine");
                     Machine.Current.MipsCompareEngine = engine;
+
+                    xaml_CompareResults.Document.Blocks.Clear();
+                    xaml_CompareResults.Document.Blocks.Add(new Paragraph());
+
+                    xaml_CompareResults.AppendText("Secondary emulator core attached, ready for comparsion");
                 }
                 else
                 {
@@ -55,9 +73,13 @@ namespace Soft64WPF.Windows
 
                 /* Have WPF UI compare snapshot and show results */
                 CompareSnapshot(snapshotA, snapshotB);
-
-                Machine.Current.MipsCompareEngine.ThreadUnlock();
             }
+        }
+
+        public void NextStep()
+        {
+            if (Machine.Current.MipsCompareEngine != null)
+                Machine.Current.MipsCompareEngine.ThreadUnlock();
         }
 
         private void CompareSnapshot(MipsSnapshot snapshotA, MipsSnapshot snapshotB)
@@ -65,14 +87,14 @@ namespace Soft64WPF.Windows
             xaml_CompareResults.Document.Blocks.Clear();
             xaml_CompareResults.Document.Blocks.Add(new Paragraph());
             
-            xaml_CompareResults.AppendText(String.Format(" {0}  |  {1}\n", snapshotA.Name, snapshotB.Name));
-            xaml_CompareResults.AppendText(String.Format("PC 0x{0:X16} | 0x{1:X16}\n", snapshotA.PC, snapshotB.PC));
-            xaml_CompareResults.AppendText(String.Format("Lo 0x{0:X16} | 0x{1:X16}\n", snapshotA.Lo, snapshotB.Lo));
-            xaml_CompareResults.AppendText(String.Format("Hi 0x{0:X16} | 0x{1:X16}\n", snapshotA.Hi, snapshotB.Hi));
+            xaml_CompareResults.AppendText(String.Format("        {0}  |  {1}\n", snapshotA.Name, snapshotB.Name));
+            xaml_CompareResults.AppendText(String.Format("PC    0x{0:X16} | 0x{1:X16}\n", snapshotA.PC, snapshotB.PC));
+            xaml_CompareResults.AppendText(String.Format("Lo    0x{0:X16} | 0x{1:X16}\n", snapshotA.Lo, snapshotB.Lo));
+            xaml_CompareResults.AppendText(String.Format("Hi    0x{0:X16} | 0x{1:X16}\n", snapshotA.Hi, snapshotB.Hi));
 
             for (Int32 i = 0; i < 32; i++)
             {
-                xaml_CompareResults.AppendText(String.Format("GPR{2:D4} 0x{0:X16} | 0x{1:X16}\n", snapshotA.GPR[i], snapshotB.GPR[i], i));
+                xaml_CompareResults.AppendText(String.Format("GPR{2:D2} 0x{0:X16} | 0x{1:X16}\n", snapshotA.GPR[i], snapshotB.GPR[i], i));
             }
         }
     }

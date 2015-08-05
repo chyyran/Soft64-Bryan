@@ -6,6 +6,7 @@ using System.Windows;
 using NLog;
 using Soft64;
 using Soft64.Debugging;
+using Soft64.Engines;
 using Soft64.MipsR4300;
 using Soft64.MipsR4300.Debugging;
 using Soft64Binding.WPF;
@@ -49,12 +50,30 @@ namespace Soft64WPF.Windows
             //    "LifetimeStateChanged",
             //    MachineStateChangedHandler
             //    );
+
+            WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
+                Machine.Current.Engine,
+                "EngineStatusChanged",
+                EngineStateChangedHandler
+                );
         }
 
         void CPUDebugger_Loaded(object sender, RoutedEventArgs e)
         {
             xaml_DiassemblyView.RefreshDisasm();
             m_MachineModel.Cpu.State.Load();
+        }
+
+        private void EngineStateChangedHandler(Object o, EngineStatusChangedArgs args)
+        {
+            if (args.NewStatus == EngineStatus.Paused)
+            {
+                Dispatcher.InvokeAsync(() =>
+                {
+                    xaml_DiassemblyView.RefreshDisasm();
+                    m_MachineModel.Cpu.State.Load();
+                });
+            }
         }
 
         void xaml_MenuBtnSaveChanges_Click(object sender, RoutedEventArgs e)
@@ -79,8 +98,15 @@ namespace Soft64WPF.Windows
 
         private void xaml_BtnStep_Click(object sender, RoutedEventArgs e)
         {
-            m_CompareWindow.DoComparision();
+            /* Step Soft64 */
             Debugger.Current.StepOnce();
+            
+            /* If attached, step comparing core*/
+            m_CompareWindow.NextStep();
+
+            /* If attached, compare core states */
+            m_CompareWindow.DoComparision();
+
             xaml_DiassemblyView.RefreshDisasm();
             m_MachineModel.Cpu.State.Load();
         }
