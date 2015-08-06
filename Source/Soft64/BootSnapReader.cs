@@ -42,54 +42,51 @@ namespace Soft64
 
         public void LoadBootSnap(CICKeyType cic, RegionType region)
         {
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
+            List<GprRegWrite> regs = new List<GprRegWrite>();
+            List<Mem32Write> mem32 = new List<Mem32Write>();
+            BinaryWriter bw = new BinaryWriter(Machine.Current.N64MemorySafe);
+
+            StreamReader reader = new StreamReader(m_BootSnapStream);
+            XDocument doc = XDocument.Load(reader, LoadOptions.None);
+            XElement root = doc.Root;
+
+            var results = GetSnapElements(root, cic, region);
+
+            foreach (var result in results)
             {
-                List<GprRegWrite> regs = new List<GprRegWrite>();
-                List<Mem32Write> mem32 = new List<Mem32Write>();
-                BinaryWriter bw = new BinaryWriter(s);
-
-                StreamReader reader = new StreamReader(m_BootSnapStream);
-                XDocument doc = XDocument.Load(reader, LoadOptions.None);
-                XElement root = doc.Root;
-
-                var results = GetSnapElements(root, cic, region);
-
-                foreach (var result in results)
+                if (result.Name == "GPRRegSet")
                 {
-                    if (result.Name == "GPRRegSet")
-                    {
-                        regs.Add(
-                            new GprRegWrite
-                            {
-                                index = Int32.Parse(result.Attribute("Index").Value),
-                                value = UInt64.Parse(HexFix(result.Value), NumberStyles.AllowHexSpecifier)
-                            });
-                    }
-
-                    if (result.Name == "Mem32")
-                    {
-                        mem32.Add(
-                            new Mem32Write
-                            {
-                                index = Int32.Parse(result.Attribute("Index").Value),
-                                position = Int64.Parse(HexFix(result.Attribute("Offset").Value), NumberStyles.AllowHexSpecifier),
-                                value = UInt32.Parse(HexFix(result.Value), NumberStyles.AllowHexSpecifier),
-                            });
-                    }
+                    regs.Add(
+                        new GprRegWrite
+                        {
+                            index = Int32.Parse(result.Attribute("Index").Value),
+                            value = UInt64.Parse(HexFix(result.Value), NumberStyles.AllowHexSpecifier)
+                        });
                 }
 
-                /* Now we do the actual writes to the emulator */
-                foreach (var reg in regs)
+                if (result.Name == "Mem32")
                 {
-                    Machine.Current.DeviceCPU.State.GPRRegs64[reg.index] = reg.value;
+                    mem32.Add(
+                        new Mem32Write
+                        {
+                            index = Int32.Parse(result.Attribute("Index").Value),
+                            position = Int64.Parse(HexFix(result.Attribute("Offset").Value), NumberStyles.AllowHexSpecifier),
+                            value = UInt32.Parse(HexFix(result.Value), NumberStyles.AllowHexSpecifier),
+                        });
                 }
+            }
 
-                foreach (var m in mem32)
-                {
-                    bw.BaseStream.Position = m.position + (4 * m.index);
-                    bw.Write(m.value);
-                }
-            });
+            /* Now we do the actual writes to the emulator */
+            foreach (var reg in regs)
+            {
+                Machine.Current.DeviceCPU.State.GPRRegs64[reg.index] = reg.value;
+            }
+
+            foreach (var m in mem32)
+            {
+                bw.BaseStream.Position = m.position + (4 * m.index);
+                bw.Write(m.value);
+            }
         }
 
         private Boolean CompareCic(String cicName, CICKeyType cic)

@@ -25,10 +25,7 @@ namespace Soft64Binding.WPF
 
         public override void Flush()
         {
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                s.Flush();
-            });
+            Machine.Current.N64MemorySafe.Flush();
         }
 
         public override long Length
@@ -36,12 +33,7 @@ namespace Soft64Binding.WPF
             get
             {
                 Int64 length = 0;
-
-                Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-                {
-                    length = s.Length;
-                });
-
+                length = Machine.Current.N64MemorySafe.Length;
                 return length;
             }
         }
@@ -61,25 +53,15 @@ namespace Soft64Binding.WPF
         public override int Read(byte[] buffer, int offset, int count)
         {
             Int32 read = -1;
-
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                s.Position = m_Position;
-                read = s.Read(buffer, offset, count);
-            });
-
+            Machine.Current.N64MemorySafe.Position = m_Position;
+            read = Machine.Current.N64MemorySafe.Read(buffer, offset, count);
             return read;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
             Int64 pos = -1;
-
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                pos = s.Seek(offset, origin);
-            });
-
+            pos = Machine.Current.N64MemorySafe.Seek(offset, origin);
             return pos;
         }
 
@@ -90,11 +72,8 @@ namespace Soft64Binding.WPF
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                s.Position = m_Position;
-                s.Write(buffer, offset, count);
-            });
+            Machine.Current.N64MemorySafe.Position = m_Position;
+            Machine.Current.N64MemorySafe.Write(buffer, offset, count);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Soft64WPF.Windows
         public ResourceDebugger()
         {
             InitializeComponent();
-            Machine.Current.DeviceCPU.VirtualMemoryStream.SetupOperations(true);
+            Machine.Current.DeviceCPU.DebugMemoryAccess = true;
             ((Paragraph)xaml_ResLog.Document.Blocks.FirstBlock).LineHeight = 3;
         }
 

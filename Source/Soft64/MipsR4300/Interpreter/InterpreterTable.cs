@@ -146,6 +146,9 @@ namespace Soft64.MipsR4300.Interpreter
             if (inst.Instruction == 0)
                 return;
 
+
+            /* TODO: Clean this mess up */
+
 #if !FAST_UNSAFE_BUILD
             try
             {

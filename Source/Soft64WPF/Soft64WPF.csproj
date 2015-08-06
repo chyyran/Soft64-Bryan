@@ -118,8 +118,6 @@
     </ApplicationDefinition>
     <Compile Include="Converters\Hex64Converter.cs" />
     <Compile Include="Converters\StringToCollectionConverter.cs" />
-    <Compile Include="DiassemblyViewLine.cs" />
-    <Compile Include="DisassemblyView.xaml.cs" />
     <Compile Include="FontTools.cs" />
     <Compile Include="Helper\WpfRichTextBoxRowColoringRule.cs" />
     <Compile Include="Helper\WpfRichTextBoxTarget.cs" />
@@ -146,10 +144,6 @@
     <Compile Include="Windows\ResourceDebugger.xaml.cs">
       <DependentUpon>ResourceDebugger.xaml</DependentUpon>
     </Compile>
-    <Page Include="DisassemblyView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="RegisterObserver.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -47,10 +47,7 @@ namespace Soft64.MipsR4300.IO
 
         public override void Flush()
         {
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                s.Flush();
-            });
+            Machine.Current.N64MemorySafe.Flush();
         }
 
         public override long Length
@@ -67,25 +64,15 @@ namespace Soft64.MipsR4300.IO
         public override int Read(byte[] buffer, int offset, int count)
         {
             Int32 read = 0;
-
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOp((s) =>
-            {
-                s.Position = m_Position;
-                read = s.Read(buffer, offset, count);
-            });
-
+            Machine.Current.N64MemorySafe.Position = m_Position;
+            read = Machine.Current.N64MemorySafe.Read(buffer, offset, count);
             return read;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
             Int64 pos = 0;
-
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                pos = s.Seek(offset, origin);
-            });
-
+            pos = Machine.Current.N64MemorySafe.Seek(offset, origin);
             return pos;
         }
 
@@ -96,11 +83,8 @@ namespace Soft64.MipsR4300.IO
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                s.Position = m_Position;
-                s.Write(buffer, offset, count);
-            });
+            Machine.Current.N64MemorySafe.Position = m_Position;
+            Machine.Current.N64MemorySafe.Write(buffer, offset, count);
         }
     }
 }

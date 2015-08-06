@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
+using System.IO;
 using System.Threading.Tasks;
 using NLog;
 using Soft64.Debugging;
@@ -44,6 +45,8 @@ namespace Soft64
         private EmulatorEngine m_CurrentEngine;
         private static ExpandoObject s_Config = new ExpandoObject();
         private Object m_PhysicalMemLock = new object();
+        private SychronizedStream m_N64Memory;
+        private SychronizedStream m_SafeMemory;
 
         /* Non-Dynamic Property Backings */
         private EmulatorEngine m_PropEngine;
@@ -65,6 +68,9 @@ namespace Soft64
             DeviceCPU = new CPUProcessor();
             DevicePIF = new PIFModule();
             m_PropEngine = new SimpleEngine();
+
+            m_N64Memory = new SychronizedStream(DeviceRCP.PhysicalMemoryStream);
+            m_SafeMemory = new SychronizedStream(DeviceRCP.PhysicalMemoryStream.GetSafeStream());
         }
 
         public T GetUIConfig<T>(String propName)
@@ -252,14 +258,6 @@ namespace Soft64
             GC.SuppressFinalize(this);
         }
 
-        public void AquirePMemLockAndRun(Action action)
-        {
-            /* TODO: Implement a Stream class in place of this mess which uses enforces lock based sychronation */
-            lock (m_PhysicalMemLock)
-            {
-            }
-        }
-
         protected virtual void Dispose(Boolean disposing)
         {
             if (this.CheckStateRequestInvalid(RequestState.Dispose))
@@ -344,6 +342,16 @@ namespace Soft64
         {
             get { return m_PropEngine; }
             set { m_PropEngine = value; }
+        }
+
+        public Stream N64Memory
+        {
+            get { return m_N64Memory; }
+        }
+
+        public Stream N64MemorySafe
+        {
+            get { return m_SafeMemory; }
         }
 
         /* Machine Components */

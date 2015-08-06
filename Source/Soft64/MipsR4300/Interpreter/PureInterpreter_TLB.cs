@@ -25,28 +25,28 @@ namespace Soft64.MipsR4300.Interpreter
         private void Inst_tlbr(MipsInstruction inst)
         {
             /* Read Indexed TLB Entry:  TLB Entry[index] => TLB Registers */
-            ParentMips.VirtualMemoryStream.TLB.Read();
+            ParentMips.Tlb.Read();
         }
 
         [OpcodeHook("TLBWI")]
         private void Inst_tlbwi(MipsInstruction inst)
         {
             /* Write Indexed TLB Entry: TLB Registers => TLB Entry[index] */
-            ParentMips.VirtualMemoryStream.TLB.Write();
+            ParentMips.Tlb.Write();
         }
 
         [OpcodeHook("TLBWR")]
         private void Inst_tlbwr(MipsInstruction inst)
         {
             /* Write Random TLB Entry: TLB Registers => TLB Entry[random_index] */
-            ParentMips.VirtualMemoryStream.TLB.WriteRandom();
+            ParentMips.Tlb.WriteRandom();
         }
 
         [OpcodeHook("TLBP")]
         private void Inst_tlbp(MipsInstruction inst)
         {
             /* Probe the TLB */
-            ParentMips.VirtualMemoryStream.TLB.Probe();
+            ParentMips.Tlb.Probe();
         }
     }
 }

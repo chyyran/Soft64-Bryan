@@ -7,7 +7,7 @@ from Soft64.MipsR4300.CP0 import PageFrameNumber
 from System import Console
 
 
-tlb = Machine.Current.DeviceCPU.VirtualMemoryStream.TLB
+tlb = Machine.Current.DeviceCPU.Tlb
 
 entry = TLBEntry()
 entry.VPN2 = VirtualPageNumber2(2, 0x345)

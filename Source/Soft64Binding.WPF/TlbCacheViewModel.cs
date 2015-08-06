@@ -14,7 +14,7 @@ namespace Soft64Binding.WPF
             Refresh();
 
             WeakEventManager<TLBCache, TLBCacheChangeEventArgs>.AddHandler(
-                parentMachineModel.TargetMachine.DeviceCPU.VirtualMemoryStream.TLB,
+                parentMachineModel.TargetMachine.DeviceCPU.Tlb,
                 "CacheChanged",
                 TlbChange);
 
@@ -64,7 +64,7 @@ namespace Soft64Binding.WPF
 
         private void ReadRegs()
         {
-            TLBCache cache = ParentMachine.TargetMachine.DeviceCPU.VirtualMemoryStream.TLB;
+            TLBCache cache = ParentMachine.TargetMachine.DeviceCPU.Tlb;
 
             PageMask = cache.PageMask;
             EntryHi = cache.EntryHi;
@@ -78,7 +78,7 @@ namespace Soft64Binding.WPF
 
         private void ReadEntries()
         {
-            TLBCache cache = ParentMachine.TargetMachine.DeviceCPU.VirtualMemoryStream.TLB;
+            TLBCache cache = ParentMachine.TargetMachine.DeviceCPU.Tlb;
         }
 
         private static void UpdateRegister(DependencyObject o, DependencyPropertyChangedEventArgs a)
@@ -87,7 +87,7 @@ namespace Soft64Binding.WPF
 
             if (model != null)
             {
-                TLBCache cache = model.ParentMachine.TargetMachine.DeviceCPU.VirtualMemoryStream.TLB;
+                TLBCache cache = model.ParentMachine.TargetMachine.DeviceCPU.Tlb;
 
                 switch (a.Property.Name)
                 {

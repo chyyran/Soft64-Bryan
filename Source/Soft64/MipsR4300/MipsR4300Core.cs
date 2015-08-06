@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
 using System;
+using System.IO;
 using Soft64.MipsR4300.CP0;
 using Soft64.MipsR4300.Debugging;
 using Soft64.MipsR4300.IO;
@@ -30,12 +31,15 @@ namespace Soft64.MipsR4300
         private ExecutionEngine m_ExecEngine;     /* Processor Execution Engine */
         private VMemStream m_MMU;                 /* Processor Memory Management Unit */
         private IOMonitor m_IOMonitor;
+        private SychronizedStream m_SyncMMU;
+        private Boolean m_DebugMemAccess;
 
         public MipsR4300Core()
         {
             m_State = new ExecutionState();
             m_MMU = new VMemStream(m_State.CP0Regs);
             m_IOMonitor = new IOMonitor();
+            m_SyncMMU = new SychronizedStream(m_MMU);
         }
 
         public virtual void Initialize()
@@ -55,9 +59,14 @@ namespace Soft64.MipsR4300
             set { m_ExecEngine = value; }
         }
 
-        public VMemStream VirtualMemoryStream
+        public TLBCache Tlb
         {
-            get { return m_MMU; }
+            get { return m_MMU.TLB; }
+        }
+
+        public Stream VirtualMemoryStream
+        {
+            get { return m_SyncMMU; }
         }
 
         public IOMonitor ResourceMonitor
@@ -117,6 +126,12 @@ namespace Soft64.MipsR4300
             }
 
             return snapshot;
+        }
+
+        public Boolean DebugMemoryAccess
+        {
+            get { return m_DebugMemAccess; }
+            set { m_DebugMemAccess = value; m_MMU.SetupOperations(value); }
         }
     }
 }

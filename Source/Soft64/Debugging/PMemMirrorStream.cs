@@ -52,10 +52,7 @@ namespace Soft64.Debugging
 
         public override void Flush()
         {
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                s.Flush();
-            });
+            Machine.Current.N64MemorySafe.Flush();
         }
 
         public override long Length
@@ -81,12 +78,8 @@ namespace Soft64.Debugging
             {
                 count = (Int32)((m_CurrentOffset + count) - (Length - 1));
             }
-
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                s.Position = m_CurrentOffset;
-                s.Read(buffer, offset, count);
-            });
+            Machine.Current.N64MemorySafe.Position = m_CurrentOffset;
+            Machine.Current.N64MemorySafe.Read(buffer, offset, count);
 
             return count;
         }
@@ -113,12 +106,8 @@ namespace Soft64.Debugging
             {
                 count = (Int32)((m_CurrentOffset + count) - (Length - 1));
             }
-
-            Machine.Current.DeviceRCP.ExecuteN64MemoryOpSafe((s) =>
-            {
-                s.Position = m_PhysicalOffset + m_CurrentOffset;
-                s.Write(buffer, offset, count);
-            });
+            Machine.Current.N64MemorySafe.Position = m_PhysicalOffset + m_CurrentOffset;
+            Machine.Current.N64MemorySafe.Write(buffer, offset, count);
         }
     }
 }

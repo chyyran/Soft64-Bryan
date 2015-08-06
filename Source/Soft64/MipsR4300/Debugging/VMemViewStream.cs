@@ -32,7 +32,7 @@ namespace Soft64.MipsR4300.Debugging
         {
             UseCompiler = false;
             BuildMap();
-            Machine.Current.DeviceCPU.VirtualMemoryStream.TLB.CacheChanged += TLB_CacheChanged;
+            Machine.Current.DeviceCPU.Tlb.CacheChanged += TLB_CacheChanged;
         }
 
         private void BuildMap()
@@ -44,7 +44,7 @@ namespace Soft64.MipsR4300.Debugging
 
             /* Query all the valid entries in the TLB */
             var entries =
-                    from entryInfo in Machine.Current.DeviceCPU.VirtualMemoryStream.TLB.AsQueryable<TLBEntryInfo>()
+                    from entryInfo in Machine.Current.DeviceCPU.Tlb.AsQueryable<TLBEntryInfo>()
                     let tlbEntry = entryInfo.AssociatedEntry
                     select entryInfo;
 
@@ -96,5 +96,6 @@ namespace Soft64.MipsR4300.Debugging
         {
             base.Write(buffer, offset, count);
         }
+
     }
 }

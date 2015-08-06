@@ -60,7 +60,7 @@ namespace Soft64WPF.Windows
 
         void CPUDebugger_Loaded(object sender, RoutedEventArgs e)
         {
-            xaml_DiassemblyView.RefreshDisasm();
+            //xaml_DiassemblyView.RefreshDisasm();
             m_MachineModel.Cpu.State.Load();
         }
 
@@ -70,7 +70,7 @@ namespace Soft64WPF.Windows
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    xaml_DiassemblyView.RefreshDisasm();
+                    //xaml_DiassemblyView.RefreshDisasm();
                     m_MachineModel.Cpu.State.Load();
                 });
             }
@@ -79,13 +79,13 @@ namespace Soft64WPF.Windows
         void xaml_MenuBtnSaveChanges_Click(object sender, RoutedEventArgs e)
         {
             m_MachineModel.Cpu.State.Store();
-            xaml_DiassemblyView.RefreshDisasm();
+            //xaml_DiassemblyView.RefreshDisasm();
             m_MachineModel.Cpu.State.Load();
         }
 
         void xaml_MenuBtnRefreshDisam_Click(object sender, RoutedEventArgs e)
         {
-            xaml_DiassemblyView.RefreshDisasm();
+            //xaml_DiassemblyView.RefreshDisasm();
             m_MachineModel.Cpu.State.Load();
         }
 
@@ -107,7 +107,7 @@ namespace Soft64WPF.Windows
             /* If attached, compare core states */
             m_CompareWindow.DoComparision();
 
-            xaml_DiassemblyView.RefreshDisasm();
+            //xaml_DiassemblyView.RefreshDisasm();
             m_MachineModel.Cpu.State.Load();
         }
 

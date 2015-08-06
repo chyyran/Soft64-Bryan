@@ -56,7 +56,6 @@ namespace Soft64.RCP
     {
         private Boolean m_Disposed;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private Object m_PMemLock = new object();
 
         /* IO Interfaces */
         private ParallelInterface m_PIInterface;
@@ -108,20 +107,9 @@ namespace Soft64.RCP
             get { return m_PIInterface; }
         }
 
-        public void ExecuteN64MemoryOp(Action<Stream> action)
+        internal RCPBusStream PhysicalMemoryStream
         {
-            lock (m_PMemLock)
-            {
-                action(m_RcpMemoryBus);
-            }
-        }
-
-        public void ExecuteN64MemoryOpSafe(Action<Stream> action)
-        {
-            lock (m_PMemLock)
-            {
-                action(m_RcpMemoryBus.GetSafeStream());
-            }
+            get { return m_RcpMemoryBus; }
         }
 
         private void Dispose(Boolean disposing)
