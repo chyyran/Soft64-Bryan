@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using NLog;
 using Soft64;
 using Soft64.Debugging;
@@ -125,7 +126,10 @@ namespace Soft64WPF.Windows
 
         private void DiassembleCode()
         {
-            m_MachineModel.Cpu.Debugger.Debugger.ScanCode(20, true);
+            // TODO: Eventual dump huge chunk of memory and use virtualizing panels to show portions
+            Int32 lineCount = (Int32)(xaml_DataGridDiassembly.ActualHeight / xaml_DataGridDiassembly.FontSize);
+            m_MachineModel.Cpu.Debugger.Debugger.ScanCode(lineCount, true);
+
         }
     }
 }

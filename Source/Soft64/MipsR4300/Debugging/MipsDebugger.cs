@@ -16,6 +16,8 @@ namespace Soft64.MipsR4300.Debugging
         private Boolean m_ABIMarkings;
         private Boolean m_SymbolMarkings;
 
+        public event EventHandler CodeScanned;
+
         public const Int32 DMEMSize = 0x1000;
 
         public MipsDebugger()
@@ -58,6 +60,12 @@ namespace Soft64.MipsR4300.Debugging
 
                 //if (Machine.Current.Engine.IsPaused)
                 //    Machine.Current.Engine.ResumeThreads();
+                var e = CodeScanned;
+
+                if (e != null)
+                {
+                    e(this, new EventArgs());
+                }
             });
         }
 
