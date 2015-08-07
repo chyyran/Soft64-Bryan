@@ -60,7 +60,12 @@ namespace Soft64WPF.Windows
 
         void CPUDebugger_Loaded(object sender, RoutedEventArgs e)
         {
-            //xaml_DiassemblyView.RefreshDisasm();
+            ReadCpu();
+        }
+
+        private void ReadCpu()
+        {
+            DiassembleCode();
             m_MachineModel.Cpu.State.Load();
         }
 
@@ -70,8 +75,7 @@ namespace Soft64WPF.Windows
             {
                 Dispatcher.InvokeAsync(() =>
                 {
-                    //xaml_DiassemblyView.RefreshDisasm();
-                    m_MachineModel.Cpu.State.Load();
+                    ReadCpu();
                 });
             }
         }
@@ -79,14 +83,12 @@ namespace Soft64WPF.Windows
         void xaml_MenuBtnSaveChanges_Click(object sender, RoutedEventArgs e)
         {
             m_MachineModel.Cpu.State.Store();
-            //xaml_DiassemblyView.RefreshDisasm();
-            m_MachineModel.Cpu.State.Load();
+            ReadCpu();
         }
 
         void xaml_MenuBtnRefreshDisam_Click(object sender, RoutedEventArgs e)
         {
-            //xaml_DiassemblyView.RefreshDisasm();
-            m_MachineModel.Cpu.State.Load();
+            ReadCpu();
         }
 
         private void MachineStateChangedHandler(Object o, LifeStateChangedArgs args)
@@ -107,8 +109,7 @@ namespace Soft64WPF.Windows
             /* If attached, compare core states */
             m_CompareWindow.DoComparision();
 
-            //xaml_DiassemblyView.RefreshDisasm();
-            m_MachineModel.Cpu.State.Load();
+            ReadCpu();
         }
 
         private void xaml_BtnCompare_Click(object sender, RoutedEventArgs e)
@@ -120,6 +121,11 @@ namespace Soft64WPF.Windows
         {
             ResourceDebugger resDebugger = new ResourceDebugger();
             resDebugger.Show();
+        }
+
+        private void DiassembleCode()
+        {
+            m_MachineModel.Cpu.Debugger.Debugger.ScanCode(20, true);
         }
     }
 }

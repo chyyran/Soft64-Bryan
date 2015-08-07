@@ -93,7 +93,7 @@
 
             </Grid.Resources>
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,7,0,0">
                 <ItemsControl ItemsSource="{StaticResource registers}" Background="#FF555555" FontFamily="Consolas" Foreground="White" TextOptions.TextFormattingMode="Display">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -108,5 +108,14 @@
                 </ItemsControl>
             </ScrollViewer>
         </Grid>
+        <DataGrid x:Name="xaml_DataGridDiassembly" ItemsSource="{Binding Cpu.Debugger.Disassembly}" Grid.Row="2" RenderTransformOrigin="-20,-7.923" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" IsSynchronizedWithCurrentItem="True" GridLinesVisibility="None" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Address, StringFormat=X8}" Header="Address" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding BytesHi, StringFormat=X4}" Header="Hi" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding BytesLo, StringFormat=X4}" Header="Lo" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding MnemonicOp}" Header="Opcode" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Operands}" Header="Operands" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

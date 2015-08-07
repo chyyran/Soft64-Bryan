@@ -8,11 +8,12 @@ using Soft64.MipsR4300.Debugging;
 
 namespace Soft64Binding.WPF
 {
-    public class MipsDebuggerViewModel : DependencyObject
+    public class MipsDebuggerViewModel : MachineComponentViewModel
     {
         private MipsDebugger m_Debugger;
 
-        public MipsDebuggerViewModel()
+        public MipsDebuggerViewModel(MachineViewModel machineVM) :
+            base(machineVM)
         {
             m_Debugger = new MipsDebugger();
             Disassembly = m_Debugger.Disassembly;
@@ -25,10 +26,16 @@ namespace Soft64Binding.WPF
         public readonly static DependencyProperty DisassemblyProperty =
             DisassemblyPropertyKey.DependencyProperty;
 
-        public IList<DisassemblyLine> Disassembly
+        public IEnumerable<DisassemblyLine> Disassembly
         {
-            get { return (IList<DisassemblyLine>)GetValue(DisassemblyProperty); }
+            get { return (IEnumerable<DisassemblyLine>)GetValue(DisassemblyProperty); }
             private set {SetValue(DisassemblyPropertyKey, value); }
         }
+
+        public MipsDebugger Debugger
+        {
+            get { return m_Debugger; }
+        }
+
     }
 }

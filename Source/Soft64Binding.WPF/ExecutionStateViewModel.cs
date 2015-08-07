@@ -8,11 +8,12 @@ using Soft64.MipsR4300;
 
 namespace Soft64Binding.WPF
 {
-    public class ExecutionStateViewModel : DependencyObject
+    public class ExecutionStateViewModel : MachineComponentViewModel
     {
         private ExecutionState m_State;
 
-        public ExecutionStateViewModel(ExecutionState state)
+        public ExecutionStateViewModel(MachineViewModel machineVm, ExecutionState state) :
+            base(machineVm)
         {
             m_State = state;
         }

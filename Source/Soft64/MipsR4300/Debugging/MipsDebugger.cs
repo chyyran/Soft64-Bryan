@@ -34,8 +34,8 @@ namespace Soft64.MipsR4300.Debugging
             Task.Factory.StartNew(() =>
             {
                 /* Pause the machine if machine is running */
-                if (Machine.Current.Engine.Status == Engines.EngineStatus.Running)
-                    Machine.Current.Engine.PauseThreads();
+                //if (Machine.Current.Engine.Status == Engines.EngineStatus.Running)
+                //    Machine.Current.Engine.PauseThreads();
 
                 /* Get the Mips state */
                 ExecutionState cpustate = Machine.Current.DeviceCPU.State;
@@ -56,12 +56,12 @@ namespace Soft64.MipsR4300.Debugging
                     m_Lines.Add(line);
                 }
 
-                if (Machine.Current.Engine.IsPaused)
-                    Machine.Current.Engine.ResumeThreads();
+                //if (Machine.Current.Engine.IsPaused)
+                //    Machine.Current.Engine.ResumeThreads();
             });
         }
 
-        public IList<DisassemblyLine> Disassembly
+        public IEnumerable<DisassemblyLine> Disassembly
         {
             get { return m_Lines; }
         }
