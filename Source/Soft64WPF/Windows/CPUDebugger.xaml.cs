@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -57,6 +58,21 @@ namespace Soft64WPF.Windows
                 "EngineStatusChanged",
                 EngineStateChangedHandler
                 );
+
+            ((INotifyCollectionChanged)xaml_DataGridDiassembly.ItemsSource).CollectionChanged += CPUDebugger_CollectionChanged;
+        }
+
+        void CPUDebugger_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            /* TODO: Update row's arrow visiablity if its address matches PC */
+
+            //if (e.Action == NotifyCollectionChangedAction.Add)
+            //{
+            //    if (((DisassemblyLine)e.NewItems[0]).Address == m_MachineModel.TargetMachine.DeviceCPU.State.PC)
+            //    {
+            //        var container = xaml_DataGridDiassembly.
+            //    }
+            //}
         }
 
         void CPUDebugger_Loaded(object sender, RoutedEventArgs e)

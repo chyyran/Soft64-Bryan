@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Soft64.MipsR4300.Interpreter;
 
 namespace Soft64.MipsR4300.Debugging
 {
     public class MipsDebugger
     {
         private List<DisassemblyLine> m_Lines;
+        private List<MipsInstruction> m_Instructions;
         private List<BranchRange> m_BranchRanges;
         private InstructionReader m_InstReader;
         /* Beakpoints here */
@@ -23,6 +26,8 @@ namespace Soft64.MipsR4300.Debugging
         public MipsDebugger()
         {
             m_Lines = new List<DisassemblyLine>();
+            m_Instructions = new List<MipsInstruction>();
+            m_BranchRanges = new List<BranchRange>();
             m_InstReader = new InstructionReader(MemoryAccessMode.SafeVirtual);
         }
 
@@ -35,14 +40,11 @@ namespace Soft64.MipsR4300.Debugging
             /* Run the code scan on an asychronous thread */
             Task.Factory.StartNew(() =>
             {
-                /* Pause the machine if machine is running */
-                //if (Machine.Current.Engine.Status == Engines.EngineStatus.Running)
-                //    Machine.Current.Engine.PauseThreads();
-
                 /* Get the Mips state */
                 ExecutionState cpustate = Machine.Current.DeviceCPU.State;
 
                 m_Lines.Clear();
+                m_Instructions.Clear();
                 m_InstReader.Position = cpustate.PC;
 
                 for (int i = 0; i < scanSize; i++)
@@ -51,6 +53,8 @@ namespace Soft64.MipsR4300.Debugging
                     line.Address = m_InstReader.Position;
 
                     MipsInstruction inst = m_InstReader.ReadInstruction();
+                    m_Instructions.Add(inst);
+
                     line.MnemonicOp = Disassembler.DecodeOpName(inst);
                     line.Operands = Disassembler.DecodeOperands(inst, abiNames);
                     line.BytesHi = m_InstReader.ReadHi;
@@ -58,8 +62,6 @@ namespace Soft64.MipsR4300.Debugging
                     m_Lines.Add(line);
                 }
 
-                //if (Machine.Current.Engine.IsPaused)
-                //    Machine.Current.Engine.ResumeThreads();
                 var e = CodeScanned;
 
                 if (e != null)
@@ -69,9 +71,36 @@ namespace Soft64.MipsR4300.Debugging
             });
         }
 
+        public void FindBranches()
+        {
+            m_BranchRanges.Clear();
+
+            for (Int32 i = 0; i < m_Lines.Count; i++)
+            {
+                if (Regex.IsMatch(m_Lines[i].MnemonicOp, "b{2,4}"))
+                {
+
+                    Int64 targetAddress =
+                        PureInterpreter.BranchComputeTargetAddress(
+                        m_Instructions[i].PC,
+                        m_Instructions[i].Immediate).ResolveAddress();
+
+                    m_BranchRanges.Add(
+                        new BranchRange(
+                            (Int32)m_Instructions[i].PC,
+                            targetAddress));
+                }
+            }
+        }
+
         public IEnumerable<DisassemblyLine> Disassembly
         {
             get { return m_Lines; }
+        }
+
+        public IEnumerable<MipsInstruction> Instructions
+        {
+            get { return m_Instructions; }
         }
     }
 
