@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ae="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
         xmlns:core="clr-namespace:System;assembly=mscorlib"
-        xmlns:Soft64WPF="clr-namespace:Soft64WPF" x:Class="Soft64WPF.Windows.CPUDebugger"
+        xmlns:Soft64WPF="clr-namespace:Soft64WPF" x:Name="window" x:Class="Soft64WPF.Windows.CPUDebugger"
         xmlns:c="clr-namespace:Soft64WPF.Converters"
         xmlns:om="clr-namespace:System.Collections.ObjectModel;assembly=System"
         xmlns:win="clr-namespace:System.Windows;assembly=PresentationFramework"
@@ -108,31 +108,34 @@
                 </ItemsControl>
             </ScrollViewer>
         </Grid>
-        <DataGrid x:Name="xaml_DataGridDiassembly" ItemsSource="{Binding Cpu.Debugger.Disassembly}" Grid.Row="2" RenderTransformOrigin="-20,-7.923" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" IsSynchronizedWithCurrentItem="True" GridLinesVisibility="None" SelectionMode="Single">
+        <DataGrid x:Name="xaml_DataGridDiassembly" ItemsSource="{Binding Cpu.Debugger.Disassembly}" Grid.Row="2" RenderTransformOrigin="-20,-7.923" HeadersVisibility="Column" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" IsSynchronizedWithCurrentItem="True" GridLinesVisibility="None" SelectionMode="Single" Background="Black" Foreground="White" AutoGenerateColumns="False">
             <DataGrid.Resources>
-                <Style x:Key="DataGridContentCellCentering" TargetType="{x:Type DataGridCell}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                <Grid Background="{TemplateBinding Background}">
-                                    <ContentPresenter VerticalAlignment="Center" />
-                                </Grid>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
+                <c:PcVisibilityConverter x:Key="converterPcVisibility" />
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTemplateColumn x:Name="PCline" Header="PC" Visibility="Hidden">
+                <DataGridTemplateColumn Header="PC">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Viewbox Stretch="UniformToFill">
-                                <Path Width="26.8469" Height="21.5697" Stretch="Uniform" Fill="Black" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z "/>
+                            <Viewbox Stretch="UniformToFill" Visibility="{Binding Address, Converter={StaticResource converterPcVisibility}}">
+                                <Path Width="26.8469" Height="{Binding FontSize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" Stretch="Uniform" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z ">
+                                    <Path.Fill>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <GradientStop Color="White" Offset="0"/>
+                                            <GradientStop Color="#FFFFDC00" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Path.Fill>
+                                </Path>
                             </Viewbox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Address, StringFormat=X8}" Header="Address" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding Address, StringFormat=X8}" Header="Address" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding BytesHi, StringFormat=X4}" Header="Hi" IsReadOnly="True"/>
                 <DataGridTextColumn Binding="{Binding BytesLo, StringFormat=X4}" Header="Lo" IsReadOnly="True"/>
                 <DataGridTextColumn Binding="{Binding MnemonicOp}" Header="Opcode" IsReadOnly="True" />

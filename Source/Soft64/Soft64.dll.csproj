@@ -73,6 +73,7 @@
     <Compile Include="MipsR4300\CP0\CauseRegister.cs" />
     <Compile Include="MipsR4300\CP0\MipsExceptionHandler.cs" />
     <Compile Include="MipsR4300\CP0\TLBCacheChangeEventArgs.cs" />
+    <Compile Include="MipsR4300\Debugging\CodeSniffer.cs" />
     <Compile Include="MipsR4300\Debugging\IOMonitor.cs" />
     <Compile Include="MipsR4300\Debugging\MipsDebugger.cs" />
     <Compile Include="MipsR4300\Debugging\VMemViewStream.cs" />
