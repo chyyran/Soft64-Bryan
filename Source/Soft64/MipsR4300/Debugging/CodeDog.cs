@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Soft64.MipsR4300.Debugging.Dog;
 
 namespace Soft64.MipsR4300.Debugging
 {
@@ -10,15 +12,15 @@ namespace Soft64.MipsR4300.Debugging
     {
         private const Int64 BootCodeOffset = 0xA4000040;
         private const Int32 BootCodeSize = 4032;
-        
         private DebugInstructionReader m_InstReader;
         private Boolean m_Disposed;
         private List<BranchRange> m_BranchRanges;
         private Boolean m_ABIMarkings;
         private Boolean m_SymbolMarkings;
-
         private List<DisassembledInstruction> m_BootDisassembly;
         private List<Block> m_RamRegions;
+        private DogQueryProvider m_QueryProvider;
+        private Expression m_DogExpression;
 
         /* Monitor PI DMA to capture ROM -> RAM transfers */
 
@@ -26,6 +28,14 @@ namespace Soft64.MipsR4300.Debugging
         {
             m_InstReader = new DebugInstructionReader();
             m_RamRegions = new List<Block>();
+            m_QueryProvider = new DogQueryProvider();
+
+            BuildExpression();
+        }
+
+        private void BuildExpression()
+        {
+           /* TODO: Build expression tree comparing instructions */
         }
 
         public void Start()
@@ -92,12 +102,12 @@ namespace Soft64.MipsR4300.Debugging
 
         public System.Linq.Expressions.Expression Expression
         {
-            get { throw new NotImplementedException(); }
+            get { return m_DogExpression; }
         }
 
         public IQueryProvider Provider
         {
-            get { throw new NotImplementedException(); }
+            get { return m_QueryProvider; }
         }
 
         #endregion

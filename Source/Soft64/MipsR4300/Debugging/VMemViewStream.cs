@@ -28,6 +28,8 @@ namespace Soft64.MipsR4300.Debugging
 {
     public class VMemViewStream : UnifiedStream
     {
+        private Object m_Lock = new object();
+
         public VMemViewStream()
         {
             UseCompiler = false;
@@ -77,8 +79,11 @@ namespace Soft64.MipsR4300.Debugging
 
         private void TLB_CacheChanged(object sender, EventArgs e)
         {
-            Clear();
-            BuildMap();
+            lock (m_Lock)
+            {
+                Clear();
+                BuildMap();
+            }
         }
 
         public override long Length
@@ -88,13 +93,19 @@ namespace Soft64.MipsR4300.Debugging
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            var c = base.Read(buffer, offset, count);
-            return c;
+            lock (m_Lock)
+            {
+                var c = base.Read(buffer, offset, count);
+                return c;
+            }
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            base.Write(buffer, offset, count);
+            lock (m_Lock)
+            {
+                base.Write(buffer, offset, count);
+            }
         }
 
     }
