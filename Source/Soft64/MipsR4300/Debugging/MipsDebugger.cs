@@ -10,25 +10,79 @@ namespace Soft64.MipsR4300.Debugging
 {
     public class MipsDebugger
     {
-        private List<DisassemblyLine> m_Lines;
-        private List<MipsInstruction> m_Instructions;
-        private List<BranchRange> m_BranchRanges;
+        private List<DisassembledInstruction> m_Disassembly;
+        private List<DisassembledInstruction> m_SniffedDisassembly;
+        
         private InstructionReader m_InstReader;
+        private List<Int64> m_PCRecord;
         /* Beakpoints here */
-        private Int32 m_ScanSize;
-        private Boolean m_ABIMarkings;
-        private Boolean m_SymbolMarkings;
+
+        private CodeDog m_CodeSniffer;
 
         public event EventHandler CodeScanned;
 
-        public const Int32 DMEMSize = 0x1000;
-
         public MipsDebugger()
         {
-            m_Lines = new List<DisassemblyLine>();
-            m_Instructions = new List<MipsInstruction>();
-            m_BranchRanges = new List<BranchRange>();
-            m_InstReader = new InstructionReader(MemoryAccessMode.SafeVirtual);
+            m_Disassembly = new List<DisassembledInstruction>();
+            m_SniffedDisassembly = new List<DisassembledInstruction>();
+            m_CodeSniffer = new CodeDog();
+            m_InstReader = new InstructionReader(MemoryAccessMode.DebugVirtual);
+        }
+
+        public void StartDebugging()
+        {
+            m_CodeSniffer.Start();
+        }
+
+        /// <summary>
+        /// Disassemble the current region of memory
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <param name="abi"></param>
+        public void DisassembleCode(Int64 offset, Int32 count, Boolean abi)
+        {
+            /* TODO: How this will work.....
+             * Scan the selected memory region and build a disasm list
+             * Compare the disasm list with a code sniffer LINQ based query
+             * Merge in info found by the code sniffer (background disassembled code)
+             * Figure out if code sniffer makes a mistake based on recorded PC path
+             */
+
+            Task.Factory.StartNew(() =>
+            {
+                for (Int64 i = offset; i < offset + count; i += 4)
+                {
+                    DisassembledInstruction diasm = Disassemble(abi);
+                    m_Disassembly.Add(diasm);
+
+                   if (m_CodeSniffer.Contains(diasm))
+                   {
+                       /* Get advanced code info (branch paths, symbols, functions) */
+                   }
+                   else
+                   {
+                       /* get basic info */
+                   }
+                }
+            });
+        }
+
+        private DisassembledInstruction Disassemble(Boolean abi)
+        {
+            DisassembledInstruction disasm = new DisassembledInstruction();
+            disasm.Address = m_InstReader.Position;
+
+            MipsInstruction inst = m_InstReader.ReadInstruction();
+            disasm.Instruction = inst;
+
+
+            disasm.MnemonicOp = Disassembler.DecodeOpName(inst);
+            disasm.Operands = Disassembler.DecodeOperands(inst, abi);
+            disasm.BytesHi = m_InstReader.ReadHi;
+            disasm.BytesLo = m_InstReader.ReadLo;
+
+            return disasm;
         }
 
         /// <summary>
@@ -43,23 +97,12 @@ namespace Soft64.MipsR4300.Debugging
                 /* Get the Mips state */
                 ExecutionState cpustate = Machine.Current.DeviceCPU.State;
 
-                m_Lines.Clear();
-                m_Instructions.Clear();
+                m_Disassembly.Clear();
                 m_InstReader.Position = cpustate.PC;
 
                 for (int i = 0; i < scanSize; i++)
                 {
-                    DisassemblyLine line = new DisassemblyLine();
-                    line.Address = m_InstReader.Position;
-
-                    MipsInstruction inst = m_InstReader.ReadInstruction();
-                    m_Instructions.Add(inst);
-
-                    line.MnemonicOp = Disassembler.DecodeOpName(inst);
-                    line.Operands = Disassembler.DecodeOperands(inst, abiNames);
-                    line.BytesHi = m_InstReader.ReadHi;
-                    line.BytesLo = m_InstReader.ReadLo;
-                    m_Lines.Add(line);
+                    m_Disassembly.Add(Disassemble(abiNames));
                 }
 
                 var e = CodeScanned;
@@ -71,40 +114,35 @@ namespace Soft64.MipsR4300.Debugging
             });
         }
 
-        public void FindBranches()
+        //public void FindBranches()
+        //{
+        //    m_BranchRanges.Clear();
+
+        //    for (Int32 i = 0; i < m_Disassembly.Count; i++)
+        //    {
+        //        if (Regex.IsMatch(m_Disassembly[i].MnemonicOp, "b{2,4}"))
+        //        {
+
+        //            Int64 targetAddress =
+        //                PureInterpreter.BranchComputeTargetAddress(
+        //                m_Disassembly[i].Instruction.Address,
+        //                m_Disassembly[i].Instruction.Immediate).ResolveAddress();
+
+        //            m_BranchRanges.Add(
+        //                new BranchRange(
+        //                    (Int32)m_Disassembly[i].Instruction.Address,
+        //                    targetAddress));
+        //        }
+        //    }
+        //}
+
+        public IEnumerable<DisassembledInstruction> Disassembly
         {
-            m_BranchRanges.Clear();
-
-            for (Int32 i = 0; i < m_Lines.Count; i++)
-            {
-                if (Regex.IsMatch(m_Lines[i].MnemonicOp, "b{2,4}"))
-                {
-
-                    Int64 targetAddress =
-                        PureInterpreter.BranchComputeTargetAddress(
-                        m_Instructions[i].PC,
-                        m_Instructions[i].Immediate).ResolveAddress();
-
-                    m_BranchRanges.Add(
-                        new BranchRange(
-                            (Int32)m_Instructions[i].PC,
-                            targetAddress));
-                }
-            }
-        }
-
-        public IEnumerable<DisassemblyLine> Disassembly
-        {
-            get { return m_Lines; }
-        }
-
-        public IEnumerable<MipsInstruction> Instructions
-        {
-            get { return m_Instructions; }
+            get { return m_Disassembly; }
         }
     }
 
-    public struct DisassemblyLine
+    public struct DisassembledInstruction
     {
         public Int64 Address
         {
@@ -131,6 +169,12 @@ namespace Soft64.MipsR4300.Debugging
         }
 
         public Int32 BytesLo
+        {
+            get;
+            internal set;
+        }
+
+        public MipsInstruction Instruction
         {
             get;
             internal set;

@@ -23,10 +23,10 @@ namespace Soft64.MipsR4300.Interpreter
 {
     public partial class PureInterpreter
     {
-        public static Int64 BranchComputeTargetAddress(UInt64 pc, UInt16 immediate)
+        public static Int64 BranchComputeTargetAddress(Int64 pc, UInt16 immediate)
         {
-            Int64 delayPC = (Int64)pc + 4;
-            Int64 offset = (Int64)(immediate.SignExtended64() << 2);
+            Int64 delayPC = pc + 4;
+            Int64 offset = immediate.SignExtended64() << 2;
             Int64 newPC = delayPC + offset;
 
             return newPC;
@@ -44,26 +44,26 @@ namespace Soft64.MipsR4300.Interpreter
             else
                 condition = MipsState.GPRRegs64[inst.Rs] != MipsState.GPRRegs64[inst.Rt];
 
-            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.PC, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
+            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
         }
 
         [OpcodeHook("J")]
         private void Inst_J(MipsInstruction inst)
         {
-            UInt64 target = (inst.Offset << 2) | ((inst.PC + 4) & 0xFFFF0000);
+            Int64 target = (inst.Offset << 2) | ((inst.Address + 4) & 0xFFFF0000);
             m_IsBranch = true;
             m_BranchDelaySlot = MipsState.PC + 4;
-            m_BranchTarget = ((Int64)target).ResolveAddress();
+            m_BranchTarget = target.ResolveAddress();
         }
 
         [OpcodeHook("JAL")]
         private void Inst_Jal(MipsInstruction inst)
         {
-            UInt64 target = ((inst.PC + 4) & 0xFFFF0000) | (inst.Offset << 2);
-            LinkAddress(inst.PC + 8);
+            Int64 target = ((inst.Address + 4) & 0xFFFF0000) | (inst.Offset << 2);
+            LinkAddress(inst.Address + 8);
             m_IsBranch = true;
             m_BranchDelaySlot = MipsState.PC + 4;
-            m_BranchTarget = ((Int64)target).ResolveAddress();
+            m_BranchTarget = target.ResolveAddress();
         }
 
         [OpcodeHook("BEQL")]
@@ -111,7 +111,7 @@ namespace Soft64.MipsR4300.Interpreter
 
             m_NullifiedInstruction = !condition;
 
-            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.PC, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
+            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
         }
     }
 }

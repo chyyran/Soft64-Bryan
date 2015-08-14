@@ -22,9 +22,9 @@ namespace Soft64.MipsR4300
         Virtual,
 
         /// <summary>
-        /// Read virtual memory without being interrupted by MMU exceptions
+        /// Used for debugging purposes
         /// </summary>
-        SafeVirtual,
+        DebugVirtual,
 
         /// <summary>
         /// Read virtual memory without cache support
@@ -48,7 +48,7 @@ namespace Soft64.MipsR4300
                 case MemoryAccessMode.Physical:
                     m_Source = Machine.Current.N64Memory; break;
 
-                case MemoryAccessMode.SafeVirtual:
+                case MemoryAccessMode.DebugVirtual:
                     m_Source = new VMemViewStream(); break;
 
                 case MemoryAccessMode.Virtual:
@@ -81,7 +81,7 @@ namespace Soft64.MipsR4300
             m_ReadHi = (Int32)(read & 0xFF00) >> 16;
             m_ReadLo = (Int32)(read & 0x00FF);
 
-            MipsInstruction inst = new MipsInstruction((UInt64)Position, read);
+            MipsInstruction inst = new MipsInstruction(Position, read);
             Position += 4;
             return inst;
         }

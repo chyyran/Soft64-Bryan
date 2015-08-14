@@ -17,7 +17,7 @@ namespace Soft64Binding.WPF
             base(machineVM)
         {
             m_Debugger = new MipsDebugger();
-            Disassembly = new ObservableCollection<DisassemblyLine>();
+            Disassembly = new ObservableCollection<DisassembledInstruction>();
 
             WeakEventManager<MipsDebugger, EventArgs>.AddHandler(
             m_Debugger,
@@ -37,15 +37,15 @@ namespace Soft64Binding.WPF
         }
 
         private readonly static DependencyPropertyKey DisassemblyPropertyKey =
-            DependencyProperty.RegisterReadOnly("Disassembly", typeof(ObservableCollection<DisassemblyLine>), typeof(MipsDebuggerViewModel),
+            DependencyProperty.RegisterReadOnly("Disassembly", typeof(ObservableCollection<DisassembledInstruction>), typeof(MipsDebuggerViewModel),
             new PropertyMetadata());
 
         public readonly static DependencyProperty DisassemblyProperty =
             DisassemblyPropertyKey.DependencyProperty;
 
-        public ObservableCollection<DisassemblyLine> Disassembly
+        public ObservableCollection<DisassembledInstruction> Disassembly
         {
-            get { return (ObservableCollection<DisassemblyLine>)GetValue(DisassemblyProperty); }
+            get { return (ObservableCollection<DisassembledInstruction>)GetValue(DisassemblyProperty); }
             private set {SetValue(DisassemblyPropertyKey, value); }
         }
 

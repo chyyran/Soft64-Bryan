@@ -110,9 +110,9 @@ namespace Soft64.MipsR4300.Interpreter
                 logger.Debug("{0:X8} {1:X4} {2:X4} {3}", pc, inst.Instruction >> 16, inst.Instruction & 0xFFFF, inst.ToString());
         }
 
-        public void LinkAddress(UInt64 address)
+        public void LinkAddress(Int64 address)
         {
-            MipsState.GPRRegs64[31] = address;
+            MipsState.GPRRegs64.GPRRegs64S[31] = address;
         }
 
         private void HookOpcodeMethods()

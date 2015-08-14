@@ -107,7 +107,7 @@ namespace Soft64.MipsR4300.Debugging
 
             /* 25: Conditional Branch formats */
             (inst, o32) => { return String.Format("{0}, {1}, 0x{2:x8} -->{3:X8}", DecodeGprReg(inst.Rs, o32), DecodeGprReg(inst.Rt, o32), inst.Immediate,
-                                        PureInterpreter.BranchComputeTargetAddress(inst.PC, inst.Immediate)); },
+                                        PureInterpreter.BranchComputeTargetAddress(inst.Address, inst.Immediate)); },
         };
 
         #endregion Format LUT

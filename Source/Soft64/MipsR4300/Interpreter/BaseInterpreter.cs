@@ -80,7 +80,7 @@ namespace Soft64.MipsR4300.Interpreter
         protected MipsInstruction FetchInstruction(Int64 address)
         {
             m_InstructionBinReader.BaseStream.Position = address;
-            return new MipsInstruction((UInt64)address, m_InstructionBinReader.ReadUInt32());
+            return new MipsInstruction(address, m_InstructionBinReader.ReadUInt32());
         }
     }
 }

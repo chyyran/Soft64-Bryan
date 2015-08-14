@@ -25,7 +25,7 @@ namespace Soft64.MipsR4300
 {
     public struct MipsInstruction
     {
-        private UInt64 m_PC;
+        private Int64 m_Address;
         private UInt32 m_Inst;
         private Byte m_Opcode;
         private Byte m_Function;
@@ -39,9 +39,9 @@ namespace Soft64.MipsR4300
         private Boolean m_O32Decoding;
         private DataFormat m_DataFormat;
 
-        public MipsInstruction(UInt64 pc, UInt32 instruction)
+        public MipsInstruction(Int64 address, UInt32 instruction)
         {
-            m_PC = pc;
+            m_Address = address;
             m_Inst = instruction;
             m_Opcode = BitExtractor.ExtractByte(instruction, 26, 6);
             m_Offset = BitExtractor.ExtractUInt32(instruction, 0, 26);
@@ -61,7 +61,7 @@ namespace Soft64.MipsR4300
             set { m_DataFormat = value; }
         }
 
-        public UInt64 PC { get { return m_PC; } }
+        public Int64 Address { get { return m_Address; } }
 
         public UInt32 Instruction { get { return m_Inst; } }
 
