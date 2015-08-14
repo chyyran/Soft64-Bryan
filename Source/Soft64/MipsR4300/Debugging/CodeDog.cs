@@ -10,34 +10,42 @@ namespace Soft64.MipsR4300.Debugging
     {
         private const Int64 BootCodeOffset = 0xA4000040;
         private const Int32 BootCodeSize = 4032;
-        private List<Block> m_RamRegions;
-        private InstructionReader m_InstReader;
+        
+        private DebugInstructionReader m_InstReader;
         private Boolean m_Disposed;
         private List<BranchRange> m_BranchRanges;
         private Boolean m_ABIMarkings;
         private Boolean m_SymbolMarkings;
 
+        private List<DisassembledInstruction> m_BootDisassembly;
+        private List<Block> m_RamRegions;
+
         /* Monitor PI DMA to capture ROM -> RAM transfers */
 
         public CodeDog()
         {
-            m_InstReader = new InstructionReader(MemoryAccessMode.DebugVirtual);
+            m_InstReader = new DebugInstructionReader();
             m_RamRegions = new List<Block>();
         }
 
         public void Start()
         {
+            Task.Factory.StartNew(() =>
+            {
+                /* Bootcode Read */
+                m_InstReader.Position = BootCodeOffset;
+                for (Int32 i = 0; i < BootCodeSize / 4; i++)
+                {
+                    m_BootDisassembly.Add(ReadDisasm());
+                }
 
+                /* TODO: DMA scanners here */
+            });
         }
 
         public IEnumerator<DisassembledInstruction> GetEnumerator()
         {
-            /* Bootcode Read */
-            m_InstReader.Position = BootCodeOffset;
-            for (Int32 i = 0; i < BootCodeSize / 4; i++)
-            {
-                yield return ReadDisasm();
-            }
+            yield return default(DisassembledInstruction);
         }
 
         private DisassembledInstruction ReadDisasm()

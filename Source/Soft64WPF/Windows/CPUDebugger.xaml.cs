@@ -129,8 +129,7 @@ namespace Soft64WPF.Windows
         {
             // TODO: Eventual dump huge chunk of memory and use virtualizing panels to show portions
             Int32 lineCount = (Int32)(xaml_DataGridDiassembly.ActualHeight / xaml_DataGridDiassembly.FontSize);
-            m_MachineModel.Cpu.Debugger.Debugger.ScanCode(lineCount, true);
-
+            m_MachineModel.Cpu.Debugger.Debugger.DisassembleCode(m_MachineModel.TargetMachine.DeviceCPU.State.PC, lineCount);
         }
     }
 }

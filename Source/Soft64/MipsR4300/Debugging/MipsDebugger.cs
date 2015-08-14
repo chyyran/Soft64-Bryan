@@ -11,12 +11,8 @@ namespace Soft64.MipsR4300.Debugging
     public class MipsDebugger
     {
         private List<DisassembledInstruction> m_Disassembly;
-        private List<DisassembledInstruction> m_SniffedDisassembly;
-        
-        private InstructionReader m_InstReader;
+        private DebugInstructionReader m_InstReader;
         private List<Int64> m_PCRecord;
-        /* Beakpoints here */
-
         private CodeDog m_CodeSniffer;
 
         public event EventHandler CodeScanned;
@@ -24,9 +20,8 @@ namespace Soft64.MipsR4300.Debugging
         public MipsDebugger()
         {
             m_Disassembly = new List<DisassembledInstruction>();
-            m_SniffedDisassembly = new List<DisassembledInstruction>();
             m_CodeSniffer = new CodeDog();
-            m_InstReader = new InstructionReader(MemoryAccessMode.DebugVirtual);
+            m_InstReader = new DebugInstructionReader();
         }
 
         public void StartDebugging()
@@ -40,7 +35,7 @@ namespace Soft64.MipsR4300.Debugging
         /// <param name="offset"></param>
         /// <param name="count"></param>
         /// <param name="abi"></param>
-        public void DisassembleCode(Int64 offset, Int32 count, Boolean abi)
+        public void DisassembleCode(Int64 offset, Int32 count)
         {
             /* TODO: How this will work.....
              * Scan the selected memory region and build a disasm list
@@ -53,7 +48,7 @@ namespace Soft64.MipsR4300.Debugging
             {
                 for (Int64 i = offset; i < offset + count; i += 4)
                 {
-                    DisassembledInstruction diasm = Disassemble(abi);
+                    DisassembledInstruction diasm = m_InstReader.ReadDisasm(true);
                     m_Disassembly.Add(diasm);
 
                    if (m_CodeSniffer.Contains(diasm))
@@ -63,46 +58,8 @@ namespace Soft64.MipsR4300.Debugging
                    else
                    {
                        /* get basic info */
+                       /* Symbol table lookup */
                    }
-                }
-            });
-        }
-
-        private DisassembledInstruction Disassemble(Boolean abi)
-        {
-            DisassembledInstruction disasm = new DisassembledInstruction();
-            disasm.Address = m_InstReader.Position;
-
-            MipsInstruction inst = m_InstReader.ReadInstruction();
-            disasm.Instruction = inst;
-
-
-            disasm.MnemonicOp = Disassembler.DecodeOpName(inst);
-            disasm.Operands = Disassembler.DecodeOperands(inst, abi);
-            disasm.BytesHi = m_InstReader.ReadHi;
-            disasm.BytesLo = m_InstReader.ReadLo;
-
-            return disasm;
-        }
-
-        /// <summary>
-        /// Scan memory for selected size and build a diassembly list
-        /// </summary>
-        /// <param name="scanSize"></param>
-        public void ScanCode(Int32 scanSize, Boolean abiNames)
-        {
-            /* Run the code scan on an asychronous thread */
-            Task.Factory.StartNew(() =>
-            {
-                /* Get the Mips state */
-                ExecutionState cpustate = Machine.Current.DeviceCPU.State;
-
-                m_Disassembly.Clear();
-                m_InstReader.Position = cpustate.PC;
-
-                for (int i = 0; i < scanSize; i++)
-                {
-                    m_Disassembly.Add(Disassemble(abiNames));
                 }
 
                 var e = CodeScanned;
