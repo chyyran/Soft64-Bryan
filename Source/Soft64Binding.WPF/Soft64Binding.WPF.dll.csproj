@@ -61,7 +61,6 @@
   <ItemGroup>
     <Compile Include="CartridgeViewModel.cs" />
     <Compile Include="CpuViewModel.cs" />
-    <Compile Include="DebuggerViewModel.cs" />
     <Compile Include="EmulatorEngineViewModel.cs" />
     <Compile Include="ExecutionStateViewModel.cs" />
     <Compile Include="MachineViewModel.cs" />

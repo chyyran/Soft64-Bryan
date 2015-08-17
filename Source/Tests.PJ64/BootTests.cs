@@ -140,7 +140,7 @@ namespace Tests.PJ64
                 Cartridge.Current.RomImage.BootRomInformation.CIC,
                 state);
 
-            debugger.Resume();
+            debugger.Continue();
             machine.Stop();
             machine.Dispose();
         }

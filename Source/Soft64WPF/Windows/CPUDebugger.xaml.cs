@@ -40,10 +40,10 @@ namespace Soft64WPF.Windows
 
             Loaded += CPUDebugger_Loaded;
 
-            if (Debugger.Current == null)
-            {
-                throw new InvalidOperationException("No debugger is attached to core");
-            }
+            //if (Debugger.Current == null)
+            //{
+            //    throw new InvalidOperationException("No debugger is attached to core");
+            //}
 
             m_MachineModel = (MachineViewModel)DataContext;
 
@@ -53,11 +53,11 @@ namespace Soft64WPF.Windows
             //    MachineStateChangedHandler
             //    );
 
-            WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
-                Machine.Current.Engine,
-                "EngineStatusChanged",
-                EngineStateChangedHandler
-                );
+            //WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
+            //    Machine.Current.Engine,
+            //    "EngineStatusChanged",
+            //    EngineStateChangedHandler
+            //    );
         }
 
         void CPUDebugger_Loaded(object sender, RoutedEventArgs e)
@@ -93,17 +93,10 @@ namespace Soft64WPF.Windows
             ReadCpu();
         }
 
-        private void MachineStateChangedHandler(Object o, LifeStateChangedArgs args)
-        {
-            if (args.NewState == LifetimeState.Running)
-            {
-            }
-        }
-
         private void xaml_BtnStep_Click(object sender, RoutedEventArgs e)
         {
             /* Step Soft64 */
-            Debugger.Current.StepOnce();
+            // TODO: Cause a break in Mips debugger 
             
             /* If attached, step comparing core*/
             m_CompareWindow.NextStep();

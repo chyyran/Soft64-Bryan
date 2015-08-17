@@ -36,26 +36,18 @@ namespace Soft64
     /// The emulator core machine.
     /// </summary>
     [Serializable]
-    public class Machine : ILifetimeTrackable
+    public class Machine
     {
         /* Private Fields */
         private Boolean m_Booted = false;
-        private LifetimeState m_RunState = LifetimeState.Created;
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private EmulatorEngine m_CurrentEngine;
         private static ExpandoObject s_Config = new ExpandoObject();
-        private Object m_PhysicalMemLock = new object();
         private SychronizedStream m_N64Memory;
         private SychronizedStream m_SafeMemory;
 
-        /* Non-Dynamic Property Backings */
-        private EmulatorEngine m_PropEngine;
-
         /* Events */
-
-        public event EventHandler<LifeStateChangedArgs> LifetimeStateChanged;
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event MachineEvent MachineEventNotification;
 
         public Machine()
         {
@@ -67,7 +59,8 @@ namespace Soft64
             DeviceRCP = new RcpProcessor();
             DeviceCPU = new CPUProcessor();
             DevicePIF = new PIFModule();
-            m_PropEngine = new SimpleEngine();
+
+            m_CurrentEngine = new SimpleEngine();
 
             m_N64Memory = new SychronizedStream(DeviceRCP.PhysicalMemoryStream);
             m_SafeMemory = new SychronizedStream(DeviceRCP.PhysicalMemoryStream.GetSafeStream());
@@ -150,106 +143,52 @@ namespace Soft64
             return tmp;
         }
 
-        public void Initialize()
+        public void Run()
         {
-            if (this.CheckStateRequestInvalid(RequestState.Initialize))
-                throw new MachineException("Failed to call Initialize on machine instance");
+            if (m_CurrentEngine.Status == EngineStatus.Stopped)
+            {
+                m_CurrentEngine.Initialize();
+            }
 
-            logger.Trace("Saving configuration");
+            m_CurrentEngine.Run();
+        }
 
-            logger.Trace("Initializing machine");
+        internal void Boot()
+        {
+            if (m_Booted)
+                return;
 
             try
             {
+                /* Initialize N64 componenets */
                 DevicePIF.Initialize();
                 DeviceRCP.Initialize();
                 DeviceCPU.Initialize();
 
-                /* TODO: Multimedia Backend Initialization */
+                logger.Trace("** Starting emulation core **");
+                OnMachineEventNotification(MachineEventType.Started);
 
-                /* Initilaize the runtime engine */
-                m_CurrentEngine = m_PropEngine;
-                m_CurrentEngine.Initialize();
+                /* Initialize core comparing */
+                if (Machine.Current.MipsCompareEngine != null)
+                    Machine.Current.MipsCompareEngine.Init();
 
-                /* Prep for compare */
-                try
-                {
-                    if (Machine.Current.MipsCompareEngine != null)
-                        Machine.Current.MipsCompareEngine.Init();
-                }
-                catch (InvalidOperationException e)
-                {
-                    throw new MachineException("Exception occured in compare engine, see inner exception for details", e);
-                }
 
-                m_RunState = LifetimeState.Initialized;
+                logger.Trace("Booting firmware: " + SystemBootMode.GetFriendlyName());
+                SoftBootManager.SetupExecutionState(SystemBootMode);
+
+                m_Booted = true;
+                OnMachineEventNotification(MachineEventType.Booted);
             }
             catch (Exception e)
             {
-                logger.Trace("Exception trace", e);
-
-                throw new MachineException("Exception occurred during Initialization, see inner exception for details.", e);
-            }
-        }
-
-        protected void SetNewRuntimeState(LifetimeState newState)
-        {
-            OnRuntimeStateChanged(newState, CurrentLifeState);
-            m_RunState = newState;
-        }
-
-        public void Run()
-        {
-            if (this.CheckStateRequestInvalid(RequestState.Run))
-                throw new MachineException("Failed to call Run on machine instance");
-
-
-            logger.Trace("!!! N64 Emulation Started !!!");
-
-            logger.Trace("Running machine");
-
-            try
-            {
-                if (!m_Booted)
-                {
-                    logger.Trace("Running bootloader");
-                    BootMachine();
-                    m_Booted = true;
-
-                    /* TODO: Initialize multimedia backends */
-                }
-
-                logger.Trace("Starting system threads... ");
-                m_CurrentEngine.Run();
-                logger.Trace("Machine is now running ... ");
-
-                if (MipsCompareEngine != null)
-                {
-                    Task.Factory.StartNew(() =>
-                        {
-                            MipsCompareEngine.Run();
-                            logger.Trace("Compare engine is now running ...");
-                        });
-                }
-
-                SetNewRuntimeState(LifetimeState.Running);
-            }
-            catch (Exception e)
-            {
-                throw new MachineException("Exception occurred during Run, see inner exception details.", e);
+                throw new InvalidOperationException("An exception occuring during the boot process, see inner exception for details", e);
             }
         }
 
         public void Stop()
         {
-            /* TODO: Stop order
-             * Controller
-             * Audio
-             * Graphics
-             * CPU
-             * RCP */
-
-            SetNewRuntimeState(LifetimeState.Stopped);
+            m_CurrentEngine.Stop();
+            OnMachineEventNotification(MachineEventType.Stopped);
         }
 
         public void Dispose()
@@ -260,66 +199,27 @@ namespace Soft64
 
         protected virtual void Dispose(Boolean disposing)
         {
-            if (this.CheckStateRequestInvalid(RequestState.Dispose))
-                return;
+            //if (disposing)
+            //{
+            //    /* TODO:
+            //     * Dispose Controller
+            //     * Dispose Audio
+            //     * Dispose Graphics
+            //     */
 
-            if (disposing)
-            {
-                /* TODO:
-                 * Dispose Controller
-                 * Dispose Audio
-                 * Dispose Graphics
-                 */
+            //    //CPU.Dispose();
+            //    //RCP.Dispose();
+            //}
 
-                //CPU.Dispose();
-                //RCP.Dispose();
-            }
-
-            SetNewRuntimeState(LifetimeState.Disposed);
+            //SetNewRuntimeState(LifetimeState.Disposed);
         }
 
-        protected virtual void OnProperyChanged(String propertyName)
+        private void OnMachineEventNotification(MachineEventType type)
         {
-            PropertyChangedEventHandler e = PropertyChanged;
+            var e = MachineEventNotification;
 
             if (e != null)
-                e(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void BootMachine()
-        {
-            try
-            {
-                /* Notify debugger before booting */
-                if (Debugger.Current != null) Debugger.Current.NotifyBootEvent(DebuggerBootEvent.PreBoot);
-
-                /* Use the boot manager to propertly setup the software state on the processors */
-                logger.Trace("Booting: " + SystemBootMode.GetFriendlyName());
-
-                SoftBootManager.SetupExecutionState(SystemBootMode);
-
-                /* Notify debugger after booting */
-                if (Debugger.Current != null) Debugger.Current.NotifyBootEvent(DebuggerBootEvent.PostBoot);
-            }
-            catch (Exception e)
-            {
-                throw new InvalidOperationException("An exception occuring during the boot process, see inner exception for details", e);
-            }
-        }
-
-        protected virtual void OnRuntimeStateChanged(LifetimeState newState, LifetimeState oldState)
-        {
-            var e = LifetimeStateChanged;
-
-            if (e != null)
-            {
-                e(this, new LifeStateChangedArgs(newState, oldState));
-            }
-        }
-
-        public LifetimeState CurrentLifeState
-        {
-            get { return m_RunState; }
+                e(type);
         }
 
         public BootMode SystemBootMode
@@ -330,18 +230,17 @@ namespace Soft64
 
         public Boolean IsRunning
         {
-            get { return CurrentLifeState == LifetimeState.Running; }
+            get { return m_CurrentEngine.Status == EngineStatus.Running; }
+        }
+
+        public Boolean IsPaused
+        {
+            get { return m_CurrentEngine.Status == EngineStatus.Paused; }
         }
 
         public Boolean IsStopped
         {
-            get { return CurrentLifeState == LifetimeState.Stopped; }
-        }
-
-        public EmulatorEngine Engine
-        {
-            get { return m_PropEngine; }
-            set { m_PropEngine = value; }
+            get { return m_CurrentEngine.Status == EngineStatus.Stopped; }
         }
 
         public Stream N64Memory
@@ -353,8 +252,6 @@ namespace Soft64
         {
             get { return m_SafeMemory; }
         }
-
-        /* Machine Components */
 
         public static Machine Current
         {

@@ -9,12 +9,12 @@ namespace Soft64Binding.WPF
         public EmulatorEngineViewModel(MachineViewModel machineModel)
             : base(machineModel)
         {
-            Status = machineModel.TargetMachine.Engine.Status;
+            //Status = machineModel.TargetMachine.Engine.Status;
 
-            WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
-                machineModel.TargetMachine.Engine,
-                "EngineStatusChanged",
-                EngineStatusChangedHandler);
+            //WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
+            //    machineModel.TargetMachine.Engine,
+            //    "EngineStatusChanged",
+            //    EngineStatusChangedHandler);
         }
 
         private void EngineStatusChangedHandler(Object sender, EngineStatusChangedArgs e)

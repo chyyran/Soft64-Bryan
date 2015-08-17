@@ -76,9 +76,6 @@ namespace Soft64WPF
                 /* Create an instance of the emulator machine */
                 Machine machine = new Machine();
 
-                /* Debugger */
-                Debugger debugger = new Debugger();
-
                 /* Load configuration */
                 try
                 {

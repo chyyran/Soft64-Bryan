@@ -59,9 +59,9 @@ namespace Soft64WPF.Windows
 
         void xamlControl_EmuRunPostDebugButton_Click(object sender, RoutedEventArgs e)
         {
-            Debugger.Current.DebugOnBreak = true;
-            Debugger.Current.BreakOnBootMode = DebuggerBootEvent.PostBoot;
-            RunEmu();
+            //Debugger.Current.DebugOnBreak = true;
+            //Debugger.Current.BreakOnBootMode = DebuggerBootEvent.PostBoot;
+            //RunEmu();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -154,12 +154,12 @@ namespace Soft64WPF.Windows
         private static void RunEmu()
         {
             /* For now we are using default crap */
-            if (Machine.Current.CurrentLifeState < LifetimeState.Initialized)
-            {
-                Machine.Current.DeviceRCP.Engine = new PureInterpreter();
-                Machine.Current.DeviceCPU.Engine = new PureInterpreter();
-                Machine.Current.Initialize();
-            }
+            //if (Machine.Current.CurrentLifeState < LifetimeState.Initialized)
+            //{
+            //    Machine.Current.DeviceRCP.Engine = new PureInterpreter();
+            //    Machine.Current.DeviceCPU.Engine = new PureInterpreter();
+            //    Machine.Current.Initialize();
+            //}
 
             Machine.Current.Run();
         }

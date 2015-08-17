@@ -60,8 +60,9 @@
     <Compile Include="Cartridge.cs" />
     <Compile Include="CartridgeInfo.cs" />
     <Compile Include="CPUProcessor.cs" />
-    <Compile Include="Debugging\Debugger.cs" />
-    <Compile Include="Debugging\PMemMirrorStream.cs" />
+    <Compile Include="MachineEvent.cs" />
+    <Compile Include="MachineEventType.cs" />
+    <Compile Include="PMemMirrorStream.cs" />
     <Compile Include="Engines\EmulatorEngine.cs" />
     <Compile Include="Engines\SimpleEngine.cs" />
     <Compile Include="Engines\SingleCoreScheduler.cs" />
@@ -73,9 +74,10 @@
     <Compile Include="MipsR4300\CP0\CauseRegister.cs" />
     <Compile Include="MipsR4300\CP0\MipsExceptionHandler.cs" />
     <Compile Include="MipsR4300\CP0\TLBCacheChangeEventArgs.cs" />
-    <Compile Include="MipsR4300\Debugging\CodeDog.cs" />
+    <Compile Include="MipsR4300\Debugging\Dog\CodeDog.cs" />
     <Compile Include="MipsR4300\Debugging\DebugInstructionReader.cs" />
-    <Compile Include="MipsR4300\Debugging\Dog\DogQueryProvider.cs" />
+    <Compile Include="MipsR4300\Debugging\Dog\Branch.cs" />
+    <Compile Include="MipsR4300\Debugging\Dog\DmaSniffer.cs" />
     <Compile Include="MipsR4300\Debugging\IOMonitor.cs" />
     <Compile Include="MipsR4300\Debugging\MipsDebugger.cs" />
     <Compile Include="MipsR4300\Debugging\VMemViewStream.cs" />
@@ -104,7 +106,6 @@
     <Compile Include="IO\_StreamIOCompiler.cs" />
     <Compile Include="IO\_IORequest.cs" />
     <Compile Include="IO\UnifiedStream.cs" />
-    <Compile Include="ILifetimeTrackable.cs" />
     <Compile Include="MipsR4300\Analyzing\InstructionMap.cs" />
     <Compile Include="MipsR4300\Analyzing\OpcodeType.cs" />
     <Compile Include="MipsR4300\Analyzing\OperandFormat.cs" />

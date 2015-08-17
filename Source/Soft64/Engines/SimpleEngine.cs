@@ -19,6 +19,8 @@ namespace Soft64.Engines
             /* Create a single loop on the thread */
             Action singleLoop = () =>
             {
+                Machine.Current.Boot();
+
                 while (true)
                 {
                     Begin();

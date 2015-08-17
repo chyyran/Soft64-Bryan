@@ -37,29 +37,13 @@ namespace Soft64.MipsR4300.Debugging
         /// <param name="abi"></param>
         public void DisassembleCode(Int64 offset, Int32 count)
         {
-            /* TODO: How this will work.....
-             * Scan the selected memory region and build a disasm list
-             * Compare the disasm list with a code sniffer LINQ based query
-             * Merge in info found by the code sniffer (background disassembled code)
-             * Figure out if code sniffer makes a mistake based on recorded PC path
-             */
-
             Task.Factory.StartNew(() =>
             {
+                List<DisassembledInstruction> disasm = new List<DisassembledInstruction>();
+
                 for (Int64 i = offset; i < offset + count; i += 4)
                 {
-                    DisassembledInstruction diasm = m_InstReader.ReadDisasm(true);
-                    m_Disassembly.Add(diasm);
-
-                   if (m_CodeSniffer.Contains(diasm))
-                   {
-                       /* Get advanced code info (branch paths, symbols, functions) */
-                   }
-                   else
-                   {
-                       /* get basic info */
-                       /* Symbol table lookup */
-                   }
+                    disasm.Add(m_InstReader.ReadDisasm(true));
                 }
 
                 var e = CodeScanned;

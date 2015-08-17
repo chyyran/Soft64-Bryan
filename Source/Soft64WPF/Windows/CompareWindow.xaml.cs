@@ -28,11 +28,11 @@ namespace Soft64WPF.Windows
         {
             InitializeComponent();
 
-            WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
-                Machine.Current.Engine,
-                "EngineStatusChanged",
-                EngineStateChangedHandler
-                );
+            //WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
+            //    Machine.Current.Engine,
+            //    "EngineStatusChanged",
+            //    EngineStateChangedHandler
+            //    );
         }
 
         private void EngineStateChangedHandler(Object o, EngineStatusChangedArgs args)
