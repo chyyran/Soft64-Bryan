@@ -51,6 +51,9 @@ namespace Soft64.Engines
         private EventWaitHandle m_SingleStepWaitEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
         internal event EventHandler<EngineStatusChangedArgs> EngineStatusChanged;
 
+        internal event EventHandler BeginTrigger;
+        internal event EventHandler EndTrigger;
+
         protected EmulatorEngine()
         {
             m_TokenSource = new CancellationTokenSource();
@@ -64,6 +67,13 @@ namespace Soft64.Engines
                 PauseThreads();
                 m_SingleStepWaitEvent.Set();
             }
+
+            var e = BeginTrigger;
+
+            if (e != null)
+            {
+                e(this, new EventArgs());
+            }
         }
 
         protected void Begin()
@@ -73,6 +83,13 @@ namespace Soft64.Engines
 
             /* This pause event comes from the core scheduler to pause this task when enabled */
             m_CoreScheduler.PauseWait();
+
+            var e = BeginTrigger;
+
+            if (e != null)
+            {
+                e(this, new EventArgs());
+            }
         }
 
         protected abstract void StartTasks(TaskFactory factory, CancellationToken token);

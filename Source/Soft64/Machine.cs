@@ -25,6 +25,7 @@ using System.IO;
 using System.Threading.Tasks;
 using NLog;
 using Soft64.Debugging;
+using Soft64.Dog;
 using Soft64.Engines;
 using Soft64.MipsR4300;
 using Soft64.PIF;
@@ -46,6 +47,7 @@ namespace Soft64
         private SychronizedStream m_N64Memory;
         private SychronizedStream m_SafeMemory;
         private Boolean m_Disposed;
+        private Boolean m_DebugServiceAttached;
 
         /* Events */
         public event EventHandler<MachineEventNotificationArgs> MachineEventNotification;
@@ -203,6 +205,24 @@ namespace Soft64
         public void Stop()
         {
             m_CurrentEngine.Stop();
+        }
+
+        public void AttachDebuggerServices()
+        {
+            if (!m_DebugServiceAttached)
+            {
+                if (MemorySniffer.Current == null)
+                    new MemorySniffer();
+
+                m_CurrentEngine.EndTrigger += m_CurrentEngine_EndTrigger;
+
+                m_DebugServiceAttached = true;
+            }
+        }
+
+        void m_CurrentEngine_EndTrigger(object sender, EventArgs e)
+        {
+            MemorySniffer.Current.Sniff();
         }
 
         public void Dispose()

@@ -23,6 +23,7 @@ namespace Soft64WPF.Windows
         private MachineViewModel m_MachineModel;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private CompareWindow m_CompareWindow;
+        private MipsDebugger m_Debugger;
         
 
         static CPUDebugger()
@@ -33,6 +34,8 @@ namespace Soft64WPF.Windows
         public CPUDebugger()
         {
             InitializeComponent();
+            m_Debugger = new MipsDebugger();
+            m_Debugger.Attach();
 
             m_CompareWindow = new CompareWindow();
             xaml_MenuBtnRefreshDisam.Click += xaml_MenuBtnRefreshDisam_Click;
@@ -40,24 +43,16 @@ namespace Soft64WPF.Windows
 
             Loaded += CPUDebugger_Loaded;
 
-            //if (Debugger.Current == null)
-            //{
-            //    throw new InvalidOperationException("No debugger is attached to core");
-            //}
-
             m_MachineModel = (MachineViewModel)DataContext;
+            m_MachineModel.MachineEventNotification += m_MachineModel_MachineEventNotification;
+        }
 
-            //WeakEventManager<Machine, LifeStateChangedArgs>.AddHandler(
-            //    Machine.Current,
-            //    "LifetimeStateChanged",
-            //    MachineStateChangedHandler
-            //    );
-
-            //WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
-            //    Machine.Current.Engine,
-            //    "EngineStatusChanged",
-            //    EngineStateChangedHandler
-            //    );
+        void m_MachineModel_MachineEventNotification(object sender, MachineEventNotificationArgs e)
+        {
+            if (e.EventType == MachineEventType.Paused)
+            {
+                ReadCpu();
+            }
         }
 
         void CPUDebugger_Loaded(object sender, RoutedEventArgs e)
@@ -96,7 +91,7 @@ namespace Soft64WPF.Windows
         private void xaml_BtnStep_Click(object sender, RoutedEventArgs e)
         {
             /* Step Soft64 */
-            // TODO: Cause a break in Mips debugger 
+            m_Debugger.Break();
             
             /* If attached, step comparing core*/
             m_CompareWindow.NextStep();

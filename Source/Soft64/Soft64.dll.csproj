@@ -60,6 +60,7 @@
     <Compile Include="Cartridge.cs" />
     <Compile Include="CartridgeInfo.cs" />
     <Compile Include="CPUProcessor.cs" />
+    <Compile Include="Dog\MemorySniffer.cs" />
     <Compile Include="MachineEvent.cs" />
     <Compile Include="MachineEventType.cs" />
     <Compile Include="PMemMirrorStream.cs" />

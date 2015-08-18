@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using Soft64;
 using Soft64.Engines;
 using Soft64.MipsR4300;
+using Soft64Binding.WPF;
 
 namespace Soft64WPF.Windows
 {
@@ -28,16 +29,13 @@ namespace Soft64WPF.Windows
         {
             InitializeComponent();
 
-            //WeakEventManager<EmulatorEngine, EngineStatusChangedArgs>.AddHandler(
-            //    Machine.Current.Engine,
-            //    "EngineStatusChanged",
-            //    EngineStateChangedHandler
-            //    );
+            MachineViewModel mvm = (MachineViewModel)FindResource("machineVM");
+            mvm.MachineEventNotification += mvm_MachineEventNotification;
         }
 
-        private void EngineStateChangedHandler(Object o, EngineStatusChangedArgs args)
+        void mvm_MachineEventNotification(object sender, MachineEventNotificationArgs e)
         {
-            if (args.NewStatus == EngineStatus.Paused)
+            if (e.EventType == MachineEventType.Paused)
                 Dispatcher.InvokeAsync(DoComparision);
         }
 

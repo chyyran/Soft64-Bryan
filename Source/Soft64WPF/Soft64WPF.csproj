@@ -125,9 +125,6 @@
     <Compile Include="Helper\WpfRichTextBoxWordColoringRule.cs" />
     <Compile Include="RegisterObserver.cs" />
     <Compile Include="RegisterObserverCollection.cs" />
-    <Compile Include="Windows\CodeWindow.xaml.cs">
-      <DependentUpon>CodeWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\CompareWindow.xaml.cs">
       <DependentUpon>CompareWindow.xaml</DependentUpon>
     </Compile>
@@ -154,10 +151,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\Theme.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\CodeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

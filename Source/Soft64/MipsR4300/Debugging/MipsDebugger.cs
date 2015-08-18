@@ -81,6 +81,16 @@ namespace Soft64.MipsR4300.Debugging
         {
             get { return m_Disassembly; }
         }
+
+        public void Break()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Attach()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public struct DisassembledInstruction
