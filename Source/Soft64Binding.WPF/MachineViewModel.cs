@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Soft64;
 
 namespace Soft64Binding.WPF
@@ -8,10 +9,6 @@ namespace Soft64Binding.WPF
         private static readonly DependencyPropertyKey CurrentMachinePropertyKey =
             DependencyProperty.RegisterReadOnly("CurrentMachine", typeof(Machine), typeof(MachineViewModel),
             new PropertyMetadata());
-
-        //private static readonly DependencyPropertyKey MachineRunStatePropertyKey =
-        //    DependencyProperty.RegisterReadOnly("MachineRunState", typeof(LifetimeState), typeof(MachineViewModel),
-        //    new PropertyMetadata());
 
         private static readonly DependencyPropertyKey CartridgePropertyKey =
             DependencyProperty.RegisterReadOnly("Cartridge", typeof(CartridgeViewModel), typeof(MachineViewModel),
@@ -32,9 +29,6 @@ namespace Soft64Binding.WPF
         public static readonly DependencyProperty CurrentMachineProperty =
             CurrentMachinePropertyKey.DependencyProperty;
 
-        //public static readonly DependencyProperty MachineRunStateProperty =
-        //    MachineRunStatePropertyKey.DependencyProperty;
-
         public static readonly DependencyProperty CartridgeProperty =
             CartridgePropertyKey.DependencyProperty;
 
@@ -53,12 +47,8 @@ namespace Soft64Binding.WPF
             if (Machine.Current == null)
                 return;
 
-            //WeakEventManager<Machine, LifeStateChangedArgs>
-            //    .AddHandler(Machine.Current, "LifetimeStateChanged", RuntimeStateChangedHandler);
-
             SetValue(CurrentMachinePropertyKey, Machine.Current);
             SetValue(CartridgePropertyKey, new CartridgeViewModel(this));
-            //SetValue(MachineRunStatePropertyKey, Machine.Current.CurrentLifeState);
             SetValue(RcpPropertyKey, new RcpViewModel(this));
             SetValue(CpuPropertyKey, new CpuViewModel(this));
             SetValue(EnginePropertyKey, new EmulatorEngineViewModel(this));
@@ -87,6 +77,19 @@ namespace Soft64Binding.WPF
         public EmulatorEngineViewModel Engine
         {
             get { return (EmulatorEngineViewModel)GetValue(EngineProperty); }
+        }
+
+        public event EventHandler<MachineEventNotificationArgs> MachineEventNotification
+        {
+            add
+            {
+                WeakEventManager<Machine, MachineEventNotificationArgs>.AddHandler(TargetMachine,  "MachineEventNotification", value);
+            }
+
+            remove
+            {
+                WeakEventManager<Machine, MachineEventNotificationArgs>.RemoveHandler(TargetMachine, "MachineEventNotification", value);
+            }
         }
     }
 }

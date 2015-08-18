@@ -6,5 +6,18 @@ using System.Threading.Tasks;
 
 namespace Soft64
 {
-    public delegate void MachineEvent(MachineEventType type);
+    public sealed class MachineEventNotificationArgs : EventArgs
+    {
+        private MachineEventType m_EventType;
+
+        public MachineEventNotificationArgs(MachineEventType type)
+        {
+            m_EventType = type;
+        }
+
+        public MachineEventType EventType
+        {
+            get { return m_EventType; }
+        }
+    }
 }

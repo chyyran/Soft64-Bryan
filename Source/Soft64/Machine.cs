@@ -48,7 +48,7 @@ namespace Soft64
         private Boolean m_Disposed;
 
         /* Events */
-        public event MachineEvent MachineEventNotification;
+        public event EventHandler<MachineEventNotificationArgs> MachineEventNotification;
 
         public Machine()
         {
@@ -237,7 +237,7 @@ namespace Soft64
             var e = MachineEventNotification;
 
             if (e != null)
-                e(type);
+                e(this, new MachineEventNotificationArgs(type));
         }
 
         public BootMode SystemBootMode
