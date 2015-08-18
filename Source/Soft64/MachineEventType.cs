@@ -9,6 +9,7 @@ namespace Soft64
     public enum MachineEventType
     {
         Started,
+        PreBooted,
         Booted,
         Running,
         Paused,

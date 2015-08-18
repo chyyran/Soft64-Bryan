@@ -45,6 +45,7 @@ namespace Soft64
         private static ExpandoObject s_Config = new ExpandoObject();
         private SychronizedStream m_N64Memory;
         private SychronizedStream m_SafeMemory;
+        private Boolean m_Disposed;
 
         /* Events */
         public event MachineEvent MachineEventNotification;
@@ -61,9 +62,23 @@ namespace Soft64
             DevicePIF = new PIFModule();
 
             m_CurrentEngine = new SimpleEngine();
+            m_CurrentEngine.EngineStatusChanged += m_CurrentEngine_EngineStatusChanged;
 
             m_N64Memory = new SychronizedStream(DeviceRCP.PhysicalMemoryStream);
             m_SafeMemory = new SychronizedStream(DeviceRCP.PhysicalMemoryStream.GetSafeStream());
+        }
+
+        void m_CurrentEngine_EngineStatusChanged(object sender, EngineStatusChangedArgs e)
+        {
+            switch (e.NewStatus)
+            {
+                case EngineStatus.Started: OnMachineEventNotification(MachineEventType.Started); break;
+                case EngineStatus.Stopped: OnMachineEventNotification(MachineEventType.Stopped); break;
+                case EngineStatus.Paused: OnMachineEventNotification(MachineEventType.Paused); break;
+                case EngineStatus.Resumed: OnMachineEventNotification(MachineEventType.Running); break;
+                case EngineStatus.Running: OnMachineEventNotification(MachineEventType.Running); break;
+                default: break;
+            }
         }
 
         public T GetUIConfig<T>(String propName)
@@ -145,12 +160,7 @@ namespace Soft64
 
         public void Run()
         {
-            if (m_CurrentEngine.Status == EngineStatus.Stopped)
-            {
-                m_CurrentEngine.Initialize();
-            }
-
-            m_CurrentEngine.Run();
+            m_CurrentEngine.Start();
         }
 
         internal void Boot()
@@ -166,7 +176,7 @@ namespace Soft64
                 DeviceCPU.Initialize();
 
                 logger.Trace("** Starting emulation core **");
-                OnMachineEventNotification(MachineEventType.Started);
+                OnMachineEventNotification(MachineEventType.PreBooted);
 
                 /* Initialize core comparing */
                 if (Machine.Current.MipsCompareEngine != null)
@@ -185,10 +195,14 @@ namespace Soft64
             }
         }
 
+        internal void Stopped()
+        {
+            OnMachineEventNotification(MachineEventType.Stopped);
+        }
+
         public void Stop()
         {
             m_CurrentEngine.Stop();
-            OnMachineEventNotification(MachineEventType.Stopped);
         }
 
         public void Dispose()
@@ -199,19 +213,23 @@ namespace Soft64
 
         protected virtual void Dispose(Boolean disposing)
         {
-            //if (disposing)
-            //{
-            //    /* TODO:
-            //     * Dispose Controller
-            //     * Dispose Audio
-            //     * Dispose Graphics
-            //     */
+            if (!m_Disposed)
+            {
+                if (disposing)
+                {
+                    /* TODO:
+                     * Dispose Controller
+                     * Dispose Audio
+                     * Dispose Graphics
+                     */
 
-            //    //CPU.Dispose();
-            //    //RCP.Dispose();
-            //}
+                    //CPU.Dispose();
+                    //RCP.Dispose();
 
-            //SetNewRuntimeState(LifetimeState.Disposed);
+
+                    m_Disposed = true;
+                }
+            }
         }
 
         private void OnMachineEventNotification(MachineEventType type)
@@ -277,6 +295,7 @@ namespace Soft64
             private set;
         }
 
+        // TODO: Better place for this
         public IMipsCompareEngine MipsCompareEngine
         {
             get;

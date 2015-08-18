@@ -21,6 +21,8 @@ namespace Soft64.Engines
             {
                 Machine.Current.Boot();
 
+                OnStatusChange(this.Status, EngineStatus.Running);
+
                 while (true)
                 {
                     Begin();

@@ -10,10 +10,11 @@ namespace Soft64.Engines
 {
     public enum EngineStatus
     {
-        WaitingForTasks,
+        Started,
+        Stopped,
         Running,
         Paused,
-        Stopped
+        Resumed,
     }
 
     public class EngineStatusChangedArgs : EventArgs
@@ -74,14 +75,6 @@ namespace Soft64.Engines
             m_CoreScheduler.PauseWait();
         }
 
-        public virtual void Initialize()
-        {
-
-
-            OnStatusChange(m_Status, EngineStatus.WaitingForTasks);
-            m_Status = EngineStatus.WaitingForTasks;
-        }
-
         protected abstract void StartTasks(TaskFactory factory, CancellationToken token);
 
         public void SetCoreScheduler(CoreTaskScheduler scheduler)
@@ -90,21 +83,23 @@ namespace Soft64.Engines
                 m_CoreScheduler = scheduler;
         }
 
-        public void Run()
+        public void Start()
         {
-            logger.Trace("Scheduling engine tasks");
+            logger.Trace("Starting emulator engine");
 
             TaskFactory factory = new TaskFactory(m_CoreScheduler);
 
             StartTasks(factory, m_TokenSource.Token);
             m_CoreScheduler.RunThreads();
 
-            OnStatusChange(m_Status, EngineStatus.Running);
-            m_Status = EngineStatus.Running;
+            OnStatusChange(m_Status, EngineStatus.Started);
+            m_Status = EngineStatus.Started;
         }
 
         public void Stop()
         {
+            logger.Trace("Stopped emulator engine");
+
             if (m_CoreScheduler != null)
             {
                 m_TokenSource.Cancel(false);
@@ -136,8 +131,8 @@ namespace Soft64.Engines
             {
                 m_CoreScheduler.ResumeThreads();
 
-                OnStatusChange(m_Status, EngineStatus.Running);
-                m_Status = EngineStatus.Running;
+                OnStatusChange(m_Status, EngineStatus.Started);
+                m_Status = EngineStatus.Started;
             }
         }
 
@@ -159,11 +154,6 @@ namespace Soft64.Engines
             {
                 EngineStatusChanged(this, new EngineStatusChangedArgs(oldStatus, newStatus));
             }
-        }
-
-        public Boolean IsPaused
-        {
-            get { return m_CoreScheduler.IsPaused; }
         }
 
         public EngineStatus Status
