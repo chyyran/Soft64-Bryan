@@ -136,10 +136,9 @@ namespace Soft64.Engines
                 Task.Factory.StartNew(() =>
                 {
                     OnStatusChange(m_Status, EngineStatus.Paused);
-                });
+                    m_Status = EngineStatus.Paused;
+                }, new CancellationTokenSource().Token, TaskCreationOptions.None, TaskScheduler.Default);
                 
-                m_Status = EngineStatus.Paused;
-
                 logger.Trace("Execution paused");
             }
         }

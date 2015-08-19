@@ -69,17 +69,6 @@ namespace Soft64WPF.Windows
             m_MachineModel.Cpu.State.Load();
         }
 
-        private void EngineStateChangedHandler(Object o, EngineStatusChangedArgs args)
-        {
-            if (args.NewStatus == EngineStatus.Paused)
-            {
-                Dispatcher.InvokeAsync(() =>
-                {
-                    ReadCpu();
-                });
-            }
-        }
-
         void xaml_MenuBtnSaveChanges_Click(object sender, RoutedEventArgs e)
         {
             m_MachineModel.Cpu.State.Store();

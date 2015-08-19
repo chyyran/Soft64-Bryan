@@ -43,8 +43,12 @@ namespace Soft64.MipsR4300.Debugging
 
                 for (Int64 i = offset; i < offset + count; i += 4)
                 {
+                    m_InstReader.Position = i;
                     disasm.Add(m_InstReader.ReadDisasm(true));
                 }
+
+                m_Disassembly.Clear();
+                m_Disassembly.AddRange(disasm);
 
                 var e = CodeScanned;
 

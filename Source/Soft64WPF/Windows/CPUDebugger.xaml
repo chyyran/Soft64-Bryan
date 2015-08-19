@@ -108,7 +108,7 @@
                 </ItemsControl>
             </ScrollViewer>
         </Grid>
-        <DataGrid x:Name="xaml_DataGridDiassembly" ItemsSource="{Binding Cpu.Debugger.Disassembly}" Grid.Row="2" RenderTransformOrigin="-20,-7.923" HeadersVisibility="Column" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" IsSynchronizedWithCurrentItem="True" GridLinesVisibility="None" SelectionMode="Single" Background="Black" Foreground="White" AutoGenerateColumns="False">
+        <DataGrid x:Name="xaml_DataGridDiassembly" ItemsSource="{Binding Cpu.Debugger.Disassembly}" Grid.Row="2" RenderTransformOrigin="-20,-7.923" HeadersVisibility="Column" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" IsSynchronizedWithCurrentItem="True" GridLinesVisibility="None" SelectionMode="Single" Background="Black" Foreground="White" AutoGenerateColumns="False" RowBackground="Black" FontFamily="Consolas" TextOptions.TextFormattingMode="Display">
             <DataGrid.Resources>
                 <c:PcVisibilityConverter x:Key="converterPcVisibility" />
             </DataGrid.Resources>
@@ -120,8 +120,8 @@
                                 <Path Width="26.8469" Height="{Binding FontSize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" Stretch="Uniform" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z ">
                                     <Path.Fill>
                                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                            <GradientStop Color="White" Offset="0"/>
-                                            <GradientStop Color="#FFFFDC00" Offset="1"/>
+                                            <GradientStop Color="#FFFF8000" Offset="1"/>
+                                            <GradientStop Color="#FFFFBE31" Offset="0"/>
                                         </LinearGradientBrush>
                                     </Path.Fill>
                                 </Path>
@@ -129,13 +129,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Address, StringFormat=X8}" Header="Address" IsReadOnly="True">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Background" Value="Transparent" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding Address, StringFormat=X8}" Header="Address" IsReadOnly="True"/>
                 <DataGridTextColumn Binding="{Binding BytesHi, StringFormat=X4}" Header="Hi" IsReadOnly="True"/>
                 <DataGridTextColumn Binding="{Binding BytesLo, StringFormat=X4}" Header="Lo" IsReadOnly="True"/>
                 <DataGridTextColumn Binding="{Binding MnemonicOp}" Header="Opcode" IsReadOnly="True" />
