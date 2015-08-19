@@ -37,29 +37,32 @@ namespace Soft64Binding.WPF
 
         private void TlbChange(Object sender, TLBCacheChangeEventArgs a)
         {
-            TLBCache cache = (TLBCache)sender;
+            Dispatcher.InvokeAsync(() =>
+            {
+                TLBCache cache = (TLBCache)sender;
 
-            if (a.Index < 0)
-            {
-                /* Do a full reload */
-                ReadEntries();
-                return;
-            }
-
-            if (cache[a.Index] != null)
-            {
-                TlbEntries.Add(new TlbModelEntry(a.Index, cache[a.Index]));
-            }
-            else
-            {
-                foreach (var entry in TlbEntries)
+                if (a.Index < 0)
                 {
-                    if (entry.EntryIndex == a.Index)
+                    /* Do a full reload */
+                    ReadEntries();
+                    return;
+                }
+
+                if (cache[a.Index] != null)
+                {
+                    TlbEntries.Add(new TlbModelEntry(a.Index, cache[a.Index]));
+                }
+                else
+                {
+                    foreach (var entry in TlbEntries)
                     {
-                        TlbEntries.Remove(entry);
+                        if (entry.EntryIndex == a.Index)
+                        {
+                            TlbEntries.Remove(entry);
+                        }
                     }
                 }
-            }
+            });
         }
 
         private void ReadRegs()

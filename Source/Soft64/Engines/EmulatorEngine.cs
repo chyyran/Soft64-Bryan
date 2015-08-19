@@ -139,6 +139,8 @@ namespace Soft64.Engines
                 });
                 
                 m_Status = EngineStatus.Paused;
+
+                logger.Trace("Execution paused");
             }
         }
 
@@ -150,6 +152,8 @@ namespace Soft64.Engines
 
                 OnStatusChange(m_Status, EngineStatus.Started);
                 m_Status = EngineStatus.Started;
+
+                logger.Trace("Execution resumed");
             }
         }
 

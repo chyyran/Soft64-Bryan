@@ -207,6 +207,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="..\..\Resources\BinaryFiles\Tests\MachinePauseCheck.py" />
     <None Include="..\Soft64Common.licenseheader">
       <Link>Soft64Common.licenseheader</Link>
     </None>
@@ -253,9 +254,6 @@
   <ItemGroup>
     <Content Include="..\..\Resources\BinaryFiles\Tests\Tests_TLB.py">
       <Link>Tests\Tests_TLB.py</Link>
-    </Content>
-    <Content Include="..\..\Resources\BinaryFiles\Tests\TheadPeek.py">
-      <Link>Tests\TheadPeek.py</Link>
     </Content>
     <Resource Include="Images\control_pause.png" />
     <Resource Include="Images\control_play.png" />

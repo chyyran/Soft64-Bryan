@@ -79,7 +79,8 @@ namespace Soft64WPF.Windows
             {
                 m_MachineVM.MachineEventNotification += (o, e) =>
                 {
-                    Machine.Current.Pause();
+                    if (e.EventType == MachineEventType.Booted)
+                        Machine.Current.Pause();
                 };
             }
 
