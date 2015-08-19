@@ -51,7 +51,10 @@ namespace Soft64WPF.Windows
         {
             if (e.EventType == MachineEventType.Paused)
             {
-                ReadCpu();
+                Dispatcher.InvokeAsync(() =>
+                {
+                    ReadCpu();
+                });
             }
         }
 

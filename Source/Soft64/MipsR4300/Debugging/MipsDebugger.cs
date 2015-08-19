@@ -84,12 +84,12 @@ namespace Soft64.MipsR4300.Debugging
 
         public void Break()
         {
-            throw new NotImplementedException();
+
         }
 
         public void Attach()
         {
-            throw new NotImplementedException();
+
         }
     }
 

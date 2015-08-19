@@ -79,11 +79,11 @@ namespace Soft64WPF.Windows
             {
                 m_MachineVM.MachineEventNotification += (o, e) =>
                 {
-                    m_MachineVM.TargetMachine.Pause();
+                    Machine.Current.Pause();
                 };
             }
 
-            m_MachineVM.TargetMachine.Run();
+            Machine.Current.Run();
         }
 
         #region WPF Event Handlers
