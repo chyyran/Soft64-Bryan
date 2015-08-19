@@ -30,6 +30,7 @@ using NLog.Targets.Wrappers;
 using Soft64;
 using Soft64.Debugging;
 using Soft64.MipsR4300.Interpreter;
+using Soft64Binding.WPF;
 using Soft64WPF.Helper;
 
 namespace Soft64WPF.Windows
@@ -40,11 +41,20 @@ namespace Soft64WPF.Windows
     public partial class MainWindow : Window
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private BootBreakMode m_BreakOnBootMode;
+        private MachineViewModel m_MachineVM;
+
+        public enum BootBreakMode
+        {
+            None,
+            Pre,
+            Post
+        }
 
         public MainWindow()
         {
             InitializeComponent();
-            //GlassStyleLoader.ApplyWindowGlassStyle(this);
+            m_MachineVM = (MachineViewModel)FindResource("machineVM");
 
             xamlControl_EmuRunButton.Click += xamlControl_EmuRunButton_Click;
             xamlControl_MainCartBrowseFileButton.Click += xamlControl_MainCartBrowseFileButton_Click;
@@ -59,9 +69,8 @@ namespace Soft64WPF.Windows
 
         void xamlControl_EmuRunPostDebugButton_Click(object sender, RoutedEventArgs e)
         {
-            //Debugger.Current.DebugOnBreak = true;
-            //Debugger.Current.BreakOnBootMode = DebuggerBootEvent.PostBoot;
-            //RunEmu();
+            m_BreakOnBootMode = BootBreakMode.Post;
+            RunEmu();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -151,15 +160,16 @@ namespace Soft64WPF.Windows
             RunEmu();
         }
 
-        private static void RunEmu()
+        /* This is where emulator is started */
+        private void RunEmu()
         {
-            /* For now we are using default crap */
-            //if (Machine.Current.CurrentLifeState < LifetimeState.Initialized)
-            //{
-            //    Machine.Current.DeviceRCP.Engine = new PureInterpreter();
-            //    Machine.Current.DeviceCPU.Engine = new PureInterpreter();
-            //    Machine.Current.Initialize();
-            //}
+            if (m_BreakOnBootMode == BootBreakMode.Post)
+            {
+                m_MachineVM.MachineEventNotification += (o, e) =>
+                {
+                    m_MachineVM.TargetMachine.Pause();
+                };
+            }
 
             Machine.Current.Run();
         }
@@ -179,11 +189,6 @@ namespace Soft64WPF.Windows
         {
             CPUDebugger win = new CPUDebugger();
             win.Show();
-        }
-
-        private void xaml_ButtonElfRun_Click(object sender, RoutedEventArgs e)
-        {
-            /* TODO: Load elf file and run directly */
         }
     }
 }

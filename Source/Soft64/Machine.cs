@@ -162,7 +162,15 @@ namespace Soft64
 
         public void Run()
         {
-            m_CurrentEngine.Start();
+            if (m_CurrentEngine.Status == EngineStatus.Stopped)
+                m_CurrentEngine.Start();
+            else
+                m_CurrentEngine.ResumeThreads();
+        }
+
+        public void Pause()
+        {
+            m_CurrentEngine.PauseThreads();
         }
 
         internal void Boot()
