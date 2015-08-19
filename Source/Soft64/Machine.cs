@@ -329,5 +329,24 @@ namespace Soft64
             get;
             set;
         }
+
+        /* Short handed API */
+        public void CartridgeInsert(Cartridge cartridge)
+        {
+            DeviceRCP.DevicePI.MountCartridge(cartridge);
+        }
+
+        public void CartridgeEject()
+        {
+            DeviceRCP.DevicePI.ReleaseCartridge();
+        }
+
+        public void CartridgeInsertFile(String filepath)
+        {
+            FileStream fs = File.OpenRead(filepath);
+            VirtualCartridge cart = new VirtualCartridge(fs);
+            Machine.Current.DeviceRCP.DevicePI.ReleaseCartridge();
+            Machine.Current.DeviceRCP.DevicePI.MountCartridge(cart);
+        }
     }
 }

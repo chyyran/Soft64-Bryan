@@ -67,12 +67,34 @@ namespace Soft64WPF.Windows
             Loaded += MainWindow_Loaded;
         }
 
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+        }
+
+        /* This is where emulator is started */
+        private void RunEmu()
+        {
+            if (m_BreakOnBootMode == BootBreakMode.Post)
+            {
+                m_MachineVM.MachineEventNotification += (o, e) =>
+                {
+                    m_MachineVM.TargetMachine.Pause();
+                };
+            }
+
+            m_MachineVM.TargetMachine.Run();
+        }
+
+        #region WPF Event Handlers
+
         void xamlControl_EmuRunPostDebugButton_Click(object sender, RoutedEventArgs e)
         {
             m_BreakOnBootMode = BootBreakMode.Post;
             RunEmu();
         }
 
+        /* Window load event */
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Dispatcher.Invoke(() =>
@@ -126,6 +148,7 @@ namespace Soft64WPF.Windows
             window.Show();
         }
 
+        /* Exception leak handler - Show a message box when uncaught exceptions occur */
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show(e.Exception.Message, "Runtime Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -143,16 +166,8 @@ namespace Soft64WPF.Windows
             if (dlg.ShowDialog() == true)
             {
                 Machine.Current.SetUIConfig<String>("RecentRomDirectory", Path.GetDirectoryName(dlg.FileName));
-                FileStream fs = File.OpenRead(dlg.FileName);
-                VirtualCartridge cart = new VirtualCartridge(fs);
-                Machine.Current.DeviceRCP.DevicePI.ReleaseCartridge();
-                Machine.Current.DeviceRCP.DevicePI.MountCartridge(cart);
+                Machine.Current.CartridgeInsertFile(dlg.FileName);
             }
-        }
-
-        protected override void OnInitialized(EventArgs e)
-        {
-            base.OnInitialized(e);
         }
 
         private void xamlControl_EmuRunButton_Click(object sender, RoutedEventArgs e)
@@ -160,23 +175,9 @@ namespace Soft64WPF.Windows
             RunEmu();
         }
 
-        /* This is where emulator is started */
-        private void RunEmu()
-        {
-            if (m_BreakOnBootMode == BootBreakMode.Post)
-            {
-                m_MachineVM.MachineEventNotification += (o, e) =>
-                {
-                    m_MachineVM.TargetMachine.Pause();
-                };
-            }
-
-            Machine.Current.Run();
-        }
-
         private void xaml_ButtonEjectCartridge_Click(object sender, RoutedEventArgs e)
         {
-            Machine.Current.DeviceRCP.DevicePI.ReleaseCartridge();
+            Machine.Current.CartridgeEject();
         }
 
         private void xaml_ButtonToolMemoryEditor_Click(object sender, RoutedEventArgs e)
@@ -190,5 +191,7 @@ namespace Soft64WPF.Windows
             CPUDebugger win = new CPUDebugger();
             win.Show();
         }
+
+        #endregion
     }
 }
