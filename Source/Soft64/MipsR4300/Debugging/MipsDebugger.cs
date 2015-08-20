@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Soft64.MipsR4300.Interpreter;
 
@@ -12,8 +13,8 @@ namespace Soft64.MipsR4300.Debugging
     {
         private List<DisassembledInstruction> m_Disassembly;
         private DebugInstructionReader m_InstReader;
-        private List<Int64> m_PCRecord;
         private CodeDog m_CodeSniffer;
+        private Int32 m_Break = 0;
 
         public event EventHandler CodeScanned;
 
@@ -39,16 +40,13 @@ namespace Soft64.MipsR4300.Debugging
         {
             Task.Factory.StartNew(() =>
             {
-                List<DisassembledInstruction> disasm = new List<DisassembledInstruction>();
+                m_Disassembly.Clear();
 
-                for (Int64 i = offset; i < offset + count; i += 4)
+                for (Int64 i = offset; i < offset + (4 * count); i += 4)
                 {
                     m_InstReader.Position = i;
-                    disasm.Add(m_InstReader.ReadDisasm(true));
+                    m_Disassembly.Add(m_InstReader.ReadDisasm(true));
                 }
-
-                m_Disassembly.Clear();
-                m_Disassembly.AddRange(disasm);
 
                 var e = CodeScanned;
 
@@ -88,12 +86,35 @@ namespace Soft64.MipsR4300.Debugging
 
         public void Break()
         {
-
+            Interlocked.Increment(ref m_Break);
         }
 
         public void Attach()
         {
+            Machine.Current.DeviceCPU.EnableDebugMode();
+            Machine.Current.DeviceCPU.DebugStep += DeviceCPU_DebugStep;
+        }
 
+        void DeviceCPU_DebugStep(object sender, EventArgs e)
+        {
+            if (m_Break == 1)
+            {
+                Interlocked.Decrement(ref m_Break);
+                Machine.Current.Pause();
+            }
+        }
+
+        public void Step()
+        {
+            if (Machine.Current.IsRunning)
+            {
+                Interlocked.Increment(ref m_Break);
+            }
+            else
+            {
+                m_Break = 1;
+                Machine.Current.Run();
+            }
         }
     }
 

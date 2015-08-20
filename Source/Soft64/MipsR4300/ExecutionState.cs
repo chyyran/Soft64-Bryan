@@ -93,6 +93,12 @@ namespace Soft64.MipsR4300
         /// </summary>
         public UInt32 FCR31 { get; set; }
 
+        public Int64 BranchPC
+        {
+            get;
+            set;
+        }
+
         public WordSize WordSizeMode
         {
             get

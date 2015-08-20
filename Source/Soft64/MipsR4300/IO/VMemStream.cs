@@ -48,14 +48,16 @@ namespace Soft64.MipsR4300.IO
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private ReadOp ReadOperationHandler;
         private WriteOp WriteOperationHandler;
+        private MipsR4300Core m_Core;
 
         delegate Int32 ReadOp(Byte[] buffer, Int32 offset, Int32 count);
         delegate void WriteOp(Byte[] buffer, Int32 offset, Int32 count);
 
 
-        public VMemStream(CP0Registers cp0regs)
+        public VMemStream(MipsR4300Core core)
         {
-            m_Cp0Regs = cp0regs;
+            m_Core = core;
+            m_Cp0Regs = core.State.CP0Regs;
             m_TLBCache = new TLBCache(m_Cp0Regs);
             SetupOperations(false);
         }
@@ -66,7 +68,8 @@ namespace Soft64.MipsR4300.IO
             {
                 ReadOperationHandler = (b, o, c) =>
                     {
-                        Machine.Current.DeviceCPU.ResourceMonitor.CPUMemRead(Position);
+                        if (m_Core.State.PC != Position && m_Core.State.BranchPC != Position)
+                            Machine.Current.DeviceCPU.ResourceMonitor.CPUMemRead(Position);
                         return base.Read(b, o, c);
                     };
 

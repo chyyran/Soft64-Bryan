@@ -37,7 +37,7 @@ namespace Soft64.MipsR4300
         public MipsR4300Core()
         {
             m_State = new ExecutionState();
-            m_MMU = new VMemStream(m_State.CP0Regs);
+            m_MMU = new VMemStream(this);
             m_IOMonitor = new IOMonitor();
             m_SyncMMU = new SychronizedStream(m_MMU);
         }

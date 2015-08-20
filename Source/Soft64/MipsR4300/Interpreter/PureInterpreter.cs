@@ -66,6 +66,7 @@ namespace Soft64.MipsR4300.Interpreter
                 /* If we branched, execute the delay slot */
                 if (m_IsBranch)
                 {
+                    MipsState.BranchPC = m_BranchDelaySlot;
                     MipsInstruction bsdInst = FetchInstruction(m_BranchDelaySlot);
                     TraceOp(m_BranchDelaySlot, bsdInst);
                     m_OpTable.CallInstruction(bsdInst);

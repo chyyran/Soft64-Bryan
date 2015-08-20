@@ -26,15 +26,44 @@ namespace Soft64
     public sealed class CPUProcessor : MipsR4300Core
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private Action m_Setup;
+        public event EventHandler DebugStep;
+
+        public CPUProcessor()
+        {
+            
+        }
+
+        public override void Initialize()
+        {
+            if (m_Setup == null)
+                m_Setup = Engine.Step;
+            base.Initialize();
+        }
 
         public void StepOnce()
         {
-            Engine.Step();
+            m_Setup();
         }
 
         public void Dispose()
         {
             throw new NotImplementedException();
+        }
+
+        public void EnableDebugMode()
+        {
+            m_Setup = () =>
+            {
+                Engine.Step();
+
+                var e = DebugStep;
+
+                if (e != null)
+                {
+                    DebugStep(this, new EventArgs());
+                }
+            };
         }
     }
 }

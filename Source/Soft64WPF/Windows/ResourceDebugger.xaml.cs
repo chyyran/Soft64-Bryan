@@ -46,7 +46,8 @@ namespace Soft64WPF.Windows
             Dispatcher.InvokeAsync(() =>
             {
                 xaml_ResLog.AppendText(String.Format("CPU VMemory Read Access @ {0:X8} [{1}]\n", address, region.ToString()));
-            });
+                xaml_ResLog.ScrollToEnd();
+            }, System.Windows.Threading.DispatcherPriority.Background);
         }
 
         private void CPUMemoryCallbackWrite(N64MemRegions region, Int64 address)
@@ -54,7 +55,8 @@ namespace Soft64WPF.Windows
             Dispatcher.InvokeAsync(() =>
             {
                 xaml_ResLog.AppendText(String.Format("CPU VMemory Write Access @ {0:X8} [{1}]\n", address, region.ToString()));
-            });
+                xaml_ResLog.ScrollToEnd();
+            }, System.Windows.Threading.DispatcherPriority.Background);
         }
     }
 }
