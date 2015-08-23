@@ -41,7 +41,7 @@
         </StackPanel>
 
         <!-- Registers -->
-        <Grid Grid.Column="1" Margin="15,3,0,-17" Grid.RowSpan="2" Grid.Row="1" Height="606" VerticalAlignment="Top">
+        <Grid Grid.Column="1" Margin="13,3,0,-17" Grid.RowSpan="2" Grid.Row="1" Height="606" VerticalAlignment="Top">
             <Grid.Resources>
                 <c:Hex64Converter x:Key="hex64converter" />
                 <Style TargetType="TextBox" >
@@ -109,47 +109,64 @@
 
             </Grid.Resources>
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,7,0,0">
-                <ItemsControl ItemsSource="{StaticResource registers}" FontFamily="Consolas" TextOptions.TextFormattingMode="Display" FontSize="11">
-                    <ItemsControl.Foreground>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="White" Offset="0"/>
-                            <GradientStop Color="#FF17FF00" Offset="1"/>
-                        </LinearGradientBrush>
-                    </ItemsControl.Foreground>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ContentPresenter Content="{Binding}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+            <ItemsControl ItemsSource="{StaticResource registers}" FontFamily="Consolas" TextOptions.TextFormattingMode="Display" FontSize="11" Margin="0,0,0,7">
+                <ItemsControl.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="White" Offset="0"/>
+                        <GradientStop Color="#FF17FF00" Offset="1"/>
+                    </LinearGradientBrush>
+                </ItemsControl.Foreground>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ContentPresenter Content="{Binding}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
 
-        <ListBox x:Name="xaml_DataGridDisassembly" Grid.Row="2" ItemsSource="{Binding Cpu.Debugger.Disassembly}" Background="#FF1B1B1B" FontFamily="Consolas" TextOptions.TextFormattingMode="Display" FontSize="14">
+        <ListBox x:Name="xaml_DataGridDisassembly" Grid.Row="2" ItemsSource="{Binding Cpu.Debugger.Disassembly}" Background="Black" FontFamily="Consolas" FontWeight="Bold" TextOptions.TextFormattingMode="Display" BorderBrush="{x:Null}">
             <ListBox.Foreground>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFECC5FF" Offset="0"/>
-                    <GradientStop Color="#FF9D00D8" Offset="1"/>
+                    <GradientStop Color="#FFC78FFF" Offset="0"/>
+                    <GradientStop Color="#FF8000FF" Offset="1"/>
                 </LinearGradientBrush>
             </ListBox.Foreground>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border Name="_Border" Padding="2" SnapsToDevicePixels="true">
+                                    <ContentPresenter />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter TargetName="_Border" Property="Background" Value="Yellow"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <ItemContainerTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Viewbox x:Name="PART_PCArrow" Height="12" Stretch="UniformToFill" Visibility="Hidden">
-                            <Path Width="26.8469" Height="{Binding FontSize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" Stretch="Uniform" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z ">
-                                <Path.Fill>
+                        <Viewbox x:Name="PART_PCArrow" Height="12" Width="25" Stretch="Fill">
+                            <Soft64WPF:ProgramCounterArrow GroupName="debugger">
+                                <Soft64WPF:ProgramCounterArrow.Fill>
                                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                         <GradientStop Color="#FFFF8000" Offset="1"/>
                                         <GradientStop Color="#FFFFBE31" Offset="0"/>
                                     </LinearGradientBrush>
-                                </Path.Fill>
-                            </Path>
+                                </Soft64WPF:ProgramCounterArrow.Fill>
+                            </Soft64WPF:ProgramCounterArrow>
                         </Viewbox>
                         <TextBlock Margin="5,0,0,0" Text="{Binding FullDisassembly}" />
                     </StackPanel>

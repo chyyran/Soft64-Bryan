@@ -145,27 +145,15 @@ namespace Soft64WPF.Windows
             if (index < 0)
                 return;
 
+            ProgramCounterArrowGroup.SetActive("debugger", index);
             xaml_DataGridDisassembly.SelectedIndex = index;
             xaml_DataGridDisassembly.ScrollIntoView(xaml_DataGridDisassembly.SelectedItem);
-
-            for (Int32 i = 0; i < xaml_DataGridDisassembly.Items.Count; i++)
-            {
-                ListBoxItem item = (ListBoxItem)(xaml_DataGridDisassembly.ItemContainerGenerator.ContainerFromIndex(i));
-
-                if (item != null)
-                {
-                    ContentPresenter itemPresenter = FindVisualChild<ContentPresenter>(item);
-                    DataTemplate itemTemplate = itemPresenter.ContentTemplate;
-                    Viewbox viewBox = (Viewbox)itemTemplate.FindName("PART_PCArrow", itemPresenter);
-                    viewBox.Visibility = index == i ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
-                }
-            }
         }
 
         private void DiassembleCode()
         {
             Int64 pc = Machine.Current.DeviceCPU.State.PC;
-            Int32 lineCount = (Int32)(xaml_DataGridDisassembly.ActualHeight / (FontSize * 1.75));
+            Int32 lineCount = (Int32)(xaml_DataGridDisassembly.ActualHeight / (FontSize * 1.50));
             Int32 byteCount = (4 * lineCount);
             Int64 offset = pc;
             Int64 end = m_LastAddress + byteCount;
@@ -179,7 +167,7 @@ namespace Soft64WPF.Windows
                 m_LastAddress = pc;
                 m_Debugger.DisassembleCode(m_LastAddress, lineCount);
             }
-            else if (pc > end)
+            else if (pc >= end)
             {
                 m_LastAddress += 4;
                 m_Debugger.DisassembleCode(m_LastAddress, lineCount);
