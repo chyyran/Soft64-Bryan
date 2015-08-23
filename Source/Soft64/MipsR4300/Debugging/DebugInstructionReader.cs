@@ -15,19 +15,14 @@ namespace Soft64.MipsR4300.Debugging
 
         public DisassembledInstruction ReadDisasm(Boolean abiDecode)
         {
-            DisassembledInstruction disasm = new DisassembledInstruction();
-            disasm.Address = Position;
-
             MipsInstruction inst = ReadInstruction();
-            disasm.Instruction = inst;
 
-
-            disasm.MnemonicOp = Disassembler.DecodeOpName(inst);
-            disasm.Operands = Disassembler.DecodeOperands(inst, abiDecode);
-            disasm.BytesHi = ReadHi;
-            disasm.BytesLo = ReadLo;
-
-            return disasm;
+            return new DisassembledInstruction
+                (
+                  address: inst.Address,
+                  disasm: Disassembler.DecodeOpName(inst) + " " + Disassembler.DecodeOperands(inst, abiDecode),
+                  instruction: inst
+                );
         }
     }
 }

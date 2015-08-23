@@ -63,6 +63,7 @@
     <Compile Include="Dog\MemorySniffer.cs" />
     <Compile Include="MachineEvent.cs" />
     <Compile Include="MachineEventType.cs" />
+    <Compile Include="MipsR4300\Debugging\DisassembledInstruction.cs" />
     <Compile Include="PMemMirrorStream.cs" />
     <Compile Include="Engines\EmulatorEngine.cs" />
     <Compile Include="Engines\SimpleEngine.cs" />

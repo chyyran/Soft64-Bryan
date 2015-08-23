@@ -43,12 +43,23 @@ namespace Soft64WPF.Windows
             xaml_BtnCompare.Click += xaml_BtnCompare_Click;
             xaml_BtnResHooks.Click += xaml_BtnResHooks_Click;
             Loaded += CPUDebugger_Loaded;
+            Unloaded += CPUDebugger_Unloaded;
 
             m_MachineModel = (MachineViewModel)DataContext;
             m_MachineModel.MachineEventNotification += m_MachineModel_MachineEventNotification;
 
             m_Debugger = m_MachineModel.Cpu.Debugger.Debugger;
             m_Debugger.Attach();
+        }
+
+        void CPUDebugger_Unloaded(object sender, RoutedEventArgs e)
+        {
+            m_MachineModel.Cpu.Debugger.Finished -= Debugger_Finished;
+        }
+
+        void Debugger_Finished(object sender, EventArgs e)
+        {
+            SetPCLine(Machine.Current.DeviceCPU.State.PC);
         }
 
         void m_MachineModel_MachineEventNotification(object sender, MachineEventNotificationArgs e)
@@ -65,6 +76,7 @@ namespace Soft64WPF.Windows
         void CPUDebugger_Loaded(object sender, RoutedEventArgs e)
         {
             ReadCpu();
+            m_MachineModel.Cpu.Debugger.Finished += Debugger_Finished;
         }
 
         private void ReadCpu()
@@ -107,10 +119,53 @@ namespace Soft64WPF.Windows
             resDebugger.Show();
         }
 
+        public static T FindVisualChild<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        return (T)child;
+                    }
+
+                    T childItem = FindVisualChild<T>(child);
+                    if (childItem != null) return childItem;
+                }
+            }
+            return null;
+        }
+
+        private void SetPCLine(Int64 address)
+        {
+            Int32 index = (Int32)(address - m_LastAddress) / 4;
+
+            if (index < 0)
+                return;
+
+            xaml_DataGridDisassembly.SelectedIndex = index;
+            xaml_DataGridDisassembly.ScrollIntoView(xaml_DataGridDisassembly.SelectedItem);
+
+            for (Int32 i = 0; i < xaml_DataGridDisassembly.Items.Count; i++)
+            {
+                ListBoxItem item = (ListBoxItem)(xaml_DataGridDisassembly.ItemContainerGenerator.ContainerFromIndex(i));
+
+                if (item != null)
+                {
+                    ContentPresenter itemPresenter = FindVisualChild<ContentPresenter>(item);
+                    DataTemplate itemTemplate = itemPresenter.ContentTemplate;
+                    Viewbox viewBox = (Viewbox)itemTemplate.FindName("PART_PCArrow", itemPresenter);
+                    viewBox.Visibility = index == i ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
+                }
+            }
+        }
+
         private void DiassembleCode()
         {
             Int64 pc = Machine.Current.DeviceCPU.State.PC;
-            Int32 lineCount = (Int32)(xaml_DataGridDiassembly.ActualHeight / xaml_DataGridDiassembly.FontSize);
+            Int32 lineCount = (Int32)(xaml_DataGridDisassembly.ActualHeight / (FontSize * 1.75));
             Int32 byteCount = (4 * lineCount);
             Int64 offset = pc;
             Int64 end = m_LastAddress + byteCount;
@@ -118,20 +173,21 @@ namespace Soft64WPF.Windows
             /* If Pc is moving */
             /* Goto PC if we are far away from where the view was */
             if (pc > m_LastAddress + (2 * byteCount) ||
-                pc < m_LastAddress)
+                pc < m_LastAddress ||
+                xaml_DataGridDisassembly.Items.Count < 1)
             {
                 m_LastAddress = pc;
+                m_Debugger.DisassembleCode(m_LastAddress, lineCount);
             }
             else if (pc > end)
             {
                 m_LastAddress += 4;
+                m_Debugger.DisassembleCode(m_LastAddress, lineCount);
             }
-            
-
-            m_Debugger.DisassembleCode(m_LastAddress, lineCount);
-
-            if (pc >= m_LastAddress)
-                xaml_DataGridDiassembly.SelectedIndex = (Int32)(pc - m_LastAddress) / 4;
+            else
+            {
+                SetPCLine(Machine.Current.DeviceCPU.State.PC);
+            }
         }
 
         private void xaml_BtnBreak_Click(object sender, RoutedEventArgs e)

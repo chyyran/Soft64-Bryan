@@ -118,45 +118,6 @@ namespace Soft64.MipsR4300.Debugging
         }
     }
 
-    public struct DisassembledInstruction
-    {
-        public Int64 Address
-        {
-            get;
-            internal set;
-        }
-
-        public String MnemonicOp
-        {
-            get;
-            internal set;
-        }
-
-        public String Operands
-        {
-            get;
-            internal set;
-        }
-
-        public Int32 BytesHi
-        {
-            get;
-            internal set;
-        }
-
-        public Int32 BytesLo
-        {
-            get;
-            internal set;
-        }
-
-        public MipsInstruction Instruction
-        {
-            get;
-            internal set;
-        }
-    }
-
     public struct BranchRange
     {
         private Int64 m_Begin;

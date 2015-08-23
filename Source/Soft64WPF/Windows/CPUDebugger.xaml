@@ -15,9 +15,9 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="11*"/>
-            <RowDefinition Height="33"/>
-            <RowDefinition Height="272*"/>
+            <RowDefinition Height="23"/>
+            <RowDefinition Height="29"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <MenuItem Header="Debugger">
@@ -29,15 +29,15 @@
                 <MenuItem Header="Resources ..." x:Name="xaml_BtnResHooks"/>
             </MenuItem>
         </Menu>
-        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="0,0,-4,0" Grid.Row="1">
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,5,0,0" Width="258" HorizontalAlignment="Left">
             <StackPanel.Resources>
                 <Style x:Name="Button" TargetType="Button">
                     <Setter Property="Margin" Value="10,5,0,0" />
                 </Style>
             </StackPanel.Resources>
-            <Button x:Name="xaml_BtnBreak" Content="Break" Width="76" Height="22" Margin="10,8,0,3" Click="xaml_BtnBreak_Click"/>
-            <Button x:Name="xaml_BtnContinue" Content="Continue" Width="76" Height="22" Margin="10,8,0,3" Click="xaml_BtnContinue_Click"/>
-            <Button x:Name="xaml_BtnStep" Content="Step" Width="76" Height="22" Click="xaml_BtnStep_Click"/>
+            <Button x:Name="xaml_BtnBreak" Content="Break" Width="76" Height="22" Margin="10,0,0,0" Click="xaml_BtnBreak_Click" VerticalAlignment="Top"/>
+            <Button x:Name="xaml_BtnContinue" Content="Continue" Width="76" Height="22" Margin="10,0,0,0" Click="xaml_BtnContinue_Click" VerticalAlignment="Top"/>
+            <Button x:Name="xaml_BtnStep" Content="Step" Width="76" Height="22" Click="xaml_BtnStep_Click" Margin="10,0,0,0" VerticalAlignment="Top"/>
         </StackPanel>
 
         <!-- Registers -->
@@ -130,44 +130,31 @@
                 </ItemsControl>
             </ScrollViewer>
         </Grid>
-        <DataGrid x:Name="xaml_DataGridDiassembly" ItemsSource="{Binding Cpu.Debugger.Disassembly}" Grid.Row="2" RenderTransformOrigin="-20,-7.923" HeadersVisibility="None" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" IsSynchronizedWithCurrentItem="True" GridLinesVisibility="None" SelectionMode="Single" Background="#FF3A3A3A" AutoGenerateColumns="False" FontFamily="Consolas" TextOptions.TextFormattingMode="Display" RowBackground="#FF272727" FontSize="14">
-            <DataGrid.Resources>
-                <c:PcVisibilityConverter x:Key="converterPcVisibility" />
-            </DataGrid.Resources>
-            <DataGrid.Foreground>
+
+        <ListBox x:Name="xaml_DataGridDisassembly" Grid.Row="2" ItemsSource="{Binding Cpu.Debugger.Disassembly}" Background="#FF1B1B1B" FontFamily="Consolas" TextOptions.TextFormattingMode="Display" FontSize="14">
+            <ListBox.Foreground>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFECC5FF" Offset="0"/>
                     <GradientStop Color="#FF9D00D8" Offset="1"/>
                 </LinearGradientBrush>
-            </DataGrid.Foreground>
-            <DataGrid.ColumnHeaderStyle>
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="Background" Value="Black" />
-                </Style>
-            </DataGrid.ColumnHeaderStyle>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="PC">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Viewbox Stretch="UniformToFill" Visibility="{Binding Address, Converter={StaticResource converterPcVisibility}}">
-                                <Path Width="26.8469" Height="{Binding FontSize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" Stretch="Uniform" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z ">
-                                    <Path.Fill>
-                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                            <GradientStop Color="#FFFF8000" Offset="1"/>
-                                            <GradientStop Color="#FFFFBE31" Offset="0"/>
-                                        </LinearGradientBrush>
-                                    </Path.Fill>
-                                </Path>
-                            </Viewbox>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Address, StringFormat=X8}" Header="Address" IsReadOnly="True"/>
-                <DataGridTextColumn Binding="{Binding BytesHi, StringFormat=X4}" Header="Hi" IsReadOnly="True"/>
-                <DataGridTextColumn Binding="{Binding BytesLo, StringFormat=X4}" Header="Lo" IsReadOnly="True"/>
-                <DataGridTextColumn Binding="{Binding MnemonicOp}" Header="Opcode" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Operands}" Header="Operands" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>
+            </ListBox.Foreground>
+            <ListBox.ItemTemplate>
+                <ItemContainerTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Viewbox x:Name="PART_PCArrow" Height="12" Stretch="UniformToFill" Visibility="Hidden">
+                            <Path Width="26.8469" Height="{Binding FontSize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" Stretch="Uniform" Data="F1 M 26.8469,10.7846L 12.8223,0L 12.8223,6.8204L 0,6.8204L 0,14.7495L 12.8223,14.7495L 12.8223,21.5697L 26.8469,10.7846 Z ">
+                                <Path.Fill>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="#FFFF8000" Offset="1"/>
+                                        <GradientStop Color="#FFFFBE31" Offset="0"/>
+                                    </LinearGradientBrush>
+                                </Path.Fill>
+                            </Path>
+                        </Viewbox>
+                        <TextBlock Margin="5,0,0,0" Text="{Binding FullDisassembly}" />
+                    </StackPanel>
+                </ItemContainerTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>

@@ -13,6 +13,8 @@ namespace Soft64Binding.WPF
     {
         private MipsDebugger m_Debugger;
 
+        public event EventHandler Finished;
+
         public MipsDebuggerViewModel(MachineViewModel machineVM) :
             base(machineVM)
         {
@@ -32,6 +34,15 @@ namespace Soft64Binding.WPF
                     {
                         Disassembly.Add(l);
                     }
+
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        var e1 = Finished;
+
+                        if (e1 != null)
+                            e1(this, new EventArgs());
+
+                    }), System.Windows.Threading.DispatcherPriority.Render);
                 });
             });
         }

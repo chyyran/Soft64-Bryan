@@ -28,16 +28,16 @@ namespace Soft64.MipsR4300.Debugging
 
         }
 
-        private DisassembledInstruction ReadDisasm()
-        {
-            DisassembledInstruction disasm = new DisassembledInstruction();
-            disasm.Address = m_InstReader.Position;
-            MipsInstruction inst = m_InstReader.ReadInstruction();
-            disasm.BytesHi = m_InstReader.ReadHi;
-            disasm.BytesLo = m_InstReader.ReadLo;
-            disasm.Instruction = inst;
-            return disasm;
-        }
+        //private DisassembledInstruction ReadDisasm()
+        //{
+        //    DisassembledInstruction disasm = new DisassembledInstruction();
+        //    disasm.Address = m_InstReader.Position;
+        //    MipsInstruction inst = m_InstReader.ReadInstruction();
+        //    disasm.BytesHi = m_InstReader.ReadHi;
+        //    disasm.BytesLo = m_InstReader.ReadLo;
+        //    disasm.Instruction = inst;
+        //    return disasm;
+        //}
 
         public void Dispose()
         {

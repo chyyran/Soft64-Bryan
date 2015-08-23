@@ -39,7 +39,6 @@ namespace Soft64.MipsR4300
         private BinaryReader m_BinReader;
         private Int64 m_Position;
         private Boolean m_Disposed;
-        private Int32 m_ReadHi, m_ReadLo;
 
         public InstructionReader(MemoryAccessMode accessMode)
         {
@@ -78,17 +77,10 @@ namespace Soft64.MipsR4300
             m_Source.Position = Position;
             UInt32 read = m_BinReader.ReadUInt32();
 
-            m_ReadHi = (Int32)(read & 0xFF00) >> 16;
-            m_ReadLo = (Int32)(read & 0x00FF);
-
             MipsInstruction inst = new MipsInstruction(Position, read);
             Position += 4;
             return inst;
         }
-
-        public Int32 ReadHi { get { return m_ReadHi; } }
-
-        public Int32 ReadLo { get { return m_ReadLo; } }
 
         private void Dispose(Boolean disposing)
         {
