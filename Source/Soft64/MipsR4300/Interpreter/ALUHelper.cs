@@ -79,5 +79,10 @@ namespace Soft64.MipsR4300.Interpreter
         {
             return (Int64)(UInt32)address;
         }
+
+        public static Boolean IsSigned32(this UInt64 value)
+        {
+            return (value >> 32) == 0xFFFFFFFF;
+        }
     }
 }

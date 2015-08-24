@@ -89,6 +89,28 @@ namespace Soft64.MipsR4300.Interpreter
             m_BranchTarget = condition ? target.ResolveAddress() : MipsState.PC + 8;
         }
 
+        [OpcodeHook("BEQ")]
+        private void Inst_Beq(MipsInstruction inst)
+        {
+            Boolean condition;
+            Int64 target = 0;
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
+
+            if (MipsState.Is32BitMode())
+            {
+                condition = MipsState.GPRRegs64.GPRRegs32[inst.Rs] == MipsState.GPRRegs64.GPRRegs32[inst.Rt];
+                target = (Int32)((Int32)MipsState.PC + 4) + (Int32)inst.Immediate.SignExtended32();
+            }
+            else
+            {
+                condition = MipsState.GPRRegs64[inst.Rs] == MipsState.GPRRegs64[inst.Rt];
+                target = ((Int64)MipsState.PC + 4) + (Int64)(inst.Immediate.SignExtended64() << 2);
+            }
+
+            m_BranchTarget = condition ? target.ResolveAddress() : MipsState.PC + 8;
+        }
+
         [OpcodeHook("JR")]
         private void Inst_Jr(MipsInstruction inst)
         {
@@ -109,6 +131,22 @@ namespace Soft64.MipsR4300.Interpreter
                 condition = MipsState.GPRRegs64.GPRRegs32[inst.Rs] != MipsState.GPRRegs64.GPRRegs32[inst.Rt];
             else
                 condition = MipsState.GPRRegs64[inst.Rs] != MipsState.GPRRegs64[inst.Rt];
+
+            m_NullifiedInstruction = !condition;
+            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
+        }
+
+        [OpcodeHook("BLEZL")]
+        private void Inst_Blezl(MipsInstruction inst)
+        {
+            Boolean condition = false;
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
+
+            if (MipsState.Is32BitMode())
+                condition = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] <= 0;
+            else
+                condition = MipsState.GPRRegs64.GPRRegs64S[inst.Rs] <= 0;
 
             m_NullifiedInstruction = !condition;
             m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;

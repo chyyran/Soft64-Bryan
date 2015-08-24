@@ -38,7 +38,7 @@ namespace Soft64.DeviceMemory
         }
     }
 
-    public sealed class ParallelInterface : Stream
+    public sealed class PerpherialInterface : Stream
     {
         private Cartridge m_CurrentCartridge;
         private DiskDrive m_CurrentDiskDrive;
@@ -49,7 +49,7 @@ namespace Soft64.DeviceMemory
 
         public Boolean SkipRealDMA { get; set; }
 
-        public ParallelInterface()
+        public PerpherialInterface()
         {
             m_PIDataStream = new PIStream();
         }

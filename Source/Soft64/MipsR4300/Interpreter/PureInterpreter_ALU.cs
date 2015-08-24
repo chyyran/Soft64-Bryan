@@ -23,6 +23,8 @@ namespace Soft64.MipsR4300.Interpreter
 {
     public partial class PureInterpreter
     {
+        /* TODO: Implement SLT */
+
         [OpcodeHook("ADDIU")]
         private void Inst_Addiu(MipsInstruction inst)
         {
@@ -44,26 +46,88 @@ namespace Soft64.MipsR4300.Interpreter
             }
         }
 
+        [OpcodeHook("ADDU")]
+        private void Inst_Addu(MipsInstruction inst)
+        {
+            unchecked
+            {
+                if (MipsState.Is32BitMode())
+                {
+                    UInt32 val = MipsState.GPRRegs64.GPRRegs32[inst.Rs] + MipsState.GPRRegs64.GPRRegs32[inst.Rt];
+                    MipsState.GPRRegs64.GPRRegs32[inst.Rd] = val;
+                }
+                else
+                {
+                    if (!MipsState.GPRRegs64[inst.Rs].IsSigned32() ||
+                        !MipsState.GPRRegs64[inst.Rt].IsSigned32())
+                        return;
+
+                    UInt64 val = MipsState.GPRRegs64[inst.Rs] + MipsState.GPRRegs64[inst.Rt];
+                    MipsState.GPRRegs64[inst.Rd] = val;
+                }
+            }
+        }
+
+        [OpcodeHook("ADD")]
+        private void Inst_Add(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                try
+                {
+                    Int32 val = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] + MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rt];
+                    MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rd] = val;
+                }
+                catch (OverflowException)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow;
+                }
+                
+            }
+            else
+            {
+                if (!MipsState.GPRRegs64[inst.Rs].IsSigned32() ||
+                    !MipsState.GPRRegs64[inst.Rt].IsSigned32())
+                    return;
+
+                try
+                {
+                    Int64 val = MipsState.GPRRegs64.GPRRegs64S[inst.Rs] + MipsState.GPRRegs64.GPRRegs64S[inst.Rt];
+                    MipsState.GPRRegs64.GPRRegs64S[inst.Rd] = val;
+                }
+                catch (OverflowException)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow;
+                }
+            }
+        }
+
         [OpcodeHook("ADDI")]
         private void Inst_Addi(MipsInstruction inst)
         {
             if (MipsState.Is32BitMode())
             {
-                Int32 val = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] + inst.Immediate.SignExtended32();
-
-                if (val <= Int32.MaxValue)
-                    MipsState.GPRRegs64.GPRRegs32[inst.Rt] = (UInt32)val;
-                else
+                try
+                {
+                    Int32 val = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] + inst.Immediate.SignExtended32();
+                    MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rt] = val;
+                }
+                catch (OverflowException)
+                {
                     MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow;
+                }
             }
             else
             {
-                Int64 val = MipsState.GPRRegs64.GPRRegs64S[inst.Rs] + inst.Immediate.SignExtended64();
-
-                if (val <= Int64.MaxValue)
-                    MipsState.GPRRegs64[inst.Rt] = (UInt64)val;
-                else
+                try
+                {
+                    Int64 val = MipsState.GPRRegs64.GPRRegs64S[inst.Rs] + inst.Immediate.SignExtended64();
+                    MipsState.GPRRegs64.GPRRegs64S[inst.Rt] = val;
+                }
+                catch (OverflowException)
+                {
                     MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow;
+                }
             }
         }
 

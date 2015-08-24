@@ -169,7 +169,7 @@ namespace Soft64WPF.Windows
             }
             else if (pc >= end)
             {
-                m_LastAddress += 4;
+                m_LastAddress += (pc - end);
                 m_Debugger.DisassembleCode(m_LastAddress, lineCount);
             }
             else

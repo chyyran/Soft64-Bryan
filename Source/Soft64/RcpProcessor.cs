@@ -58,7 +58,7 @@ namespace Soft64.RCP
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         /* IO Interfaces */
-        private ParallelInterface m_PIInterface;
+        private PerpherialInterface m_PIInterface;
 
         /* Memory Devices */
         private RCPBusStream m_RcpMemoryBus;
@@ -73,7 +73,7 @@ namespace Soft64.RCP
             m_MemoryStream = new N64MemoryStream(m_RcpMemoryBus);
 
             /* Initailize interfaces of the RCP */
-            m_PIInterface = new ParallelInterface();
+            m_PIInterface = new PerpherialInterface();
         }
 
         public override void Initialize()
@@ -102,7 +102,7 @@ namespace Soft64.RCP
         {
         }
 
-        public ParallelInterface DevicePI
+        public PerpherialInterface DevicePI
         {
             get { return m_PIInterface; }
         }

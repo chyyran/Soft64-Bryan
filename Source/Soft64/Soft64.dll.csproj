@@ -92,7 +92,7 @@
     <Compile Include="MipsR4300\InstructionReader.cs" />
     <Compile Include="MipsR4300\MipsSnapshot.cs" />
     <Compile Include="N64MemRegions.cs" />
-    <Compile Include="DeviceMemory\ParallelInterface.cs" />
+    <Compile Include="DeviceMemory\PerpherialInterface.cs" />
     <Compile Include="DeviceMemory\PIStream.cs" />
     <Compile Include="DeviceMemory\RCPBusStream.cs" />
     <Compile Include="DeviceMemory\RdramStream.cs" />
