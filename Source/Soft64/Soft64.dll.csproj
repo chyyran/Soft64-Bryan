@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -60,6 +61,7 @@
     <Compile Include="Cartridge.cs" />
     <Compile Include="CartridgeInfo.cs" />
     <Compile Include="CPUProcessor.cs" />
+    <Compile Include="DeviceMemory\RegisterMappedMemoryStream.cs" />
     <Compile Include="Dog\MemorySniffer.cs" />
     <Compile Include="MachineEvent.cs" />
     <Compile Include="MachineEventType.cs" />

@@ -57,9 +57,9 @@ namespace Soft64.MipsR4300.Debugging
             }
             else
             {
-                UInt64 poffset = address >= 0x80000000 && address <= 0x9FFFFFFF ? address - 0x80000000 : address - 0xA0000000;
+                UInt64 poffset = address & 0x1FFFFFFF;
 
-                if (poffset >= 0x00000000 && address < 0x03F00000 - 1)
+                if (poffset >= 0x00000000 && poffset < 0x03F00000 - 1)
                     region = N64MemRegions.Rdram;
                 else if (poffset >= 0x03F00000 && poffset < 0x04000000 - 1)
                     region = N64MemRegions.RdramRegs;
