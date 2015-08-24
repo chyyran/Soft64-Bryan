@@ -66,25 +66,26 @@ namespace Soft64.MipsR4300.Interpreter
                 /* If we branched, execute the delay slot */
                 if (m_IsBranch)
                 {
-                    MipsState.BranchPC = m_BranchDelaySlot;
-                    MipsInstruction bsdInst = FetchInstruction(m_BranchDelaySlot);
-                    TraceOp(m_BranchDelaySlot, bsdInst);
-                    m_OpTable.CallInstruction(bsdInst);
-                    m_IsBranch = false;
+                    if (!m_NullifiedInstruction)
+                    {
+                        MipsState.BranchPC = m_BranchDelaySlot;
+                        MipsInstruction bsdInst = FetchInstruction(m_BranchDelaySlot);
+                        TraceOp(m_BranchDelaySlot, bsdInst);
+                        m_OpTable.CallInstruction(bsdInst);
+                        m_IsBranch = false;
+                    }
+                    else
+                    {
+                        /* Skip the delay slot */
+                        m_NullifiedInstruction = false;
+                        m_IsBranch = false;
+                    }
                 }
                 else
                 {
 
-                    /* Execute the instruction unless its nullifed */
-                    if (!m_NullifiedInstruction)
-                    {
-                        TraceOp(MipsState.PC, inst);
-                        m_OpTable.CallInstruction(inst);
-                    }
-                    else
-                    {
-                        m_NullifiedInstruction = false;
-                    }
+                    TraceOp(MipsState.PC, inst);
+                    m_OpTable.CallInstruction(inst);
 
                     /* If branching has been set, skip PC increment */
                     if (!m_IsBranch)

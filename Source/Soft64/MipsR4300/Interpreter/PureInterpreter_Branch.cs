@@ -85,6 +85,7 @@ namespace Soft64.MipsR4300.Interpreter
                 target = ((Int64)MipsState.PC + 4) + (Int64)(inst.Immediate.SignExtended64() << 2);
             }
 
+            m_NullifiedInstruction = !condition;
             m_BranchTarget = condition ? target.ResolveAddress() : MipsState.PC + 8;
         }
 
@@ -110,7 +111,6 @@ namespace Soft64.MipsR4300.Interpreter
                 condition = MipsState.GPRRegs64[inst.Rs] != MipsState.GPRRegs64[inst.Rt];
 
             m_NullifiedInstruction = !condition;
-
             m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
         }
     }
