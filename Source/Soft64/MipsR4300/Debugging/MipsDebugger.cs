@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 using Soft64.MipsR4300.Interpreter;
 
 namespace Soft64.MipsR4300.Debugging
@@ -15,6 +16,10 @@ namespace Soft64.MipsR4300.Debugging
         private DebugInstructionReader m_InstReader;
         private CodeDog m_CodeSniffer;
         private Int32 m_Break = 0;
+        private HashSet<Int64> m_InstructionBreakpoints;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private Object m_Lock = new object();
+        private Int64 m_LastPC;
 
         public event EventHandler CodeScanned;
 
@@ -23,6 +28,7 @@ namespace Soft64.MipsR4300.Debugging
             m_Disassembly = new List<DisassembledInstruction>();
             m_CodeSniffer = new CodeDog();
             m_InstReader = new DebugInstructionReader();
+            m_InstructionBreakpoints = new HashSet<long>();
         }
 
         public void StartDebugging()
@@ -40,19 +46,25 @@ namespace Soft64.MipsR4300.Debugging
         {
             Task.Factory.StartNew(() =>
             {
-                m_Disassembly.Clear();
-
-                for (Int64 i = offset; i < offset + (4 * count); i += 4)
+                lock (m_Lock)
                 {
-                    m_InstReader.Position = i;
-                    m_Disassembly.Add(m_InstReader.ReadDisasm(true));
-                }
+                    m_Disassembly.Clear();
 
-                var e = CodeScanned;
+                    for (Int64 i = offset; i < offset + (4 * count); i += 4)
+                    {
+                        if (i > 0xFFFFFFFFL)
+                            continue;
 
-                if (e != null)
-                {
-                    e(this, new EventArgs());
+                        m_InstReader.Position = i;
+                        m_Disassembly.Add(m_InstReader.ReadDisasm(true));
+                    }
+
+                    var e = CodeScanned;
+
+                    if (e != null)
+                    {
+                        e(this, new EventArgs());
+                    }
                 }
             });
         }
@@ -97,11 +109,23 @@ namespace Soft64.MipsR4300.Debugging
 
         void DeviceCPU_DebugStep(object sender, EventArgs e)
         {
+            if (m_InstructionBreakpoints.Count > 0 && m_InstructionBreakpoints.Contains(Machine.Current.DeviceCPU.State.PC))
+            {
+                if (m_LastPC != Machine.Current.DeviceCPU.State.PC)
+                {
+                    m_LastPC = Machine.Current.DeviceCPU.State.PC;
+                    logger.Debug("Breakpoint hit: " + Machine.Current.DeviceCPU.State.PC.ToString("X8"));
+                    m_Break = 1;
+                }
+            }
+
             if (m_Break == 1)
             {
                 Interlocked.Decrement(ref m_Break);
                 Machine.Current.Pause();
             }
+
+            m_LastPC = Machine.Current.DeviceCPU.State.PC;
         }
 
         public void Step()
@@ -115,6 +139,11 @@ namespace Soft64.MipsR4300.Debugging
                 m_Break = 1;
                 Machine.Current.Run();
             }
+        }
+
+        public ICollection<Int64> Breakpoints
+        {
+            get { return m_InstructionBreakpoints; }
         }
     }
 

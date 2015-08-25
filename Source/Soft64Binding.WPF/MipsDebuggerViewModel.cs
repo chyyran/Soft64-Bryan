@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using Soft64.MipsR4300.Debugging;
 
 namespace Soft64Binding.WPF
@@ -35,14 +36,14 @@ namespace Soft64Binding.WPF
                         Disassembly.Add(l);
                     }
 
-                    Dispatcher.BeginInvoke(new Action(() =>
+                    Dispatcher.InvokeAsync(() =>
                     {
                         var e1 = Finished;
 
                         if (e1 != null)
                             e1(this, new EventArgs());
 
-                    }), System.Windows.Threading.DispatcherPriority.Render);
+                    }, DispatcherPriority.Render);
                 });
             });
         }

@@ -7,6 +7,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using NLog;
 using Soft64;
 using Soft64.Debugging;
@@ -14,6 +15,7 @@ using Soft64.Engines;
 using Soft64.MipsR4300;
 using Soft64.MipsR4300.Debugging;
 using Soft64Binding.WPF;
+using Soft64WPF.Converters;
 
 namespace Soft64WPF.Windows
 {
@@ -27,6 +29,7 @@ namespace Soft64WPF.Windows
         private CompareWindow m_CompareWindow;
         private MipsDebugger m_Debugger;
         private Int64 m_LastAddress;
+        private Int32 m_LineCount;
 
         static CPUDebugger()
         {
@@ -35,6 +38,14 @@ namespace Soft64WPF.Windows
 
         public CPUDebugger()
         {
+            m_MachineModel = (MachineViewModel)FindResource("machineVM");
+            m_MachineModel.MachineEventNotification += m_MachineModel_MachineEventNotification;
+
+            m_Debugger = m_MachineModel.Cpu.Debugger.Debugger;
+            m_Debugger.Attach();
+
+            Resources.Add("breakpointToVisibilityConverter", new BreakpointToVisibilityConverter(m_Debugger));
+
             InitializeComponent();
 
             m_CompareWindow = new CompareWindow();
@@ -44,12 +55,13 @@ namespace Soft64WPF.Windows
             xaml_BtnResHooks.Click += xaml_BtnResHooks_Click;
             Loaded += CPUDebugger_Loaded;
             Unloaded += CPUDebugger_Unloaded;
+            xaml_CodeScrollbar.ValueChanged += xaml_CodeScrollbar_ValueChanged;
+        }
 
-            m_MachineModel = (MachineViewModel)DataContext;
-            m_MachineModel.MachineEventNotification += m_MachineModel_MachineEventNotification;
-
-            m_Debugger = m_MachineModel.Cpu.Debugger.Debugger;
-            m_Debugger.Attach();
+        void xaml_CodeScrollbar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            m_LastAddress = ((UInt32)e.NewValue) * 4;
+            m_Debugger.DisassembleCode(m_LastAddress, m_LineCount);
         }
 
         void CPUDebugger_Unloaded(object sender, RoutedEventArgs e)
@@ -140,7 +152,7 @@ namespace Soft64WPF.Windows
 
         private void SetPCLine(Int64 address)
         {
-            Int32 index = (Int32)(address - m_LastAddress) / 4;
+            Int32 index = (Int32)((address - m_LastAddress) / 4);
 
             if (index < 0)
                 return;
@@ -150,11 +162,20 @@ namespace Soft64WPF.Windows
             xaml_DataGridDisassembly.ScrollIntoView(xaml_DataGridDisassembly.SelectedItem);
         }
 
+        private T GetNamedPart<T>(DependencyObject obj, String name)
+            where T : DependencyObject
+        {
+            ContentPresenter itemPresenter = FindVisualChild<ContentPresenter>(obj);
+            DataTemplate itemTemplate = itemPresenter.ContentTemplate;
+            return (T)itemTemplate.FindName(name, itemPresenter);
+        }
+
         private void DiassembleCode()
         {
             Int64 pc = Machine.Current.DeviceCPU.State.PC;
-            Int32 lineCount = (Int32)(xaml_DataGridDisassembly.ActualHeight / (FontSize * 1.50));
-            Int32 byteCount = (4 * lineCount);
+            m_LineCount = (Int32)(xaml_DataGridDisassembly.ActualHeight / (FontSize * 1.50));
+            xaml_CodeScrollbar.ViewportSize = m_LineCount;
+            Int32 byteCount = (4 * m_LineCount);
             Int64 offset = pc;
             Int64 end = m_LastAddress + byteCount;
 
@@ -165,12 +186,16 @@ namespace Soft64WPF.Windows
                 xaml_DataGridDisassembly.Items.Count < 1)
             {
                 m_LastAddress = pc;
-                m_Debugger.DisassembleCode(m_LastAddress, lineCount);
+                m_Debugger.DisassembleCode(m_LastAddress, m_LineCount);
+                Int32 index = (Int32)(m_LastAddress / 4);
+                xaml_CodeScrollbar.Value = index;
             }
             else if (pc >= end)
             {
                 m_LastAddress += (pc - end);
-                m_Debugger.DisassembleCode(m_LastAddress, lineCount);
+                m_Debugger.DisassembleCode(m_LastAddress, m_LineCount);
+                Int32 index = (Int32)(m_LastAddress / 4);
+                xaml_CodeScrollbar.Value = index;
             }
             else
             {
@@ -186,6 +211,34 @@ namespace Soft64WPF.Windows
         private void xaml_BtnContinue_Click(object sender, RoutedEventArgs e)
         {
             m_MachineModel.TargetMachine.Run();
+        }
+
+        private void BreakpointMenu_SetBreak(object sender, RoutedEventArgs e)
+        {
+            DisassembledInstruction disasm = (DisassembledInstruction)xaml_DataGridDisassembly.SelectedItem;
+            ListBoxItem item = (ListBoxItem)(xaml_DataGridDisassembly.ItemContainerGenerator.ContainerFromIndex(xaml_DataGridDisassembly.SelectedIndex));
+            Viewbox box = GetNamedPart<Viewbox>(item, "PART_BreakPoint");
+
+            if (!m_Debugger.Breakpoints.Contains(disasm.Address))
+            {
+                m_Debugger.Breakpoints.Add(disasm.Address);
+            }
+
+            box.Visibility = Visibility.Visible;
+        }
+
+        private void BreakpointMenu_ClearBreak(object sender, RoutedEventArgs e)
+        {
+            DisassembledInstruction disasm = (DisassembledInstruction)xaml_DataGridDisassembly.SelectedItem;
+            ListBoxItem item = (ListBoxItem)(xaml_DataGridDisassembly.ItemContainerGenerator.ContainerFromIndex(xaml_DataGridDisassembly.SelectedIndex));
+            Viewbox box = GetNamedPart<Viewbox>(item, "PART_BreakPoint");
+
+            if (!m_Debugger.Breakpoints.Contains(disasm.Address))
+            {
+                m_Debugger.Breakpoints.Remove(disasm.Address);
+            }
+
+            box.Visibility = Visibility.Hidden;
         }
     }
 }

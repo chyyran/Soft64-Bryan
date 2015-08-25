@@ -23,7 +23,7 @@ namespace Soft64.MipsR4300.Debugging
             Int32 lo = (Int32)(instruction.Instruction & 0x00FF);
 
             m_FullLine = String.Format("{0:X8} {1:X4} {2:X4} {3}",
-                m_Address,
+                (UInt32)m_Address,
                 hi,
                 lo,
                 m_Disasm);

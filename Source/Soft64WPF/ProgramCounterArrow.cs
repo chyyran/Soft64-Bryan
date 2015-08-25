@@ -38,6 +38,9 @@ namespace Soft64WPF
 
         public static void SetActive(String name, Int32 index)
         {
+            if (!s_Groups.ContainsKey(name))
+                return;
+
             for (Int32 i = 0; i < s_Groups[name].Count; i++)
             {
                 ProgramCounterArrow arrow = s_Groups[name][i];
