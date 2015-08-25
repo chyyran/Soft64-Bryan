@@ -30,7 +30,7 @@ using Soft64.IO;
  * [0x0B000000] Rom Memory [Read-only]
  */
 
-namespace Soft64.DeviceMemory
+namespace Soft64.RCP
 {
     /* For future: this class might be used to implement a cartridge domain system once we understand more about how it is used */
 

@@ -23,7 +23,59 @@ namespace Soft64.MipsR4300.Interpreter
 {
     public partial class PureInterpreter
     {
-        /* TODO: Implement SLT */
+        [OpcodeHook("SLT")]
+        private void Inst_Slt(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                if (MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] < MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rt])
+                {
+                    MipsState.GPRRegs64[inst.Rd] = 1;
+                }
+                else
+                {
+                    MipsState.GPRRegs64[inst.Rd] = 0;
+                }
+            }
+            else
+            {
+                if (MipsState.GPRRegs64.GPRRegs64S[inst.Rs] < MipsState.GPRRegs64.GPRRegs64S[inst.Rt])
+                {
+                    MipsState.GPRRegs64[inst.Rd] = 1;
+                }
+                else
+                {
+                    MipsState.GPRRegs64[inst.Rd] = 0;
+                }
+            }
+        }
+
+        [OpcodeHook("SLTU")]
+        private void Inst_Sltu(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                if (MipsState.GPRRegs64.GPRRegs32[inst.Rs] < MipsState.GPRRegs64.GPRRegs32[inst.Rt])
+                {
+                    MipsState.GPRRegs64[inst.Rd] = 1;
+                }
+                else
+                {
+                    MipsState.GPRRegs64[inst.Rd] = 0;
+                }
+            }
+            else
+            {
+                if (MipsState.GPRRegs64[inst.Rs] < MipsState.GPRRegs64[inst.Rt])
+                {
+                    MipsState.GPRRegs64[inst.Rd] = 1;
+                }
+                else
+                {
+                    MipsState.GPRRegs64[inst.Rd] = 0;
+                }
+            }
+        }
 
         [OpcodeHook("ADDIU")]
         private void Inst_Addiu(MipsInstruction inst)
@@ -38,7 +90,10 @@ namespace Soft64.MipsR4300.Interpreter
                 }
                 else
                 {
-                    /* if (MipsState.GPRRegs64[inst.Rs] <= 0xFFFFFFFF) */
+                    if (!MipsState.GPRRegs64[inst.Rs].IsSigned32())
+                        return;
+
+
                     MipsState.GPRRegs64[inst.Rt] =
                         MipsState.GPRRegs64[inst.Rs] +
                         (UInt64)inst.Immediate.SignExtended64();
@@ -169,11 +224,11 @@ namespace Soft64.MipsR4300.Interpreter
         {
             if (MipsState.Is32BitMode())
             {
-                MipsState.GPRRegs64.GPRRegs32[inst.Rt] = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] < (Int32)inst.Immediate.SignExtended32() ? 1U : 0U;
+                MipsState.GPRRegs64.GPRRegs32[inst.Rt] = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] < inst.Immediate.SignExtended32() ? 1U : 0U;
             }
             else
             {
-                MipsState.GPRRegs64[inst.Rt] = MipsState.GPRRegs64.GPRRegs64S[inst.Rs] < (Int64)inst.Immediate.SignExtended64() ? 1UL : 0UL;
+                MipsState.GPRRegs64[inst.Rt] = MipsState.GPRRegs64.GPRRegs64S[inst.Rs] < inst.Immediate.SignExtended64() ? 1UL : 0UL;
             }
         }
 
@@ -187,6 +242,19 @@ namespace Soft64.MipsR4300.Interpreter
             else
             {
                 MipsState.GPRRegs64[inst.Rt] = inst.Immediate.ZeroExtended64() & MipsState.GPRRegs64[inst.Rs];
+            }
+        }
+
+        [OpcodeHook("AND")]
+        private void Inst_And(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                MipsState.GPRRegs64.GPRRegs32[inst.Rd] = MipsState.GPRRegs64.GPRRegs32[inst.Rs] & MipsState.GPRRegs64.GPRRegs32[inst.Rt];
+            }
+            else
+            {
+                MipsState.GPRRegs64[inst.Rd] = MipsState.GPRRegs64[inst.Rs] & MipsState.GPRRegs64[inst.Rt];
             }
         }
 

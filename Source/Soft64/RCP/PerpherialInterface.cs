@@ -21,7 +21,7 @@ using System;
 using System.IO;
 using NLog;
 
-namespace Soft64.DeviceMemory
+namespace Soft64.RCP
 {
     public sealed class CartridgeChangedEventArgs : EventArgs
     {

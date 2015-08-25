@@ -23,7 +23,7 @@ using System.IO;
 using NLog;
 using Soft64.IO;
 
-namespace Soft64.DeviceMemory
+namespace Soft64.RCP
 {
     /// <summary>
     /// Simulates the Reality-Coprocessor unified memory bus.

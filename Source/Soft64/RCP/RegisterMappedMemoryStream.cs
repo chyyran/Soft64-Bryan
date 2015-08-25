@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Soft64.DeviceMemory
+namespace Soft64.RCP
 {
     public abstract class RegisterMappedMemoryStream : Stream
     {

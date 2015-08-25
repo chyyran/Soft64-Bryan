@@ -17,93 +17,76 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-using System;
 using System.IO;
 
-/* Notes about the SP Memory
- * ----------------------------
- * It is divided into 2 regions called IMEM and DMEM.
- * DMEM can store 16 segment base registers for SP virtual address (segment base + segment offset)
- */
-
-namespace Soft64.DeviceMemory
+namespace Soft64.RCP
 {
-    /// <summary>
-    /// Stores memory used by the Signal processor.
-    /// </summary>
-    public sealed class SPMemory : Stream
-    {
-        private MemoryStream m_SPMemoryStream;
+    // TODO: Track dirty writes so the CPU can invalidate its instruction cache
 
-        public SPMemory()
+    public sealed class N64MemoryStream : Stream
+    {
+        private Stream m_RcpBusStream;
+
+        internal N64MemoryStream(Stream rcpBusStream)
         {
-            m_SPMemoryStream = new MemoryStream(new Byte[0x1FFE + 1]);
+            m_RcpBusStream = rcpBusStream;
         }
 
         public override bool CanRead
         {
-            get { return true; }
+            get { return m_RcpBusStream.CanRead; }
         }
 
         public override bool CanSeek
         {
-            get { return true; }
+            get { return m_RcpBusStream.CanSeek; }
         }
 
         public override bool CanWrite
         {
-            get { return true; }
+            get { return m_RcpBusStream.CanWrite; }
         }
 
         public override void Flush()
         {
-            m_SPMemoryStream.Flush();
+            m_RcpBusStream.Flush();
         }
 
         public override long Length
         {
-            get { return m_SPMemoryStream.Length; }
+            get { return m_RcpBusStream.Length; }
         }
 
         public override long Position
         {
             get
             {
-                return m_SPMemoryStream.Position;
+                return m_RcpBusStream.Position;
             }
             set
             {
-                m_SPMemoryStream.Position = value;
+                m_RcpBusStream.Position = value;
             }
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (m_SPMemoryStream.Position < m_SPMemoryStream.Length)
-                return m_SPMemoryStream.Read(buffer, offset, count);
-            else
-                return -1;
+            return m_RcpBusStream.Read(buffer, offset, count);
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            return m_SPMemoryStream.Seek(offset, origin);
+            return m_RcpBusStream.Seek(offset, origin);
         }
 
         public override void SetLength(long value)
         {
-            throw new NotSupportedException();
+            m_RcpBusStream.SetLength(value);
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (m_SPMemoryStream.Position < m_SPMemoryStream.Length)
-                m_SPMemoryStream.Write(buffer, offset, count);
-        }
-
-        public override string ToString()
-        {
-            return "Signal Processor Memory";
+            m_RcpBusStream.Write(buffer, offset, count);
         }
     }
 }

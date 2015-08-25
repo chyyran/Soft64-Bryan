@@ -21,7 +21,7 @@ using System;
 using System.IO;
 using Soft64.IO;
 
-namespace Soft64.DeviceMemory
+namespace Soft64.RCP
 {
     public enum RdramInterfaceRegs
     {

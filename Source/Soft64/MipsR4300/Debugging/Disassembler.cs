@@ -114,6 +114,11 @@ namespace Soft64.MipsR4300.Debugging
 
         public static string DecodeOpName(MipsInstruction asmInstruction)
         {
+            if (asmInstruction.Instruction == 0)
+            {
+                return "nop";
+            }
+
             String mainOp = s_OpTableMain[asmInstruction.Opcode];
             String opName = "";
 
@@ -167,6 +172,9 @@ namespace Soft64.MipsR4300.Debugging
 
         private static String DecodeOperand(MipsInstruction inst, Boolean o32, OperandDictionary lut, Byte reg, String defaultValue)
         {
+            if (inst.Instruction == 0)
+                return "";
+
             if (lut.ContainsKey(reg))
                 return lut[reg](inst, o32);
             else

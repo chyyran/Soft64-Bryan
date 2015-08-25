@@ -21,5 +21,10 @@ namespace Soft64.MipsR4300.Interpreter
 {
     public partial class PureInterpreter
     {
+        [OpcodeHook("CACHE")]
+        private void Inst_Cache(MipsInstruction inst)
+        {
+            logger.Debug("Cache instruction ignored");
+        }
     }
 }

@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 using System;
 using System.IO;
 using NLog;
-using Soft64.DeviceMemory;
+using Soft64.RCP;
 using Soft64.MipsR4300;
 
 namespace Soft64.RCP
