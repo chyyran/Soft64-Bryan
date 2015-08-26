@@ -62,7 +62,6 @@
     <Compile Include="CartridgeInfo.cs" />
     <Compile Include="CPUProcessor.cs" />
     <Compile Include="RCP\RegisterMappedMemoryStream.cs" />
-    <Compile Include="Dog\MemorySniffer.cs" />
     <Compile Include="MachineEvent.cs" />
     <Compile Include="MachineEventType.cs" />
     <Compile Include="MipsR4300\Debugging\DisassembledInstruction.cs" />

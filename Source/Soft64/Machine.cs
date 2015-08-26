@@ -25,7 +25,6 @@ using System.IO;
 using System.Threading.Tasks;
 using NLog;
 using Soft64.Debugging;
-using Soft64.Dog;
 using Soft64.Engines;
 using Soft64.MipsR4300;
 using Soft64.MipsR4300.Interpreter;
@@ -224,18 +223,14 @@ namespace Soft64
         {
             if (!m_DebugServiceAttached)
             {
-                if (MemorySniffer.Current == null)
-                    new MemorySniffer();
-
-                m_CurrentEngine.EndTrigger += m_CurrentEngine_EndTrigger;
-
+                m_CurrentEngine.PostLoopExecute += m_CurrentEngine_PostLoopExecute;
                 m_DebugServiceAttached = true;
             }
         }
 
-        void m_CurrentEngine_EndTrigger(object sender, EventArgs e)
+        void m_CurrentEngine_PostLoopExecute(object sender, EventArgs e)
         {
-            MemorySniffer.Current.Sniff();
+
         }
 
         public void Dispose()

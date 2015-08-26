@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,7 +11,7 @@ using Soft64.MipsR4300.Interpreter;
 
 namespace Soft64.MipsR4300.Debugging
 {
-    public class MipsDebugger
+    public class MipsDebugger : INotifyPropertyChanged
     {
         private List<DisassembledInstruction> m_Disassembly;
         private DebugInstructionReader m_InstReader;
@@ -145,26 +146,34 @@ namespace Soft64.MipsR4300.Debugging
         {
             get { return m_InstructionBreakpoints; }
         }
-    }
 
-    public struct BranchRange
-    {
-        private Int64 m_Begin;
-        private Int64 m_End;
-
-        public BranchRange(Int64 begin, Int64 end)
+        public void AddBreakpoint(Int64 address)
         {
-            m_Begin = begin;
-            m_End = end;
+            m_InstructionBreakpoints.Add(address);
+            OnPropertyChanged("Breakpoints");
         }
 
-        public Int64 Begin { get { return m_Begin; } }
+        public void RemoveBreakpoint(Int32 address)
+        {
+            m_InstructionBreakpoints.Remove(address);
+            OnPropertyChanged("Breakpoints");
+        }
 
-        public Int64 End { get { return m_End; } }
-    }
 
-    public class InstructionBreakpoint
-    {
-        public Int64 Address { get; set; }
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(String name)
+        {
+            var e = PropertyChanged;
+
+            if (e != null)
+            {
+                e(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        #endregion
     }
 }
