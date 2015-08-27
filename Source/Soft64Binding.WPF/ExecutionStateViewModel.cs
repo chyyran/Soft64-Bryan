@@ -26,7 +26,7 @@ namespace Soft64Binding.WPF
 
             for (Int32 i = 0; i < 32; i++)
             {
-                GPRegisters[i].RegValue = m_State.GPRRegs64[i];
+                GPRegisters[i].RegValue = m_State.GPRRegs[i];
             }
         }
 
@@ -38,7 +38,7 @@ namespace Soft64Binding.WPF
 
             for (Int32 i = 0; i < 32; i++)
             {
-                m_State.GPRRegs64[i] = GPRegisters[i].RegValue;
+                m_State.GPRRegs[i] = GPRegisters[i].RegValue;
             }
         }
 

@@ -82,7 +82,7 @@ namespace Soft64.MipsR4300
             /* First the MIPS initializes */
             m_State.CP0Regs.Clear();
             m_State.Fpr.Clear();
-            m_State.GPRRegs64.Clear();
+            m_State.GPRRegs.Clear();
 
             m_State.LLBit = false;
             m_State.Hi = 0;
@@ -122,7 +122,7 @@ namespace Soft64.MipsR4300
 
             for (Int32 i = 0; i < 32; i++ )
             {
-                snapshot.GPR[i] = m_State.GPRRegs64[i];
+                snapshot.GPR[i] = m_State.GPRRegs[i];
             }
 
             return snapshot;

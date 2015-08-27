@@ -114,7 +114,7 @@ namespace Soft64.MipsR4300.Interpreter
 
         public void LinkAddress(Int64 address)
         {
-            MipsState.GPRRegs64.GPRRegs64S[31] = address;
+            MipsState.WriteGPRSigned(32, address);
         }
 
         private void HookOpcodeMethods()

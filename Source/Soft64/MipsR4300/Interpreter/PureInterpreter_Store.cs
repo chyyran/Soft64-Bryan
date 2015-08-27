@@ -26,17 +26,18 @@ namespace Soft64.MipsR4300.Interpreter
         [OpcodeHook("SW")]
         private void Inst_Sw(MipsInstruction inst)
         {
-            Int64 baseValue = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
-            Int32 imm = inst.Immediate.SignExtended32();
-            Int64 address = baseValue + imm;
+            Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
 
             if ((address & 3) != 0)
             {
-                throw new InvalidOperationException("Address error");
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorStore;
             }
+            else
+            {
 
-            DataBinaryReader.BaseStream.Position = address.ResolveAddress();
-            DataBinaryWriter.Write(MipsState.GPRRegs64.GPRRegs32[inst.Rt]);
+                DataBinaryWriter.BaseStream.Position = address;
+                DataBinaryWriter.Write(MipsState.ReadGPR32Unsigned(inst.Rt));
+            }
         }
 
         [OpcodeHook("SD")]
@@ -45,17 +46,18 @@ namespace Soft64.MipsR4300.Interpreter
             if (MipsState.Is32BitMode())
                 throw new InvalidOperationException("Instruction reserved");
 
-            Int64 baseValue = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
-            Int32 imm = inst.Immediate.SignExtended32();
-            Int64 address = baseValue + imm;
+            Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
 
             if ((address & 7) != 0)
             {
-                throw new InvalidOperationException("Address error");
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorStore;
             }
+            else
+            {
 
-            DataBinaryReader.BaseStream.Position = address.ResolveAddress();
-            DataBinaryWriter.Write(MipsState.GPRRegs64[inst.Rt]);
+                DataBinaryWriter.BaseStream.Position = address;
+                DataBinaryWriter.Write(MipsState.ReadGPRUnsigned(inst.Rt));
+            }
         }
     }
 }

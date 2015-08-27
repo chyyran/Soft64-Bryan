@@ -79,7 +79,7 @@ namespace Soft64
             /* Now we do the actual writes to the emulator */
             foreach (var reg in regs)
             {
-                Machine.Current.DeviceCPU.State.GPRRegs64[reg.index] = reg.value;
+                Machine.Current.DeviceCPU.State.WriteGPRUnsigned(reg.index, reg.value);
             }
 
             foreach (var m in mem32)

@@ -23,39 +23,41 @@ namespace Soft64.MipsR4300.Interpreter
 {
     public partial class PureInterpreter
     {
-        /* TODO: check over GPR selected regs */
-        /* TODO: Using UInt32 hack to cast sign extended 64bit integers into 32bits so addressing works */
-
         [OpcodeHook("LUI")]
         private void Inst_Lui(MipsInstruction inst)
         {
-            UInt32 word = ((UInt32)inst.Immediate << 16);
+            UInt32 word = ((UInt32)inst.Immediate) << 16;
 
             if (MipsState.Is32BitMode())
-                MipsState.GPRRegs64.GPRRegs32[inst.Rt] = word;
+            {
+                MipsState.WriteGPR32Unsigned(inst.Rt, word);
+            }
             else
-                MipsState.GPRRegs64.GPRRegs64S[inst.Rt] = word.SignExtended64();
+            {
+                MipsState.WriteGPRUnsigned(inst.Rt, (UInt64)(Int64)(Int32)word);
+            }
         }
 
         [OpcodeHook("LW")]
         private void Inst_Lw(MipsInstruction inst)
         {
-            Int64 baseValue = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
-            Int32 imm = inst.Immediate.SignExtended32();
-            Int64 address = baseValue + imm;
-            DataBinaryReader.BaseStream.Position = address.ResolveAddress();
-            UInt32 read = DataBinaryReader.ReadUInt32();
+            Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
 
             if ((address & 3) != 0)
             {
                 MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorLoad;
-                return;
             }
-
-            if (MipsState.Is32BitMode())
-                MipsState.GPRRegs64.GPRRegs32[inst.Rt] = read;
             else
-                MipsState.GPRRegs64.GPRRegs64S[inst.Rt] = read.SignExtended64();
+            {
+
+                DataBinaryReader.BaseStream.Position = address;
+                UInt32 read = DataBinaryReader.ReadUInt32();
+
+                if (MipsState.Is32BitMode())
+                    MipsState.WriteGPR32Unsigned(inst.Rt, read);
+                else
+                    MipsState.WriteGPRUnsigned(inst.Rt, (UInt64)(Int64)(Int32)read);
+            }
         }
 
         [OpcodeHook("LD")]
@@ -67,18 +69,18 @@ namespace Soft64.MipsR4300.Interpreter
                 return;
             }
 
-            Int64 baseValue = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
-            Int32 imm = inst.Immediate.SignExtended32();
-            Int64 address = baseValue + imm;
+            Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
 
-            if ((address & 7) != 0)
+            if ((address & 3) != 0)
             {
                 MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorLoad;
-                return;
             }
+            else
+            {
 
-            DataBinaryReader.BaseStream.Position = address.ResolveAddress();
-            MipsState.GPRRegs64[inst.Rt] = DataBinaryReader.ReadUInt64();
+                DataBinaryReader.BaseStream.Position = address;
+                MipsState.WriteGPRUnsigned(inst.Rt, DataBinaryReader.ReadUInt64());
+            }
         }
     }
 }

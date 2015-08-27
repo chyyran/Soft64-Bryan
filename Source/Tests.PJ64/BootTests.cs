@@ -148,24 +148,24 @@ namespace Tests.PJ64
         private void AssertPIFCodes(RegionType region, CICKeyType cic, ExecutionState state)
         {
             Assert.Equal(0x00000000A4000040L, state.PC);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[0]);
-            Assert.Equal(0xFFFFFFFFA4001F0CUL, state.GPRRegs64[6]);
-            Assert.Equal(0xFFFFFFFFA4001F08UL, state.GPRRegs64[7]);
-            Assert.Equal(0x00000000000000C0UL, state.GPRRegs64[8]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[9]);
-            Assert.Equal(0x0000000000000040UL, state.GPRRegs64[10]);
-            Assert.Equal(0xFFFFFFFFA4000040UL, state.GPRRegs64[11]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[16]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[17]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[18]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[19]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[21]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[26]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[27]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[28]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[28]);
-            Assert.Equal(0xFFFFFFFFA4001FF0UL, state.GPRRegs64[29]);
-            Assert.Equal(0x0000000000000000UL, state.GPRRegs64[30]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[0]);
+            Assert.Equal(0xFFFFFFFFA4001F0CUL, state.GPRRegs[6]);
+            Assert.Equal(0xFFFFFFFFA4001F08UL, state.GPRRegs[7]);
+            Assert.Equal(0x00000000000000C0UL, state.GPRRegs[8]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[9]);
+            Assert.Equal(0x0000000000000040UL, state.GPRRegs[10]);
+            Assert.Equal(0xFFFFFFFFA4000040UL, state.GPRRegs[11]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[16]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[17]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[18]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[19]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[21]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[26]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[27]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[28]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[28]);
+            Assert.Equal(0xFFFFFFFFA4001FF0UL, state.GPRRegs[29]);
+            Assert.Equal(0x0000000000000000UL, state.GPRRegs[30]);
 
             switch (Cartridge.Current.RomImage.Region)
             {
@@ -178,9 +178,9 @@ namespace Tests.PJ64
                             case CICKeyType.Unknown:
                             case CICKeyType.CIC_X102:
                                 {
-                                    Assert.Equal(0xFFFFFFFFC0F1D859UL, state.GPRRegs64[5]);
-                                    Assert.Equal(0x000000002DE108EAUL, state.GPRRegs64[14]);
-                                    Assert.Equal(0x0000000000000000UL, state.GPRRegs64[24]);
+                                    Assert.Equal(0xFFFFFFFFC0F1D859UL, state.GPRRegs[5]);
+                                    Assert.Equal(0x000000002DE108EAUL, state.GPRRegs[14]);
+                                    Assert.Equal(0x0000000000000000UL, state.GPRRegs[24]);
 
                                     break;
                                 }
@@ -190,31 +190,31 @@ namespace Tests.PJ64
                                 }
                             case CICKeyType.CIC_X103:
                                 {
-                                    Assert.Equal(0xFFFFFFFFD4646273UL, state.GPRRegs64[5]);
-                                    Assert.Equal(0x000000001AF99984UL, state.GPRRegs64[14]);
-                                    Assert.Equal(0x0000000000000000UL, state.GPRRegs64[24]);
+                                    Assert.Equal(0xFFFFFFFFD4646273UL, state.GPRRegs[5]);
+                                    Assert.Equal(0x000000001AF99984UL, state.GPRRegs[14]);
+                                    Assert.Equal(0x0000000000000000UL, state.GPRRegs[24]);
                                     break;
                                 }
                             case CICKeyType.CIC_X105:
                                 {
-                                    Assert.Equal(0xFFFFFFFFDECAAAD1UL, state.GPRRegs64[5]);
-                                    Assert.Equal(0x000000000CF85C13UL, state.GPRRegs64[14]);
-                                    Assert.Equal(0x0000000000000002UL, state.GPRRegs64[24]);
+                                    Assert.Equal(0xFFFFFFFFDECAAAD1UL, state.GPRRegs[5]);
+                                    Assert.Equal(0x000000000CF85C13UL, state.GPRRegs[14]);
+                                    Assert.Equal(0x0000000000000002UL, state.GPRRegs[24]);
                                     AssertEqualMemoryReadU32(0xA4001004, 0xBDA807FC);
                                     break;
                                 }
                             case CICKeyType.CIC_X106:
                                 {
-                                    Assert.Equal(0xFFFFFFFFB04DC903UL, state.GPRRegs64[5]);
-                                    Assert.Equal(0x000000001AF99984UL, state.GPRRegs64[14]);
-                                    Assert.Equal(0x0000000000000002UL, state.GPRRegs64[24]);
+                                    Assert.Equal(0xFFFFFFFFB04DC903UL, state.GPRRegs[5]);
+                                    Assert.Equal(0x000000001AF99984UL, state.GPRRegs[14]);
+                                    Assert.Equal(0x0000000000000002UL, state.GPRRegs[24]);
                                     break;
                                 }
                         }
 
-                        Assert.Equal(0x0000000000000000UL, state.GPRRegs64[20]);
-                        Assert.Equal(0x0000000000000006UL, state.GPRRegs64[23]);
-                        Assert.Equal(0xFFFFFFFFA4001554UL, state.GPRRegs64[31]);
+                        Assert.Equal(0x0000000000000000UL, state.GPRRegs[20]);
+                        Assert.Equal(0x0000000000000006UL, state.GPRRegs[23]);
+                        Assert.Equal(0xFFFFFFFFA4001554UL, state.GPRRegs[31]);
                         break;
                     }
 
@@ -228,40 +228,40 @@ namespace Tests.PJ64
                             case CICKeyType.Unknown:
                             case CICKeyType.CIC_X102:
                                 {
-                                    Assert.Equal(0xFFFFFFFFC95973D5UL, state.GPRRegs64[5]);
-                                    Assert.Equal(0x000000002449A366UL, state.GPRRegs64[14]);
+                                    Assert.Equal(0xFFFFFFFFC95973D5UL, state.GPRRegs[5]);
+                                    Assert.Equal(0x000000002449A366UL, state.GPRRegs[14]);
                                     break;
                                 }
                             case CICKeyType.CIC_X101:
                                 {
-                                    Assert.Equal(0x000000000000003FUL, state.GPRRegs64[22]);
+                                    Assert.Equal(0x000000000000003FUL, state.GPRRegs[22]);
                                     break;
                                 }
                             case CICKeyType.CIC_X103:
                                 {
-                                    Assert.Equal(0xFFFFFFFF95315A28UL, state.GPRRegs64[5]);
-                                    Assert.Equal(0x000000005BACA1DFUL, state.GPRRegs64[14]);
+                                    Assert.Equal(0xFFFFFFFF95315A28UL, state.GPRRegs[5]);
+                                    Assert.Equal(0x000000005BACA1DFUL, state.GPRRegs[14]);
                                     break;
                                 }
                             case CICKeyType.CIC_X105:
                                 {
                                     AssertEqualMemoryReadU32(0xA4001004, 0x8DA807FC);
-                                    Assert.Equal(0x000000005493FB9AUL, state.GPRRegs64[5]);
-                                    Assert.Equal(0xFFFFFFFFC2C20384UL, state.GPRRegs64[14]);
+                                    Assert.Equal(0x000000005493FB9AUL, state.GPRRegs[5]);
+                                    Assert.Equal(0xFFFFFFFFC2C20384UL, state.GPRRegs[14]);
                                     break;
                                 }
                             case CICKeyType.CIC_X106:
                                 {
-                                    Assert.Equal(0xFFFFFFFFE067221FUL, state.GPRRegs64[5]);
-                                    Assert.Equal(0x000000005CD2B70FUL, state.GPRRegs64[14]);
+                                    Assert.Equal(0xFFFFFFFFE067221FUL, state.GPRRegs[5]);
+                                    Assert.Equal(0x000000005CD2B70FUL, state.GPRRegs[14]);
                                     break;
                                 }
                         }
 
-                        Assert.Equal(0x0000000000000001UL, state.GPRRegs64[20]);
-                        Assert.Equal(0x0000000000000000UL, state.GPRRegs64[23]);
-                        Assert.Equal(0x0000000000000003UL, state.GPRRegs64[24]);
-                        Assert.Equal(0xFFFFFFFFA4001550UL, state.GPRRegs64[31]);
+                        Assert.Equal(0x0000000000000001UL, state.GPRRegs[20]);
+                        Assert.Equal(0x0000000000000000UL, state.GPRRegs[23]);
+                        Assert.Equal(0x0000000000000003UL, state.GPRRegs[24]);
+                        Assert.Equal(0xFFFFFFFFA4001550UL, state.GPRRegs[31]);
                         break;
                     }
             }
@@ -270,35 +270,35 @@ namespace Tests.PJ64
             {
                 case CICKeyType.CIC_X101:
                     {
-                        Assert.Equal(0x000000000000003FUL, state.GPRRegs64[22]);
+                        Assert.Equal(0x000000000000003FUL, state.GPRRegs[22]);
                         break;
                     }
                 case CICKeyType.Unknown:
                 default:
                 case CICKeyType.CIC_X102:
                     {
-                        Assert.Equal(0x0000000000000001UL, state.GPRRegs64[1]);
-                        Assert.Equal(0x000000000EBDA536UL, state.GPRRegs64[2]);
-                        Assert.Equal(0x000000000EBDA536UL, state.GPRRegs64[3]);
-                        Assert.Equal(0x000000000000A536UL, state.GPRRegs64[4]);
-                        Assert.Equal(0xFFFFFFFFED10D0B3UL, state.GPRRegs64[12]);
-                        Assert.Equal(0x000000001402A4CCUL, state.GPRRegs64[13]);
-                        Assert.Equal(0x000000003103E121UL, state.GPRRegs64[15]);
-                        Assert.Equal(0x000000000000003FUL, state.GPRRegs64[22]);
-                        Assert.Equal(0xFFFFFFFF9DEBB54FUL, state.GPRRegs64[25]);
+                        Assert.Equal(0x0000000000000001UL, state.GPRRegs[1]);
+                        Assert.Equal(0x000000000EBDA536UL, state.GPRRegs[2]);
+                        Assert.Equal(0x000000000EBDA536UL, state.GPRRegs[3]);
+                        Assert.Equal(0x000000000000A536UL, state.GPRRegs[4]);
+                        Assert.Equal(0xFFFFFFFFED10D0B3UL, state.GPRRegs[12]);
+                        Assert.Equal(0x000000001402A4CCUL, state.GPRRegs[13]);
+                        Assert.Equal(0x000000003103E121UL, state.GPRRegs[15]);
+                        Assert.Equal(0x000000000000003FUL, state.GPRRegs[22]);
+                        Assert.Equal(0xFFFFFFFF9DEBB54FUL, state.GPRRegs[25]);
                         break;
                     }
                 case CICKeyType.CIC_X103:
                     {
-                        Assert.Equal(0x0000000000000001UL, state.GPRRegs64[1]);
-                        Assert.Equal(0x0000000049A5EE96UL, state.GPRRegs64[2]);
-                        Assert.Equal(0x0000000049A5EE96UL, state.GPRRegs64[3]);
-                        Assert.Equal(0x000000000000EE96UL, state.GPRRegs64[4]);
-                        Assert.Equal(0xFFFFFFFFCE9DFBF7UL, state.GPRRegs64[12]);
-                        Assert.Equal(0xFFFFFFFFCE9DFBF7UL, state.GPRRegs64[13]);
-                        Assert.Equal(0x0000000018B63D28UL, state.GPRRegs64[15]);
-                        Assert.Equal(0x0000000000000078UL, state.GPRRegs64[22]);
-                        Assert.Equal(0xFFFFFFFF825B21C9UL, state.GPRRegs64[25]);
+                        Assert.Equal(0x0000000000000001UL, state.GPRRegs[1]);
+                        Assert.Equal(0x0000000049A5EE96UL, state.GPRRegs[2]);
+                        Assert.Equal(0x0000000049A5EE96UL, state.GPRRegs[3]);
+                        Assert.Equal(0x000000000000EE96UL, state.GPRRegs[4]);
+                        Assert.Equal(0xFFFFFFFFCE9DFBF7UL, state.GPRRegs[12]);
+                        Assert.Equal(0xFFFFFFFFCE9DFBF7UL, state.GPRRegs[13]);
+                        Assert.Equal(0x0000000018B63D28UL, state.GPRRegs[15]);
+                        Assert.Equal(0x0000000000000078UL, state.GPRRegs[22]);
+                        Assert.Equal(0xFFFFFFFF825B21C9UL, state.GPRRegs[25]);
                         break;
                     }
                 case CICKeyType.CIC_X105:
@@ -310,28 +310,28 @@ namespace Tests.PJ64
                         AssertEqualMemoryReadU32(0xA4001014, 0x3C0DBFC0);
                         AssertEqualMemoryReadU32(0xA4001018, 0x8DA80024);
                         AssertEqualMemoryReadU32(0xA400101C, 0x3C0BB000);
-                        Assert.Equal(0x0000000000000000UL, state.GPRRegs64[1]);
-                        Assert.Equal(0xFFFFFFFFF58B0FBFUL, state.GPRRegs64[2]);
-                        Assert.Equal(0xFFFFFFFFF58B0FBFUL, state.GPRRegs64[3]);
-                        Assert.Equal(0x0000000000000FBFUL, state.GPRRegs64[4]);
-                        Assert.Equal(0xFFFFFFFF9651F81EUL, state.GPRRegs64[12]);
-                        Assert.Equal(0x000000002D42AAC5UL, state.GPRRegs64[13]);
-                        Assert.Equal(0x0000000056584D60UL, state.GPRRegs64[15]);
-                        Assert.Equal(0x0000000000000091UL, state.GPRRegs64[22]);
-                        Assert.Equal(0xFFFFFFFFCDCE565FUL, state.GPRRegs64[25]);
+                        Assert.Equal(0x0000000000000000UL, state.GPRRegs[1]);
+                        Assert.Equal(0xFFFFFFFFF58B0FBFUL, state.GPRRegs[2]);
+                        Assert.Equal(0xFFFFFFFFF58B0FBFUL, state.GPRRegs[3]);
+                        Assert.Equal(0x0000000000000FBFUL, state.GPRRegs[4]);
+                        Assert.Equal(0xFFFFFFFF9651F81EUL, state.GPRRegs[12]);
+                        Assert.Equal(0x000000002D42AAC5UL, state.GPRRegs[13]);
+                        Assert.Equal(0x0000000056584D60UL, state.GPRRegs[15]);
+                        Assert.Equal(0x0000000000000091UL, state.GPRRegs[22]);
+                        Assert.Equal(0xFFFFFFFFCDCE565FUL, state.GPRRegs[25]);
                         break;
                     }
                 case CICKeyType.CIC_X106:
                     {
-                        Assert.Equal(0x0000000000000000UL, state.GPRRegs64[1]);
-                        Assert.Equal(0xFFFFFFFFA95930A4UL, state.GPRRegs64[2]);
-                        Assert.Equal(0xFFFFFFFFA95930A4UL, state.GPRRegs64[3]);
-                        Assert.Equal(0x00000000000030A4UL, state.GPRRegs64[4]);
-                        Assert.Equal(0xFFFFFFFFBCB59510UL, state.GPRRegs64[12]);
-                        Assert.Equal(0xFFFFFFFFBCB59510UL, state.GPRRegs64[13]);
-                        Assert.Equal(0x000000007A3C07F4UL, state.GPRRegs64[15]);
-                        Assert.Equal(0x0000000000000085UL, state.GPRRegs64[22]);
-                        Assert.Equal(0x00000000465E3F72UL, state.GPRRegs64[25]);
+                        Assert.Equal(0x0000000000000000UL, state.GPRRegs[1]);
+                        Assert.Equal(0xFFFFFFFFA95930A4UL, state.GPRRegs[2]);
+                        Assert.Equal(0xFFFFFFFFA95930A4UL, state.GPRRegs[3]);
+                        Assert.Equal(0x00000000000030A4UL, state.GPRRegs[4]);
+                        Assert.Equal(0xFFFFFFFFBCB59510UL, state.GPRRegs[12]);
+                        Assert.Equal(0xFFFFFFFFBCB59510UL, state.GPRRegs[13]);
+                        Assert.Equal(0x000000007A3C07F4UL, state.GPRRegs[15]);
+                        Assert.Equal(0x0000000000000085UL, state.GPRRegs[22]);
+                        Assert.Equal(0x00000000465E3F72UL, state.GPRRegs[25]);
                         break;
                     }
             }

@@ -27,7 +27,6 @@ namespace Soft64
 {
     public enum BootMode : int
     {
-        MIPS_ELF = 0,
         HLE_IPL,
         HLE_IPL_OLD,
         IPL_ROM,
@@ -39,7 +38,6 @@ namespace Soft64
         {
             switch (bootMode)
             {
-                case BootMode.MIPS_ELF: return "MIPS Executable File";
                 case BootMode.HLE_IPL: return "High-Level PIF Bootstrap";
                 case BootMode.IPL_ROM: return "Real PIF Bootstrap";
                 default: return "Unknown Bootmode!";
@@ -49,8 +47,6 @@ namespace Soft64
 
     public static class SoftBootManager
     {
-        private static Stream s_ElfStream;
-        private static String s_ElfName;
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public static void SetupExecutionState(BootMode bootMode)
@@ -99,11 +95,11 @@ namespace Soft64
                     Machine.Current.N64MemorySafe.Position = N64MemRegions.SPDMem.ToRegionAddress() + 0x40;
                     Machine.Current.DeviceRCP.DevicePI.InsertedCartridge.RomImage.BootRomInformation.CopyCode(Machine.Current.N64MemorySafe);
 
-                    state.GPRRegs64[19] = 0; /* 0: Cart, 1: DiskDrive */
-                    state.GPRRegs64[20] = (UInt64)((Int32)Cartridge.Current.RomImage.Region) - 1;
-                    state.GPRRegs64[21] = 0; /* 0: ColdReset, 1: NMI */
-                    state.GPRRegs64[22] = (UInt64)Cartridge.Current.RomImage.BootRomInformation.CIC.Seed();
-                    state.GPRRegs64[23] = 0; /* S7: Unknown */
+                    state.GPRRegs[19] = 0; /* 0: Cart, 1: DiskDrive */
+                    state.GPRRegs[20] = (UInt64)((Int32)Cartridge.Current.RomImage.Region) - 1;
+                    state.GPRRegs[21] = 0; /* 0: ColdReset, 1: NMI */
+                    state.GPRRegs[22] = (UInt64)Cartridge.Current.RomImage.BootRomInformation.CIC.Seed();
+                    state.GPRRegs[23] = 0; /* S7: Unknown */
 
                     /* Required by CIC X105 */
                     BinaryWriter bw = new BinaryWriter(Machine.Current.N64MemorySafe);
@@ -118,9 +114,9 @@ namespace Soft64
                     bw.Write(0x3c0bb000U);
 
                     /* Required by CIC X105 */
-                    state.GPRRegs64[11] = 0xffffffffa4000040UL; /* T3 */
-                    state.GPRRegs64[29] = 0xffffffffa4001ff0UL; /* SP */
-                    state.GPRRegs64[31] = 0xffffffffa4001550UL; /* RA */
+                    state.GPRRegs[11] = 0xffffffffa4000040UL; /* T3 */
+                    state.GPRRegs[29] = 0xffffffffa4001ff0UL; /* SP */
+                    state.GPRRegs[31] = 0xffffffffa4001550UL; /* RA */
                 }
                 else
                 {
@@ -162,24 +158,10 @@ namespace Soft64
 
                 logger.Debug("ROM Entry Point: " + Machine.Current.DeviceCPU.State.PC.ToString("X8"));
             }
-            else if (bootMode == BootMode.MIPS_ELF)
-            {
-                ELFExecutable executable = new ELFExecutable(s_ElfName, s_ElfStream);
-                logger.Debug("ELF Entry Point: " + executable.EntryPointAddress.ToString("X16"));
-
-                ELFLoader.LoadElf(executable);
-                logger.Trace("ELF loaded");
-            }
             else
             {
                 throw new ArgumentException("Unknown bootmode");
             }
-        }
-
-        public static void SetElfExecutable(FileStream inStream)
-        {
-            s_ElfStream = inStream;
-            s_ElfName = inStream.Name;
         }
     }
 }

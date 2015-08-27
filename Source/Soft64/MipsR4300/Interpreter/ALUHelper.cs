@@ -23,53 +23,6 @@ namespace Soft64.MipsR4300.Interpreter
 {
     public static class ALUHelper
     {
-        public static Int32 SignExtended32(this UInt16 value)
-        {
-            UInt32 signedExtended = value & 0x0000FFFFU;
-
-            /* If sign bit is 1, then set the extra high significant bits to 1 */
-            if ((signedExtended & 0x00008000) != 0)
-            {
-                signedExtended |= 0xFFFF0000;
-            }
-
-            return (Int32)signedExtended;
-        }
-
-        public static Int64 SignExtended64(this UInt16 value)
-        {
-            UInt64 signedExtended = value & 0x000000000000FFFFU;
-
-            if ((signedExtended & 0x00008000) != 0)
-            {
-                signedExtended |= 0xFFFFFFFFFFFF0000;
-            }
-
-            return (Int64)signedExtended;
-        }
-
-        public static UInt32 ZeroExtended32(this UInt16 value)
-        {
-            return 0U | value;
-        }
-
-        public static UInt64 ZeroExtended64(this UInt16 value)
-        {
-            return 0UL | value;
-        }
-
-        public static Int64 SignExtended64(this UInt32 value)
-        {
-            UInt64 signedExtended = value & 0x00000000FFFFFFFF;
-
-            if ((signedExtended & 0x0000000080000000) != 0)
-            {
-                signedExtended |= 0xFFFFFFFF00000000;
-            }
-
-            return (Int64)signedExtended;
-        }
-
         /// <summary>
         /// Resolves the signed 64 bit address into unsigned 32 bit address.
         /// </summary>

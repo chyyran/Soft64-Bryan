@@ -41,8 +41,6 @@
                 </MenuItem.Header>
                 <MenuItem x:Name="xamlControl_MainCartBrowseFileButton" Header="Insert Cartridge" Foreground="Black" />
                 <MenuItem x:Name="xaml_ButtonEjectCartridge" Header="Eject Cartridge" Foreground="Black" />
-                <Separator />
-                <MenuItem x:Name="xaml_ButtonElfRun" Header="Load ELF" Foreground="Black" />
             </MenuItem>
             <MenuItem>
                 <MenuItem.Header>

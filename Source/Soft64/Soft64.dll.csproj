@@ -70,7 +70,6 @@
     <Compile Include="Engines\SimpleEngine.cs" />
     <Compile Include="Engines\SingleCoreScheduler.cs" />
     <Compile Include="Engines\CoreTaskScheduler.cs" />
-    <Compile Include="ELFLoader.cs" />
     <Compile Include="MipsR4300\Cache.cs" />
     <Compile Include="MipsR4300\CP0\CauseRegister.cs" />
     <Compile Include="MipsR4300\CP0\MipsExceptionHandler.cs" />
@@ -167,8 +166,6 @@
     <Compile Include="RCPProcessor.cs" />
     <Compile Include="RegionType.cs" />
     <Compile Include="PI\RomChecksum.cs" />
-    <Compile Include="ELFExecutable.cs" />
-    <Compile Include="ELFProgramHeaderEntry.cs" />
     <Compile Include="SmartRegister.cs" />
     <Compile Include="SoftBootManager.cs" />
     <Compile Include="SychronizedStream.cs" />

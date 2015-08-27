@@ -25,7 +25,7 @@ namespace Soft64.MipsR4300.Interpreter
         private void Inst_Mtc0(MipsInstruction inst)
         {
             /* TODO: Implement this instruction better if needed */
-            MipsState.CP0Regs.SetReg(inst.Rd, MipsState.GPRRegs64[inst.Rt]);
+            MipsState.CP0Regs.SetReg(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt));
         }
     }
 }

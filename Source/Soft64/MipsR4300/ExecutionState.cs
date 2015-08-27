@@ -30,6 +30,8 @@ namespace Soft64.MipsR4300
     [Serializable]
     public sealed class ExecutionState
     {
+        private GPRRegisters m_Regs = new GPRRegisters();
+
         /// <summary>
         /// Specifies which mode the CPU is running in.  If true, then its running in 64bit else 32bit.
         /// </summary>
@@ -42,7 +44,47 @@ namespace Soft64.MipsR4300
         /// R31 is used by jump/link instructions, nothing else should use this.
         /// </remarks>
         /// </summary>
-        public GPRRegisters GPRRegs64 { get; private set; }
+        public GPRRegisters GPRRegs { get { return m_Regs; }}
+
+        public UInt64 ReadGPRUnsigned(Int32 index)
+        {
+            return m_Regs[index];
+        }
+
+        public void WriteGPRUnsigned(Int32 index, UInt64 value)
+        {
+            m_Regs[index] = value;
+        }
+
+        public Int64 ReadGPRSigned(Int32 index)
+        {
+            return (Int64)m_Regs[index];
+        }
+
+        public void WriteGPRSigned(Int32 index, Int64 value)
+        {
+            m_Regs[index] = (UInt64)value;
+        }
+
+        public UInt32 ReadGPR32Unsigned(Int32 index)
+        {
+            return (UInt32)m_Regs[index];
+        }
+
+        public void WriteGPR32Unsigned(Int32 index, UInt32 value)
+        {
+            m_Regs[index] = value;
+        }
+
+        public Int32 ReadGPR32Signed(Int32 index)
+        {
+            return (Int32)(UInt32)m_Regs[index];
+        }
+
+        public void WriteGPR32Signed(Int32 index, Int32 value)
+        {
+            m_Regs[index] = (UInt32)value;
+        }
 
         /// <summary>
         /// Register for storing the higher result of Multiplication/Division computations.
@@ -130,7 +172,7 @@ namespace Soft64.MipsR4300
         {
             CP0Regs = new CP0Registers();
             Fpr = new FprRegisters();
-            GPRRegs64 = new GPRRegisters();
+            m_Regs = new GPRRegisters();
         }
     }
 }

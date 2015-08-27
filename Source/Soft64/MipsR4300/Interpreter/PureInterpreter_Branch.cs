@@ -25,131 +25,111 @@ namespace Soft64.MipsR4300.Interpreter
     {
         public static Int64 BranchComputeTargetAddress(Int64 pc, UInt16 immediate)
         {
-            Int64 delayPC = pc + 4;
-            Int64 offset = immediate.SignExtended64() << 2;
-            Int64 newPC = delayPC + offset;
+            return (pc + 4) + (((Int64)(Int16)immediate) << 2);
+        }
 
-            return newPC;
+        private void DoBranch(Boolean condition, MipsInstruction inst)
+        {
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
+            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
+        }
+
+        private void DoBranchLikely(Boolean condition, MipsInstruction inst)
+        {
+            m_NullifiedInstruction = !condition;
+            DoBranch(condition, inst);
+        }
+
+        private void DoJump(Int64 addressTarget)
+        {
+            m_IsBranch = true;
+            m_BranchDelaySlot = MipsState.PC + 4;
+            m_BranchTarget = addressTarget.ResolveAddress();
         }
 
         [OpcodeHook("BNE")]
         private void Inst_Bne(MipsInstruction inst)
         {
-            Boolean condition = false;
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-
             if (MipsState.Is32BitMode())
-                condition = MipsState.GPRRegs64.GPRRegs32[inst.Rs] != MipsState.GPRRegs64.GPRRegs32[inst.Rt];
+            {
+                DoBranch(MipsState.ReadGPR32Unsigned(inst.Rs) != MipsState.ReadGPR32Unsigned(inst.Rt), inst);
+            }
             else
-                condition = MipsState.GPRRegs64[inst.Rs] != MipsState.GPRRegs64[inst.Rt];
-
-            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
+            {
+                DoBranch(MipsState.ReadGPRUnsigned(inst.Rs) != MipsState.ReadGPRUnsigned(inst.Rt), inst);
+            }
         }
 
         [OpcodeHook("J")]
         private void Inst_J(MipsInstruction inst)
         {
-            Int64 target = (inst.Offset << 2) | ((inst.Address + 4) & 0xFFFF0000);
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-            m_BranchTarget = target.ResolveAddress();
+            DoJump((inst.Offset << 2) | ((inst.Address + 4) & 0xFFFF0000));
         }
 
         [OpcodeHook("JAL")]
         private void Inst_Jal(MipsInstruction inst)
         {
-            Int64 target = ((inst.Address + 4) & 0xFFFF0000) | (inst.Offset << 2);
             LinkAddress(inst.Address + 8);
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-            m_BranchTarget = target.ResolveAddress();
+            DoJump(((inst.Address + 4) & 0xFFFF0000) | (inst.Offset << 2));
         }
 
         [OpcodeHook("BEQL")]
         private void Inst_Beql(MipsInstruction inst)
         {
-            Boolean condition;
-            Int64 target = 0;
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-
             if (MipsState.Is32BitMode())
             {
-                condition = MipsState.GPRRegs64.GPRRegs32[inst.Rs] == MipsState.GPRRegs64.GPRRegs32[inst.Rt];
-                target = (Int32)((Int32)MipsState.PC + 4) + (Int32)inst.Immediate.SignExtended32();
+                DoBranchLikely(MipsState.ReadGPR32Unsigned(inst.Rs) == MipsState.ReadGPR32Unsigned(inst.Rt), inst);
             }
             else
             {
-                condition = MipsState.GPRRegs64[inst.Rs] == MipsState.GPRRegs64[inst.Rt];
-                target = ((Int64)MipsState.PC + 4) + (Int64)(inst.Immediate.SignExtended64() << 2);
+                DoBranchLikely(MipsState.ReadGPRUnsigned(inst.Rs) == MipsState.ReadGPRUnsigned(inst.Rt), inst);
             }
-
-            m_NullifiedInstruction = !condition;
-            m_BranchTarget = condition ? target.ResolveAddress() : MipsState.PC + 8;
         }
 
         [OpcodeHook("BEQ")]
         private void Inst_Beq(MipsInstruction inst)
         {
-            Boolean condition;
-            Int64 target = 0;
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-
             if (MipsState.Is32BitMode())
             {
-                condition = MipsState.GPRRegs64.GPRRegs32[inst.Rs] == MipsState.GPRRegs64.GPRRegs32[inst.Rt];
-                target = (Int32)((Int32)MipsState.PC + 4) + (Int32)inst.Immediate.SignExtended32();
+                DoBranch(MipsState.ReadGPR32Unsigned(inst.Rs) == MipsState.ReadGPR32Unsigned(inst.Rt), inst);
             }
             else
             {
-                condition = MipsState.GPRRegs64[inst.Rs] == MipsState.GPRRegs64[inst.Rt];
-                target = ((Int64)MipsState.PC + 4) + (Int64)(inst.Immediate.SignExtended64() << 2);
+                DoBranch(MipsState.ReadGPRUnsigned(inst.Rs) == MipsState.ReadGPRUnsigned(inst.Rt), inst);
             }
-
-            m_BranchTarget = condition ? target.ResolveAddress() : MipsState.PC + 8;
         }
 
         [OpcodeHook("JR")]
         private void Inst_Jr(MipsInstruction inst)
         {
-            Int64 target = MipsState.GPRRegs64.GPRRegs64S[inst.Rs];
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-            m_BranchTarget = target.ResolveAddress();
+            DoJump(MipsState.ReadGPRSigned(inst.Rs));
         }
 
         [OpcodeHook("BNEL")]
         private void Inst_Bnel(MipsInstruction inst)
         {
-            Boolean condition = false;
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-
             if (MipsState.Is32BitMode())
-                condition = MipsState.GPRRegs64.GPRRegs32[inst.Rs] != MipsState.GPRRegs64.GPRRegs32[inst.Rt];
+            {
+                DoBranchLikely(MipsState.ReadGPR32Unsigned(inst.Rs) != MipsState.ReadGPR32Unsigned(inst.Rt), inst);
+            }
             else
-                condition = MipsState.GPRRegs64[inst.Rs] != MipsState.GPRRegs64[inst.Rt];
-
-            m_NullifiedInstruction = !condition;
-            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
+            {
+                DoBranchLikely(MipsState.ReadGPRUnsigned(inst.Rs) != MipsState.ReadGPRUnsigned(inst.Rt), inst);
+            }
         }
 
         [OpcodeHook("BLEZL")]
         private void Inst_Blezl(MipsInstruction inst)
         {
-            Boolean condition = false;
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-
             if (MipsState.Is32BitMode())
-                condition = MipsState.GPRRegs64.GPRRegs32.GPRRegsSigned32[inst.Rs] <= 0;
+            {
+                DoBranchLikely(MipsState.ReadGPR32Unsigned(inst.Rs) <= MipsState.ReadGPR32Unsigned(inst.Rt), inst);
+            }
             else
-                condition = MipsState.GPRRegs64.GPRRegs64S[inst.Rs] <= 0;
-
-            m_NullifiedInstruction = !condition;
-            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
+            {
+                DoBranchLikely(MipsState.ReadGPRUnsigned(inst.Rs) <= MipsState.ReadGPRUnsigned(inst.Rt), inst);
+            }
         }
     }
 }

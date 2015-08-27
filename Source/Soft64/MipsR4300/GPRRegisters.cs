@@ -24,29 +24,15 @@ namespace Soft64.MipsR4300
     public sealed class GPRRegisters
     {
         private UInt64[] m_Registers;
-        private GPRRegisters64S m_Reg64S;
-        private GPRRegisters32 m_Registers32;
 
         public GPRRegisters()
         {
             m_Registers = new UInt64[32];
-            m_Registers32 = new GPRRegisters32(this);
-            m_Reg64S = new GPRRegisters64S(this);
         }
 
         public void Clear()
         {
             Array.Clear(m_Registers, 0, m_Registers.Length);
-        }
-
-        public GPRRegisters32 GPRRegs32
-        {
-            get { return m_Registers32; }
-        }
-
-        public GPRRegisters64S GPRRegs64S
-        {
-            get { return m_Reg64S; }
         }
 
         public UInt64 this[Int32 index]
@@ -255,61 +241,6 @@ namespace Soft64.MipsR4300
         {
             get { return m_Registers[31]; }
             set { m_Registers[31] = value; }
-        }
-    }
-
-    public sealed class GPRRegisters32
-    {
-        private GPRRegisters m_ParentGPRRef;
-        private GPRRegisters32S m_SignedRegs;
-
-        internal GPRRegisters32(GPRRegisters parentRegs)
-        {
-            m_ParentGPRRef = parentRegs;
-            m_SignedRegs = new GPRRegisters32S(this);
-        }
-
-        public UInt32 this[Int32 index]
-        {
-            get { unchecked { return (UInt32)(m_ParentGPRRef[index] & 0x00000000FFFFFFFF); } }
-            set { unchecked { m_ParentGPRRef[index] = value; } }
-        }
-
-        public GPRRegisters32S GPRRegsSigned32
-        {
-            get { return m_SignedRegs; }
-        }
-    }
-
-    public sealed class GPRRegisters32S
-    {
-        private GPRRegisters32 m_Regs;
-
-        internal GPRRegisters32S(GPRRegisters32 regs)
-        {
-            m_Regs = regs;
-        }
-
-        public Int32 this[Int32 index]
-        {
-            get { return (Int32)m_Regs[index]; }
-            set { m_Regs[index] = (UInt32)value; }
-        }
-    }
-
-    public sealed class GPRRegisters64S
-    {
-        private GPRRegisters m_Regs;
-
-        internal GPRRegisters64S(GPRRegisters regs)
-        {
-            m_Regs = regs;
-        }
-
-        public Int64 this[Int32 index]
-        {
-            get { return (Int64)m_Regs[index]; }
-            set { m_Regs[index] = (UInt64)value; }
         }
     }
 }
