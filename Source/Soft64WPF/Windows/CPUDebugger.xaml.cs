@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -42,6 +43,7 @@ namespace Soft64WPF.Windows
             m_MachineModel.MachineEventNotification += m_MachineModel_MachineEventNotification;
 
             m_Debugger = m_MachineModel.Cpu.Debugger.Debugger;
+            WeakEventManager<MipsDebugger, PropertyChangedEventArgs>.AddHandler(m_Debugger, "PropertyChanged", MipsDebuggerPropertyChangedHandler);
             m_Debugger.Attach();
 
             Resources.Add("breakpointToVisibilityConverter", new BreakpointToVisibilityConverter(m_Debugger));
@@ -53,9 +55,27 @@ namespace Soft64WPF.Windows
             xaml_MenuBtnSaveChanges.Click += xaml_MenuBtnSaveChanges_Click;
             xaml_BtnCompare.Click += xaml_BtnCompare_Click;
             xaml_BtnResHooks.Click += xaml_BtnResHooks_Click;
+            xaml_BtnBreakpoints.Click += xaml_BtnBreakpoints_Click;
             Loaded += CPUDebugger_Loaded;
             Unloaded += CPUDebugger_Unloaded;
             xaml_CodeScrollbar.ValueChanged += xaml_CodeScrollbar_ValueChanged;
+        }
+
+        void xaml_BtnBreakpoints_Click(object sender, RoutedEventArgs e)
+        {
+            BreakpointsWindow window = new BreakpointsWindow();
+            window.Show();
+        }
+
+        private void MipsDebuggerPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            Dispatcher.InvokeAsync(() =>
+            {
+                if (e.PropertyName == "Breakpoints")
+                {
+                    ReadCpu();
+                }
+            });
         }
 
         void xaml_CodeScrollbar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -218,12 +238,7 @@ namespace Soft64WPF.Windows
             DisassembledInstruction disasm = (DisassembledInstruction)xaml_DataGridDisassembly.SelectedItem;
             ListBoxItem item = (ListBoxItem)(xaml_DataGridDisassembly.ItemContainerGenerator.ContainerFromIndex(xaml_DataGridDisassembly.SelectedIndex));
             Viewbox box = GetNamedPart<Viewbox>(item, "PART_BreakPoint");
-
-            if (!m_Debugger.Breakpoints.Contains(disasm.Address))
-            {
-                m_Debugger.Breakpoints.Add(disasm.Address);
-            }
-
+            m_Debugger.AddBreakpoint(disasm.Address);
             box.Visibility = Visibility.Visible;
         }
 
@@ -232,12 +247,7 @@ namespace Soft64WPF.Windows
             DisassembledInstruction disasm = (DisassembledInstruction)xaml_DataGridDisassembly.SelectedItem;
             ListBoxItem item = (ListBoxItem)(xaml_DataGridDisassembly.ItemContainerGenerator.ContainerFromIndex(xaml_DataGridDisassembly.SelectedIndex));
             Viewbox box = GetNamedPart<Viewbox>(item, "PART_BreakPoint");
-
-            if (!m_Debugger.Breakpoints.Contains(disasm.Address))
-            {
-                m_Debugger.Breakpoints.Remove(disasm.Address);
-            }
-
+            m_Debugger.RemoveBreakpoint(disasm.Address);
             box.Visibility = Visibility.Hidden;
         }
     }

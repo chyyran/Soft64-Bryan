@@ -34,6 +34,7 @@
             <MenuItem Header="Tools">
                 <MenuItem Header="Core Compare ..." x:Name="xaml_BtnCompare"/>
                 <MenuItem Header="Resources ..." x:Name="xaml_BtnResHooks"/>
+                <MenuItem Header="Breakpoints ..." x:Name="xaml_BtnBreakpoints" />
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,5,0,0" Width="258" HorizontalAlignment="Left">

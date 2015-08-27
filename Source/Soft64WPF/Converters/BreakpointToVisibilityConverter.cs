@@ -21,7 +21,7 @@ namespace Soft64WPF.Converters
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             Int64 address = (Int64)value;
-            return m_Debugger.Breakpoints.Contains(address) ? Visibility.Visible : Visibility.Hidden;
+            return m_Debugger.ContainsBreakpoint(address) ? Visibility.Visible : Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

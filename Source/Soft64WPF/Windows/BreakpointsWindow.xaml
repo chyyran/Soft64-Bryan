@@ -7,11 +7,12 @@
             <RowDefinition/>
             <RowDefinition Height="27"/>
         </Grid.RowDefinitions>
-        <ListBox x:Name="xaml_BreakpointListBox" />
+        <ListBox x:Name="xaml_BreakpointListBox" ItemStringFormat="X8">
+        </ListBox>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Height="22" VerticalAlignment="Bottom" >
             <TextBox x:Name="xaml_TextBoxAddress" Width="132" Margin="0,0,5,0" />
-            <Button x:Name="xaml_BtnAdd" Content="Add" Margin="0,0,5,0" Width="41"/>
-            <Button x:Name="xaml_BtnRemove" Content="Remove" Width="57" />
+            <Button x:Name="xaml_BtnAdd" Content="Add" Margin="0,0,5,0" Width="41" Click="xaml_BtnAdd_Click"/>
+            <Button x:Name="xaml_BtnRemove" Content="Remove" Width="57" Click="xaml_BtnRemove_Click" />
         </StackPanel>
     </Grid>
 </Window>

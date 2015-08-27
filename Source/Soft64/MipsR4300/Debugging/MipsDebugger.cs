@@ -142,21 +142,32 @@ namespace Soft64.MipsR4300.Debugging
             }
         }
 
-        public ICollection<Int64> Breakpoints
+        public IEnumerable<Int64> Breakpoints
         {
             get { return m_InstructionBreakpoints; }
         }
 
         public void AddBreakpoint(Int64 address)
         {
+            if (m_InstructionBreakpoints.Contains(address))
+                return;
+
             m_InstructionBreakpoints.Add(address);
             OnPropertyChanged("Breakpoints");
         }
 
-        public void RemoveBreakpoint(Int32 address)
+        public void RemoveBreakpoint(Int64 address)
         {
+            if (!m_InstructionBreakpoints.Contains(address))
+                return;
+
             m_InstructionBreakpoints.Remove(address);
             OnPropertyChanged("Breakpoints");
+        }
+
+        public Boolean ContainsBreakpoint(Int64 address)
+        {
+            return m_InstructionBreakpoints.Contains(address);
         }
 
 

@@ -1,0 +1,1 @@
+﻿Each Soft64 view model should provide CLR events wrapped around weak events, also provide Weak references to all core components.
