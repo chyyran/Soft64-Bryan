@@ -14,7 +14,7 @@ namespace Soft64.MipsR4300
         private Boolean m_Mode;
         private GPRRegisters m_GPR;
         private CP0Registers m_CP0;
-        private FprRegisters m_CP1;
+        private FpuRegisters m_CP1;
         private UInt64 m_Hi;
         private UInt64 m_Lo;
         private Boolean m_LLbit;
@@ -26,7 +26,7 @@ namespace Soft64.MipsR4300
         {
             m_GPR = new GPRRegisters();
             m_CP0 = new CP0Registers();
-            m_CP1 = new FprRegisters();
+            m_CP1 = new FpuRegisters();
             m_Name = name + " Snapshot";
         }
 
@@ -58,7 +58,7 @@ namespace Soft64.MipsR4300
             }
         }
 
-        public FprRegisters CP1
+        public FpuRegisters FPU
         {
             get
             {

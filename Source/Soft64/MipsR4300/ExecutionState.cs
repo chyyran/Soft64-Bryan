@@ -123,7 +123,7 @@ namespace Soft64.MipsR4300
         /// <summary>
         /// Floating-Point General Purpose Registers. These registers are part of the FPU.
         /// </summary>
-        public FprRegisters Fpr { get; private set; }
+        public FpuRegisters Fpr { get; private set; }
 
         /// <summary>
         /// FPU Control/Status Register
@@ -171,7 +171,7 @@ namespace Soft64.MipsR4300
         public ExecutionState()
         {
             CP0Regs = new CP0Registers();
-            Fpr = new FprRegisters();
+            Fpr = new FpuRegisters();
             m_Regs = new GPRRegisters();
         }
     }

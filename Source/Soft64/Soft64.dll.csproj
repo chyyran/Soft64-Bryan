@@ -61,6 +61,8 @@
     <Compile Include="Cartridge.cs" />
     <Compile Include="CartridgeInfo.cs" />
     <Compile Include="CPUProcessor.cs" />
+    <Compile Include="MipsR4300\CP1\FpuRegisters.cs" />
+    <Compile Include="RCP\MipsInterface.cs" />
     <Compile Include="RCP\RegisterMappedMemoryStream.cs" />
     <Compile Include="MachineEvent.cs" />
     <Compile Include="MachineEventType.cs" />
@@ -118,9 +120,6 @@
     <Compile Include="MipsR4300\CP0\TLBExceptionType.cs" />
     <Compile Include="MipsR4300\CP0\TLBMapStream.cs" />
     <Compile Include="MipsR4300\CP0\VirtualPageNumber2.cs" />
-    <Compile Include="MipsR4300\CP1\FprDoubleRegs.cs" />
-    <Compile Include="MipsR4300\CP1\FprRegisters.cs" />
-    <Compile Include="MipsR4300\CP1\FprSingleRegs.cs" />
     <Compile Include="MipsR4300\DataFormat.cs" />
     <Compile Include="MipsR4300\Debugging\Disassembler.cs" />
     <Compile Include="MipsR4300\Debugging\Disassembler_LUT_CP0.cs" />
