@@ -27,5 +27,11 @@ namespace Soft64.MipsR4300.Interpreter
             /* TODO: Implement this instruction better if needed */
             MipsState.CP0Regs.SetReg(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt));
         }
+
+        //[OpcodeHook("MFC0")]
+        //private void Inst_Mfc0(MipsInstruction inst)
+        //{
+
+        //}
     }
 }

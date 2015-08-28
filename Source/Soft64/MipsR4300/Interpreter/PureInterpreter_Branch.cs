@@ -131,5 +131,93 @@ namespace Soft64.MipsR4300.Interpreter
                 DoBranchLikely(MipsState.ReadGPRUnsigned(inst.Rs) <= MipsState.ReadGPRUnsigned(inst.Rt), inst);
             }
         }
+
+        [OpcodeHook("BGEZ")]
+        private void Inst_Bgez(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                DoBranch(MipsState.ReadGPR32Signed(inst.Rs) >= 0, inst);
+            }
+            else
+            {
+                DoBranch(MipsState.ReadGPRSigned(inst.Rs) >= 0, inst);
+            }
+        }
+
+        [OpcodeHook("BGEZL")]
+        private void Inst_Bgezl(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                DoBranchLikely(MipsState.ReadGPR32Signed(inst.Rs) >= 0, inst);
+            }
+            else
+            {
+                DoBranchLikely(MipsState.ReadGPRSigned(inst.Rs) >= 0, inst);
+            }
+        }
+
+        [OpcodeHook("BGEZAL")]
+        private void Inst_Bgezal(MipsInstruction inst)
+        {
+            Inst_Bgez(inst);
+            LinkAddress(inst.Address + 8);
+        }
+
+        [OpcodeHook("BGEZALL")]
+        private void Inst_Bgezall(MipsInstruction inst)
+        {
+            Inst_Bgezl(inst);
+            LinkAddress(inst.Address + 8);
+        }
+
+        [OpcodeHook("BC0F")]
+        private void Inst_Bc0f(MipsInstruction inst)
+        {
+            DoBranch(MipsState.CP0Regs.Condition == 0, inst);
+        }
+
+        [OpcodeHook("BC0FL")]
+        private void Inst_Bc0fl(MipsInstruction inst)
+        {
+            DoBranchLikely(MipsState.CP0Regs.Condition == 0, inst);
+        }
+
+        [OpcodeHook("BC0T")]
+        private void Inst_Bc0t(MipsInstruction inst)
+        {
+            DoBranch(MipsState.CP0Regs.Condition != 0, inst);
+        }
+
+        [OpcodeHook("BC0TL")]
+        private void Inst_Bc0tl(MipsInstruction inst)
+        {
+            DoBranchLikely(MipsState.CP0Regs.Condition != 0, inst);
+        }
+
+        [OpcodeHook("BC1F")]
+        private void Inst_Bc1f(MipsInstruction inst)
+        {
+            DoBranch(MipsState.Fpr.Condition == 0, inst);
+        }
+
+        [OpcodeHook("BC1FL")]
+        private void Inst_Bc1fl(MipsInstruction inst)
+        {
+            DoBranchLikely(MipsState.Fpr.Condition == 0, inst);
+        }
+
+        [OpcodeHook("BC1T")]
+        private void Inst_Bc1t(MipsInstruction inst)
+        {
+            DoBranch(MipsState.Fpr.Condition != 0, inst);
+        }
+
+        [OpcodeHook("BC1TL")]
+        private void Inst_Bc1tl(MipsInstruction inst)
+        {
+            DoBranchLikely(MipsState.Fpr.Condition != 0, inst);
+        }
     }
 }

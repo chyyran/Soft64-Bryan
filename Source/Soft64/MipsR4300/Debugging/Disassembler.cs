@@ -132,8 +132,21 @@ namespace Soft64.MipsR4300.Debugging
                         {
                             switch (s_OpTableCop0[asmInstruction.Rs])
                             {
-                                //case "_BC0": opName = s_OpTableBC0[asmInstruction.Rt & 0x3]; break;
-                                case "_TLB": opName = s_OpTableTlb[asmInstruction.Function]; break;
+                                case "_CP0_SUB":
+                                    {
+                                        if ((asmInstruction.Instruction & 0x2000000) > 1)
+                                        {
+                                            opName = s_OpTableTlb[asmInstruction.Function];
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            opName = s_OpTableBC0[asmInstruction.Rt & 3];
+                                            break;
+                                        }
+                                    }
+
+
                                 default: opName = s_OpTableCop0[asmInstruction.Rs]; break;
                             }
                             break;

@@ -162,6 +162,7 @@ namespace Soft64.MipsR4300.CP0
         private StatusRegister m_SR;
         private CP0Registers32 m_R32;
         private CauseRegister m_CauseReg;
+        private UInt64 m_Condition;
 
         public CP0Registers()
         {
@@ -413,6 +414,12 @@ namespace Soft64.MipsR4300.CP0
         {
             get { return this[CP0RegName.ErrorEPC]; }
             set { this[CP0RegName.ErrorEPC] = value; }
+        }
+
+        public UInt64 Condition
+        {
+            get { return m_Condition; }
+            set { m_Condition = value; }
         }
     }
 

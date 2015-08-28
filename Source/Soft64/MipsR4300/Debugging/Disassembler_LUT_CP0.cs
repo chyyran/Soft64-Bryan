@@ -27,7 +27,7 @@ namespace Soft64.MipsR4300.Debugging
         {
             "mcf0", "dmfc0", "cfc0", null, "mtc0", "dmtc0", "ctc0", null,
             null,   null,    null,   null, null,   null,    null,   null,
-            "_TLB", null,    null,   null, null,   null,    null,   null,
+            "_CP0_SUB", null,    null,   null, null,   null,    null,   null,
             null,   null,    null,   null, null,   null,    null,   null,
         };
 
@@ -39,6 +39,12 @@ namespace Soft64.MipsR4300.Debugging
             "eret", null,   null,    null, null, null, null,    null,
             null,   null,   null,    null, null, null, null,    null,
             null,   null,   null,    null, null, null, null,    null,
+        };
+
+        private static String[] s_OpTableBC0 =
+        {
+            "bc0f",  "bc0t",
+            "bc0fl", "bc0tl",
         };
 
         private static String[] s_Cop0RegLabel =

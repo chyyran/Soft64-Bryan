@@ -40,7 +40,7 @@ namespace Soft64.MipsR4300.Interpreter
         private MipsOp m_DI;
         private MipsOp m_WI;
         private MipsOp m_LI;
-        private MipsOp m_TLB;
+        private MipsOp m_CP0Sub;
 
         /* Call Tables */
         private MipsOp[] m_OpsTableMain;
@@ -49,6 +49,7 @@ namespace Soft64.MipsR4300.Interpreter
         private MipsOp[] m_OpsTableCP0;
         private MipsOp[] m_OpsTableCP1;
         private MipsOp[] m_OpsTableCP2;
+        private MipsOp[] m_OpsTableBC0;
         private MipsOp[] m_OpsTableBC1;
         private MipsOp[] m_OpsTableFloat;
         private MipsOp[] m_OpsTableFixed;
@@ -60,9 +61,15 @@ namespace Soft64.MipsR4300.Interpreter
             m_SubRegImm = (inst) => OpCall(m_OpsTableRegImm, inst.Rt, inst);
             m_COP0 = (inst) => OpCall(m_OpsTableCP0, inst.Rs, inst);
             m_COP1 = (inst) => OpCall(m_OpsTableCP1, inst.Rs, inst);
-            m_TLB = (inst) => OpCall(m_OpsTableTLB, inst.Function, inst);
-            m_BC1 = (inst) => OpCall(m_OpsTableBC1, inst.Rt & 0x3, inst);
 
+            m_CP0Sub = (inst) => {
+                if ((inst.Instruction & 0x2000000) > 1 )
+                    OpCall(m_OpsTableTLB, inst.Function, inst);
+                else
+                    OpCall(m_OpsTableBC0, inst.Rt & 0x3, inst);
+            };
+
+            m_BC1 = (inst) => OpCall(m_OpsTableBC1, inst.Rt & 0x3, inst);
             m_WI = (inst) => { inst.DataFormat = DataFormat.FixedWord; OpCall(m_OpsTableFixed, inst.Function, inst); };
             m_LI = (inst) => { inst.DataFormat = DataFormat.FixedLong; OpCall(m_OpsTableFixed, inst.Function, inst); };
             m_SI = (inst) => { inst.DataFormat = DataFormat.FloatingSingle; OpCall(m_OpsTableFloat, inst.Function, inst); };
@@ -100,7 +107,7 @@ namespace Soft64.MipsR4300.Interpreter
             m_OpsTableCP0 = new MipsOp[] {
                 MCF0, DMFC0, CFC0, null, MTC0, DMTC0, CTC0, null,
                 null, null, null, null, null, null, null, null,
-                m_TLB, null, null, null, null, null, null, null,
+                m_CP0Sub, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null
             };
 
@@ -118,6 +125,10 @@ namespace Soft64.MipsR4300.Interpreter
                 m_BC1, null, null, null, null, null, null, null,
                 m_SI, m_DI, null, null, m_WI, m_LI, null, null,
                 null, null, null, null, null, null, null, null
+            };
+
+            m_OpsTableBC0 = new MipsOp[] {
+                BC0F, BC0T, BC0FL, BC0TL
             };
 
             m_OpsTableBC1 = new MipsOp[] {
@@ -451,6 +462,14 @@ namespace Soft64.MipsR4300.Interpreter
         public MipsOp DMTC1 { get; set; }
 
         public MipsOp CTC1 { get; set; }
+
+        public MipsOp BC0F { get; set; }
+
+        public MipsOp BC0T { get; set; }
+
+        public MipsOp BC0FL { get; set; }
+
+        public MipsOp BC0TL { get; set; }
 
         public MipsOp BC1F { get; set; }
 

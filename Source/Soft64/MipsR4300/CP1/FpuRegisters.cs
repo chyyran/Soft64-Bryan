@@ -83,5 +83,7 @@ namespace Soft64.MipsR4300.CP1
                 }
             }
         }
+
+        public UInt64 Condition { get; set; }
     }
 }
