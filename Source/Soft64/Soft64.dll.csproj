@@ -62,6 +62,7 @@
     <Compile Include="CartridgeInfo.cs" />
     <Compile Include="CPUProcessor.cs" />
     <Compile Include="MipsR4300\CP1\FpuRegisters.cs" />
+    <Compile Include="MipsR4300\Interpreter\PureInterpreter_FPU.cs" />
     <Compile Include="RCP\MipsInterface.cs" />
     <Compile Include="RCP\RegisterMappedMemoryStream.cs" />
     <Compile Include="MachineEvent.cs" />

@@ -173,6 +173,46 @@ namespace Soft64.MipsR4300.Interpreter
             }
         }
 
+        [OpcodeHook("DADD")]
+        private void Inst_Dadd(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                try
+                {
+                    MipsState.WriteGPRSigned(inst.Rd, MipsState.ReadGPRSigned(inst.Rs) + MipsState.ReadGPRSigned(inst.Rt));
+                }
+                catch (OverflowException)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow;
+                }
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DADDI")]
+        private void Inst_Dadid(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                try
+                {
+                    MipsState.WriteGPRSigned(inst.Rd, MipsState.ReadGPRSigned(inst.Rs) + (Int64)(Int16)inst.Immediate);
+                }
+                catch (OverflowException)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow;
+                }
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
         [OpcodeHook("DADDU")]
         private void Inst_Daddu(MipsInstruction inst)
         {
@@ -188,6 +228,23 @@ namespace Soft64.MipsR4300.Interpreter
                 }
             }
         }
+
+        [OpcodeHook("DADDIU")]
+        private void Inst_Daddiu(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+            else
+            {
+                unchecked
+                {
+                    MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rs) + (UInt64)(Int64)(Int16)inst.Immediate);
+                }
+            }
+        }
+
 
         [OpcodeHook("ORI")]
         private void Inst_Ori(MipsInstruction inst)
