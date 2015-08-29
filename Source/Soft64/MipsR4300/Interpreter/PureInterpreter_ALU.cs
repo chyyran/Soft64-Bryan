@@ -347,5 +347,43 @@ namespace Soft64.MipsR4300.Interpreter
                 MipsState.WriteGPRUnsigned(inst.Rd, (UInt64)(Int64)(Int16)result);
             }
         }
+
+        [OpcodeHook("DDIV")]
+        private void Inst_Ddiv(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                try
+                {
+                    MipsState.Hi = (UInt64)(MipsState.ReadGPRSigned(inst.Rs) / MipsState.ReadGPRSigned(inst.Rt));
+                    MipsState.Lo = (UInt64)(MipsState.ReadGPRSigned(inst.Rs) % MipsState.ReadGPRSigned(inst.Rt));
+                }
+                catch (OverflowException)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow
+                }
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DDIVU")]
+        private void Inst_Ddivu(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                unchecked
+                {
+                    MipsState.Hi = (UInt64)(MipsState.ReadGPRSigned(inst.Rs) / MipsState.ReadGPRSigned(inst.Rt));
+                    MipsState.Lo = (UInt64)(MipsState.ReadGPRSigned(inst.Rs) % MipsState.ReadGPRSigned(inst.Rt));
+                }
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
     }
 }
