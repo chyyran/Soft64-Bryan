@@ -25,9 +25,9 @@ namespace Soft64.MipsR4300.Debugging
     {
         private static String[] s_OpTableCop0 =
         {
-            "mcf0", "dmfc0", "cfc0", null, "mtc0", "dmtc0", "ctc0", null,
+            "mcf0", null, null, null, "mtc0", null, null, null,
             null,   null,    null,   null, null,   null,    null,   null,
-            "_CP0_SUB", null,    null,   null, null,   null,    null,   null,
+            null, null,    null,   null, null,   null,    null,   null,
             null,   null,    null,   null, null,   null,    null,   null,
         };
 

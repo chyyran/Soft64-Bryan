@@ -26,5 +26,11 @@ namespace Soft64.MipsR4300.Interpreter
         {
             logger.Debug("Cache instruction ignored");
         }
+
+        [OpcodeHook("BREAK")]
+        private void Inst_Break(MipsInstruction inst)
+        {
+            MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.Breakpoint;
+        }
     }
 }

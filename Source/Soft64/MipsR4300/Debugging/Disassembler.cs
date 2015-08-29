@@ -130,23 +130,9 @@ namespace Soft64.MipsR4300.Debugging
                     case "_REGIMM": opName = s_OpTableRegImm[asmInstruction.Rt]; break;
                     case "_COP0":
                         {
-                            switch (s_OpTableCop0[asmInstruction.Rs])
+                            switch (asmInstruction.Rs)
                             {
-                                case "_CP0_SUB":
-                                    {
-                                        if ((asmInstruction.Instruction & 0x2000000) > 1)
-                                        {
-                                            opName = s_OpTableTlb[asmInstruction.Function];
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            opName = s_OpTableBC0[asmInstruction.Rt & 3];
-                                            break;
-                                        }
-                                    }
-
-
+                                case 0x10: opName = s_OpTableTlb[asmInstruction.Function]; break;
                                 default: opName = s_OpTableCop0[asmInstruction.Rs]; break;
                             }
                             break;
@@ -155,7 +141,7 @@ namespace Soft64.MipsR4300.Debugging
                         {
                             switch (s_OpTableCop1[asmInstruction.Rs])
                             {
-                                case "_BC1": opName = s_OpTableBC1[asmInstruction.Rt & 0x3]; break;
+                                case "_BC1": opName = s_OpTableBC1[asmInstruction.Rt]; break;
                                 case "_SI": opName = s_OpTableFpu_Single[asmInstruction.Function]; break;
                                 case "_DI": opName = s_OpTableFpu_Double[asmInstruction.Function]; break;
                                 case "_WI": opName = s_OpTableFpu_FixedPoint[asmInstruction.Function]; break;

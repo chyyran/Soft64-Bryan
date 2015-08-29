@@ -34,13 +34,12 @@ namespace Soft64.MipsR4300.Interpreter
         private MipsOp m_SubRegImm;
         private MipsOp m_COP0;
         private MipsOp m_COP1;
-        private MipsOp m_COP2;
         private MipsOp m_BC1;
         private MipsOp m_SI;
         private MipsOp m_DI;
         private MipsOp m_WI;
         private MipsOp m_LI;
-        private MipsOp m_CP0Sub;
+        private MipsOp m_TLB;
 
         /* Call Tables */
         private MipsOp[] m_OpsTableMain;
@@ -48,8 +47,6 @@ namespace Soft64.MipsR4300.Interpreter
         private MipsOp[] m_OpsTableRegImm;
         private MipsOp[] m_OpsTableCP0;
         private MipsOp[] m_OpsTableCP1;
-        private MipsOp[] m_OpsTableCP2;
-        private MipsOp[] m_OpsTableBC0;
         private MipsOp[] m_OpsTableBC1;
         private MipsOp[] m_OpsTableFloat;
         private MipsOp[] m_OpsTableFixed;
@@ -59,16 +56,9 @@ namespace Soft64.MipsR4300.Interpreter
         {
             m_SubSpecial = (inst) => OpCall(m_OpsTableSpecial, inst.Function, inst);
             m_SubRegImm = (inst) => OpCall(m_OpsTableRegImm, inst.Rt, inst);
+            m_TLB = (inst) => OpCall(m_OpsTableTLB, inst.Function, inst);
             m_COP0 = (inst) => OpCall(m_OpsTableCP0, inst.Rs, inst);
             m_COP1 = (inst) => OpCall(m_OpsTableCP1, inst.Rs, inst);
-
-            m_CP0Sub = (inst) => {
-                if ((inst.Instruction & 0x2000000) > 1 )
-                    OpCall(m_OpsTableTLB, inst.Function, inst);
-                else
-                    OpCall(m_OpsTableBC0, inst.Rt & 0x3, inst);
-            };
-
             m_BC1 = (inst) => OpCall(m_OpsTableBC1, inst.Rt & 0x3, inst);
             m_WI = (inst) => { inst.DataFormat = DataFormat.FixedWord; OpCall(m_OpsTableFixed, inst.Function, inst); };
             m_LI = (inst) => { inst.DataFormat = DataFormat.FixedLong; OpCall(m_OpsTableFixed, inst.Function, inst); };
@@ -78,12 +68,12 @@ namespace Soft64.MipsR4300.Interpreter
             m_OpsTableMain = new MipsOp[] {
                 m_SubSpecial, m_SubRegImm, J, JAL, BEQ, BNE, BLEZ, BGTZ,
                 ADDI, ADDIU, SLTI, SLTIU, ANDI, ORI, XORI, LUI,
-                m_COP0, m_COP1, m_COP2, null, BEQL, BNEL, BLEZL, BGTZL,
+                m_COP0, m_COP1, null, null, BEQL, BNEL, BLEZL, BGTZL,
                 DADDI, DADDIU, LDL, LDR, null, null, null, null,
                 LB, LH, LWL, LW, LBU, LHU, LWR, LWU,
                 SB, SH, SWL, SW, SDL, SDR, SWR, CACHE,
-                LL, LWC1, LWC2, null, LLD, LDC1, LDC2, LD,
-                SC, SWC1, SWC2, null, SCD, SDC1, SDC2, SD
+                LL, LWC1, null, null, LLD, LDC1, LDC2, LD,
+                SC, SWC1, null, null, SCD, SDC1, SDC2, SD
             };
 
             m_OpsTableSpecial = new MipsOp[] {
@@ -105,9 +95,9 @@ namespace Soft64.MipsR4300.Interpreter
             };
 
             m_OpsTableCP0 = new MipsOp[] {
-                MCF0, DMFC0, CFC0, null, MTC0, DMTC0, CTC0, null,
+                MCF0, null, null, null, MTC0, null, null, null,
                 null, null, null, null, null, null, null, null,
-                m_CP0Sub, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null
             };
 
@@ -125,10 +115,6 @@ namespace Soft64.MipsR4300.Interpreter
                 m_BC1, null, null, null, null, null, null, null,
                 m_SI, m_DI, null, null, m_WI, m_LI, null, null,
                 null, null, null, null, null, null, null, null
-            };
-
-            m_OpsTableBC0 = new MipsOp[] {
-                BC0F, BC0T, BC0FL, BC0TL
             };
 
             m_OpsTableBC1 = new MipsOp[] {
@@ -275,8 +261,6 @@ namespace Soft64.MipsR4300.Interpreter
 
         public MipsOp LWC1 { get; set; }
 
-        public MipsOp LWC2 { get; set; }
-
         public MipsOp LLD { get; set; }
 
         public MipsOp LDC1 { get; set; }
@@ -288,8 +272,6 @@ namespace Soft64.MipsR4300.Interpreter
         public MipsOp SC { get; set; }
 
         public MipsOp SWC1 { get; set; }
-
-        public MipsOp SWC2 { get; set; }
 
         public MipsOp SCD { get; set; }
 
@@ -431,15 +413,7 @@ namespace Soft64.MipsR4300.Interpreter
 
         public MipsOp MCF0 { get; set; }
 
-        public MipsOp DMFC0 { get; set; }
-
-        public MipsOp CFC0 { get; set; }
-
         public MipsOp MTC0 { get; set; }
-
-        public MipsOp DMTC0 { get; set; }
-
-        public MipsOp CTC0 { get; set; }
 
         public MipsOp TLBR { get; set; }
 
@@ -462,14 +436,6 @@ namespace Soft64.MipsR4300.Interpreter
         public MipsOp DMTC1 { get; set; }
 
         public MipsOp CTC1 { get; set; }
-
-        public MipsOp BC0F { get; set; }
-
-        public MipsOp BC0T { get; set; }
-
-        public MipsOp BC0FL { get; set; }
-
-        public MipsOp BC0TL { get; set; }
 
         public MipsOp BC1F { get; set; }
 

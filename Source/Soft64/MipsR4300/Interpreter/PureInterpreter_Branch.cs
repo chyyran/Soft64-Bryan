@@ -119,6 +119,19 @@ namespace Soft64.MipsR4300.Interpreter
             }
         }
 
+        [OpcodeHook("BLEZ")]
+        private void Inst_Blez(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                DoBranch(MipsState.ReadGPR32Unsigned(inst.Rs) <= MipsState.ReadGPR32Unsigned(inst.Rt), inst);
+            }
+            else
+            {
+                DoBranch(MipsState.ReadGPRUnsigned(inst.Rs) <= MipsState.ReadGPRUnsigned(inst.Rt), inst);
+            }
+        }
+
         [OpcodeHook("BLEZL")]
         private void Inst_Blezl(MipsInstruction inst)
         {
@@ -129,6 +142,32 @@ namespace Soft64.MipsR4300.Interpreter
             else
             {
                 DoBranchLikely(MipsState.ReadGPRUnsigned(inst.Rs) <= MipsState.ReadGPRUnsigned(inst.Rt), inst);
+            }
+        }
+
+        [OpcodeHook("BGTZ")]
+        private void Inst_Bgtz(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                DoBranch(MipsState.ReadGPR32Signed(inst.Rs) > 0, inst);
+            }
+            else
+            {
+                DoBranch(MipsState.ReadGPRSigned(inst.Rs) > 0, inst);
+            }
+        }
+
+        [OpcodeHook("BGTZL")]
+        private void Inst_Bgtzl(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                DoBranchLikely(MipsState.ReadGPR32Signed(inst.Rs) > 0, inst);
+            }
+            else
+            {
+                DoBranchLikely(MipsState.ReadGPRSigned(inst.Rs) > 0, inst);
             }
         }
 
@@ -158,6 +197,46 @@ namespace Soft64.MipsR4300.Interpreter
             }
         }
 
+        [OpcodeHook("BLTZ")]
+        private void Inst_Bltz(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                DoBranch(MipsState.ReadGPR32Signed(inst.Rs) < 0, inst);
+            }
+            else
+            {
+                DoBranch(MipsState.ReadGPRSigned(inst.Rs) < 0, inst);
+            }
+        }
+
+        [OpcodeHook("BLTZL")]
+        private void Inst_Bltzl(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                DoBranchLikely(MipsState.ReadGPR32Signed(inst.Rs) < 0, inst);
+            }
+            else
+            {
+                DoBranchLikely(MipsState.ReadGPRSigned(inst.Rs) < 0, inst);
+            }
+        }
+
+        [OpcodeHook("BLTZAL")]
+        private void Inst_Bltzal(MipsInstruction inst)
+        {
+            Inst_Bltz(inst);
+            LinkAddress(inst.Address + 8);
+        }
+
+        [OpcodeHook("BLTZALL")]
+        private void Inst_Bltzall(MipsInstruction inst)
+        {
+            Inst_Bltzl(inst);
+            LinkAddress(inst.Address + 8);
+        }
+
         [OpcodeHook("BGEZAL")]
         private void Inst_Bgezal(MipsInstruction inst)
         {
@@ -170,30 +249,6 @@ namespace Soft64.MipsR4300.Interpreter
         {
             Inst_Bgezl(inst);
             LinkAddress(inst.Address + 8);
-        }
-
-        [OpcodeHook("BC0F")]
-        private void Inst_Bc0f(MipsInstruction inst)
-        {
-            DoBranch(MipsState.CP0Regs.Condition == 0, inst);
-        }
-
-        [OpcodeHook("BC0FL")]
-        private void Inst_Bc0fl(MipsInstruction inst)
-        {
-            DoBranchLikely(MipsState.CP0Regs.Condition == 0, inst);
-        }
-
-        [OpcodeHook("BC0T")]
-        private void Inst_Bc0t(MipsInstruction inst)
-        {
-            DoBranch(MipsState.CP0Regs.Condition != 0, inst);
-        }
-
-        [OpcodeHook("BC0TL")]
-        private void Inst_Bc0tl(MipsInstruction inst)
-        {
-            DoBranchLikely(MipsState.CP0Regs.Condition != 0, inst);
         }
 
         [OpcodeHook("BC1F")]

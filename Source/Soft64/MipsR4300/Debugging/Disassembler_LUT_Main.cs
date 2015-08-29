@@ -45,12 +45,12 @@ namespace Soft64.MipsR4300.Debugging
         {
             "_SPECIAL", "_REGIMM", "j",    "jal",   "beq",  "bne",   "blez",  "bgtz",
             "addi",     "addiu",   "slti",  "sltiu", "andi", "ori",   "xori",  "lui",
-            "_COP0",    "_COP1",   "_COP2", null,   "beql", "bnel",  "blezl", "bgtzl",
+            "_COP0",    "_COP1",   null,     null,   "beql", "bnel",  "blezl", "bgtzl",
             "daddi",    "daddiu",  "ldl",   "ldr",   null,   null,   null,    null,
             "lb",       "lh",      "lwl",   "lw",    "lbu",  "lhu",  "lwr",   "lwu",
             "sb",       "sh",      "swl",   "sw",    "sdl",  "sdr",  "swr",   "cache",
-            "ll",       "lwc1",    "lwc2",   null,   "lld",  "ldc1", "ldc2",  "ld",
-            "sc",       "swc1",    "swc2",   null,   "scd",  "sdc1", "sdc2",  "sd",
+            "ll",       "lwc1",    null,   null,   "lld",  "ldc1", "ldc2",  "ld",
+            "sc",       "swc1",    null,   null,   "scd",  "sdc1", "sdc2",  "sd",
         };
 
         public static String GetO32RegisterName(Int32 index)
