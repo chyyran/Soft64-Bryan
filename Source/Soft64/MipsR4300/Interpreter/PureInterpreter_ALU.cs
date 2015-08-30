@@ -516,5 +516,14 @@ namespace Soft64.MipsR4300.Interpreter
                 MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
             }
         }
+
+        [OpcodeHook("DSLL32")]
+        private void Inst_Dsll32(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) << (32 + inst.ShiftAmount));
+            }
+        }
     }
 }
