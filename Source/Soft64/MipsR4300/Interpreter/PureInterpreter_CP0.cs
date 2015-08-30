@@ -24,8 +24,25 @@ namespace Soft64.MipsR4300.Interpreter
         [OpcodeHook("MTC0")]
         private void Inst_Mtc0(MipsInstruction inst)
         {
-            /* TODO: Implement this instruction better if needed */
             MipsState.CP0Regs.SetReg(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt));
+        }
+
+        [OpcodeHook("DMFC0")]
+        private void Inst_Dmfc0(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPRUnsigned(inst.Rt, MipsState.CP0Regs[inst.Rd]);
+            }
+        }
+
+        [OpcodeHook("DMTC0")]
+        private void Inst_Dmtc0(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.CP0Regs[inst.Rd] = MipsState.ReadGPRUnsigned(inst.Rt);
+            }
         }
 
         //[OpcodeHook("MFC0")]

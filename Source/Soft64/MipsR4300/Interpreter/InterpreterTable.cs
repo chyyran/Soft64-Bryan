@@ -95,7 +95,7 @@ namespace Soft64.MipsR4300.Interpreter
             };
 
             m_OpsTableCP0 = new MipsOp[] {
-                MCF0, null, null, null, MTC0, null, null, null,
+                MCF0, DMFC0, null, null, MTC0, DTMC0, null, null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null
@@ -520,5 +520,9 @@ namespace Soft64.MipsR4300.Interpreter
         public MipsOp FPU_CVT_S { get; set; }
 
         public MipsOp FPU_C_NGT { get; set; }
+
+        public MipsOp DMFC0 { get; set; }
+
+        public MipsOp DTMC0 { get; set; }
     }
 }
