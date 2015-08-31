@@ -70,7 +70,7 @@ namespace Soft64.MipsR4300.Interpreter
         [OpcodeHook("JAL")]
         private void Inst_Jal(MipsInstruction inst)
         {
-            LinkAddress(inst.Address + 8);
+            MipsState.WriteGPRSigned(31, inst.Address + 8);
             DoJump(((inst.Address + 4) & 0xFFFF0000) | (inst.Offset << 2));
         }
 
@@ -104,6 +104,13 @@ namespace Soft64.MipsR4300.Interpreter
         private void Inst_Jr(MipsInstruction inst)
         {
             DoJump(MipsState.ReadGPRSigned(inst.Rs));
+        }
+
+        [OpcodeHook("JALR")]
+        private void Inst_Jr(MipsInstruction inst)
+        {
+            DoJump(MipsState.ReadGPRSigned(inst.Rs));
+            MipsState.WriteGPRSigned(inst.Rd, inst.Address + 8);
         }
 
         [OpcodeHook("BNEL")]

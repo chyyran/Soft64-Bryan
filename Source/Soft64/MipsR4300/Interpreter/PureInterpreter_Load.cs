@@ -82,5 +82,11 @@ namespace Soft64.MipsR4300.Interpreter
                 MipsState.WriteGPRUnsigned(inst.Rt, DataBinaryReader.ReadUInt64());
             }
         }
+
+        [OpcodeHook("LB")]
+        private void Inst_Lb(MipsInstruction inst)
+        {
+            /* TODO */
+        }
     }
 }

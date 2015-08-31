@@ -438,23 +438,12 @@ namespace Soft64.MipsR4300.Interpreter
         {
             if (MipsState.Is64BitMode())
             {
-                BigInteger left = new BigInteger(MipsState.ReadGPRSigned(inst.Rs));
-                BigInteger right = new BigInteger(MipsState.ReadGPRSigned(inst.Rt));
-                BigInteger product = BigInteger.Multiply(left, right);
+                BigInteger product = BigInteger.Multiply(
+                    new BigInteger(MipsState.ReadGPRSigned(inst.Rs)),
+                    new BigInteger(MipsState.ReadGPRSigned(inst.Rt)));
 
-                Byte[] productBytes = product.ToByteArray();
-
-                MipsState.Lo = (UInt64)(
-                    productBytes[0] |
-                    productBytes[1] << 8 |
-                    productBytes[2] << 16 |
-                    productBytes[3] << 24);
-
-                MipsState.Hi = (UInt64)(
-                    productBytes[4] |
-                    productBytes[5] << 8 |
-                    productBytes[6] << 16 |
-                    productBytes[7] << 24);
+                MipsState.Lo = (UInt64)(product & 0xFFFFFFFFFFFFFFFFUL);
+                MipsState.Hi = (UInt64)((product >> 64) & 0xFFFFFFFFFFFFFFFFUL);
             }
             else
             {
@@ -467,23 +456,12 @@ namespace Soft64.MipsR4300.Interpreter
         {
             if (MipsState.Is64BitMode())
             {
-                BigInteger left = new BigInteger(MipsState.ReadGPRUnsigned(inst.Rs));
-                BigInteger right = new BigInteger(MipsState.ReadGPRUnsigned(inst.Rt));
-                BigInteger product = BigInteger.Multiply(left, right);
+                BigInteger product = BigInteger.Multiply(
+                    new BigInteger(MipsState.ReadGPRUnsigned(inst.Rs)),
+                    new BigInteger(MipsState.ReadGPRUnsigned(inst.Rt)));
 
-                Byte[] productBytes = product.ToByteArray();
-
-                MipsState.Lo = (UInt64)(
-                    productBytes[0] |
-                    productBytes[1] << 8 |
-                    productBytes[2] << 16 |
-                    productBytes[3] << 24);
-
-                MipsState.Hi = (UInt64)(
-                    productBytes[4] |
-                    productBytes[5] << 8 |
-                    productBytes[6] << 16 |
-                    productBytes[7] << 24);
+                MipsState.Lo = (UInt64)(product & 0xFFFFFFFFFFFFFFFFUL);
+                MipsState.Hi = (UInt64)((product >> 64) & 0xFFFFFFFFFFFFFFFFUL);
             }
             else
             {
@@ -523,6 +501,124 @@ namespace Soft64.MipsR4300.Interpreter
             if (MipsState.Is64BitMode())
             {
                 MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) << (32 + inst.ShiftAmount));
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DSRA")]
+        private void Inst_Dsra(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPRUnsigned(inst.Rd, (UInt64)(MipsState.ReadGPRSigned(inst.Rt) >> inst.ShiftAmount));
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DSRAV")]
+        private void Inst_Dsrav(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPRUnsigned(inst.Rd, (UInt64)(MipsState.ReadGPRSigned(inst.Rt) >> (Int32)(MipsState.ReadGPR32Unsigned(inst.Rs) & 0x3FUL)));
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DSRA32")]
+        private void Inst_Dsra32(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPRUnsigned(inst.Rd, (UInt64)(MipsState.ReadGPRSigned(inst.Rt) >> (32 + inst.ShiftAmount)));
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DSRL")]
+        private void Inst_Dsrl(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) >> inst.ShiftAmount);
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DSRLV")]
+        private void Inst_Dsrlv(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) >> (Int32)(MipsState.ReadGPR32Unsigned(inst.Rs) & 0x3FUL));
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DSRL32")]
+        private void Inst_Dsrl32(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) >> (32 + inst.ShiftAmount));
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DSUB")]
+        private void Inst_Dsub(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                try
+                {
+                    MipsState.WriteGPRSigned(inst.Rd, MipsState.ReadGPRSigned(inst.Rs) - MipsState.ReadGPRSigned(inst.Rt));
+                }
+                catch (OverflowException)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.OverFlow;
+                }
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("DSUBU")]
+        private void Inst_Dsubu(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                unchecked
+                {
+                    MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rs) - MipsState.ReadGPRUnsigned(inst.Rt));
+                }
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
             }
         }
     }

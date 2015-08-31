@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
+using System;
+
 namespace Soft64.MipsR4300.Interpreter
 {
     public partial class PureInterpreter
@@ -47,6 +49,26 @@ namespace Soft64.MipsR4300.Interpreter
         {
             /* Probe the TLB */
             ParentMips.Tlb.Probe();
+        }
+
+        [OpcodeHook("ERET")]
+        private void Inst_Eret(MipsInstruction inst)
+        {
+            if (MipsState.CP0Regs.StatusReg.CopUsable0)
+                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.CopUnstable;
+
+            if (MipsState.CP0Regs.StatusReg.ExceptionLevel)
+            {
+                MipsState.PC = (Int64)MipsState.CP0Regs.ErrorEPC;
+                MipsState.CP0Regs.StatusReg.ExceptionLevel = false;
+            }
+            else
+            {
+                MipsState.PC = (Int64)MipsState.CP0Regs.EPC;
+                MipsState.CP0Regs.StatusReg.ExceptionLevel = false;
+            }
+
+            MipsState.LLBit = false;
         }
     }
 }
