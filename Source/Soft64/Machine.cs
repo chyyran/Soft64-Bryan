@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Soft64.Debugging;
@@ -187,13 +188,24 @@ namespace Soft64
                 logger.Trace("** Starting emulation core **");
                 OnMachineEventNotification(MachineEventType.PreBooted);
 
-                /* Initialize core comparing */
-                if (Machine.Current.MipsCompareEngine != null)
-                    Machine.Current.MipsCompareEngine.Init();
 
 
                 logger.Trace("Booting firmware: " + SystemBootMode.GetFriendlyName());
                 SoftBootManager.SetupExecutionState(SystemBootMode);
+
+                /* Initialize core comparing */
+                if (Machine.Current.MipsCompareEngine != null)
+                {
+                    Machine.Current.MipsCompareEngine.Init();
+
+                    Task.Factory.StartNew(
+                        Machine.Current.MipsCompareEngine.Run,
+                        new CancellationToken(),
+                        TaskCreationOptions.LongRunning,
+                        TaskScheduler.Default);
+
+                    Thread.Sleep(500);
+                }
 
                 m_Booted = true;
                 OnMachineEventNotification(MachineEventType.Booted);

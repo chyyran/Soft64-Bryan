@@ -339,7 +339,7 @@ namespace Soft64.MipsR4300
             BranchTarget = addressTarget.ResolveAddress();
         }
 
-        [Conditional("DEBUG")]
+        [Conditional("DEBUGFULL")]
         protected void TraceOp(Int64 pc, MipsInstruction inst)
         {
             if (logger.IsDebugEnabled)
