@@ -59,6 +59,8 @@ namespace Soft64.RCP
 
         /* IO Interfaces */
         private PerpherialInterface m_PIInterface;
+        private PerpherialInterfaceRegisters m_PIRegs;
+        private RdramRegisters m_RdramRegs;
 
         /* Memory Devices */
         private RCPBusStream m_RcpMemoryBus;
@@ -74,6 +76,8 @@ namespace Soft64.RCP
 
             /* Initailize interfaces of the RCP */
             m_PIInterface = new PerpherialInterface();
+            m_PIRegs = new PerpherialInterfaceRegisters();
+            m_RdramRegs = new RdramRegisters();
         }
 
         public override void Initialize()
@@ -82,7 +86,9 @@ namespace Soft64.RCP
             m_SPMemory = new SPMemory();
 
             m_RcpMemoryBus.Add(0x00000000, m_RdRam);
+            m_RcpMemoryBus.Add(0x03F00000, m_RdramRegs);
             m_RcpMemoryBus.Add(0x04000000, m_SPMemory);
+            m_RcpMemoryBus.Add(0x04600000, m_PIRegs);
             m_RcpMemoryBus.Add(0x05000000, m_PIInterface);
 
             if (Machine.Current.DevicePIF.RomStream != null)

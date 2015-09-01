@@ -23,6 +23,8 @@ namespace Soft64.MipsR4300
 {
     public partial class Interpreter
     {
+        /* Improve the data write, binary write class writes big buffers to memory */
+
         [OpcodeHook("SW")]
         private void Inst_Sw(MipsInstruction inst)
         {

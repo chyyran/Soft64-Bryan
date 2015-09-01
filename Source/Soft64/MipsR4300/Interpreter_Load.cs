@@ -86,7 +86,35 @@ namespace Soft64.MipsR4300
         [OpcodeHook("LB")]
         private void Inst_Lb(MipsInstruction inst)
         {
-            /* TODO */
+            try
+            {
+                if (MipsState.Is32BitMode())
+                {
+                    Int64 address = (Int32)(Int16)inst.Immediate;
+                    address += MipsState.ReadGPR32Signed(inst.Rd);
+                    address = address.ResolveAddress();
+                    DataBinaryReader.BaseStream.Position = address;
+                    MipsState.WriteGPR32Signed(inst.Rt, (Int16)DataBinaryReader.ReadByte());
+                }
+                else
+                {
+                    Int64 address = (Int64)(Int16)inst.Immediate;
+                    address += MipsState.ReadGPRSigned(inst.Rd);
+                    address = address.ResolveAddress();
+                    DataBinaryReader.BaseStream.Position = address;
+                    MipsState.WriteGPRSigned(inst.Rt, (Int16)DataBinaryReader.ReadByte());
+                }
+            }
+            catch (TLBException tlbe)
+            {
+                switch (tlbe.ExceptionType)
+                {
+                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    default: break;
+                }
+            }
         }
     }
 }
