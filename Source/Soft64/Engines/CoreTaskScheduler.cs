@@ -12,7 +12,6 @@ namespace Soft64.Engines
     {
         private List<Task> m_ScheduledTasks;
         private List<Thread> m_ThreadList;
-        private Object m_ThreadLock;
         private Int32 m_PauseState;
         private const Int32 NOTSET = 0;
         private const Int32 SET = 1;

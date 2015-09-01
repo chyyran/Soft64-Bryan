@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
-using Soft64.MipsR4300.Interpreter;
+using Soft64.MipsR4300;
 
 namespace Soft64.MipsR4300.Debugging
 {

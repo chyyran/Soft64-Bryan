@@ -27,8 +27,6 @@ namespace Soft64.MipsR4300
         private Boolean m_Disposed;              /* User disposed flag */
         private Boolean m_Faulted;               /* Engine fault flag */
 
-        public Boolean BranchDelaySlot { get; protected set; }
-
         /* Engine events */
 
         public event EventHandler Break;         /* When the CPU has triggered a software break */

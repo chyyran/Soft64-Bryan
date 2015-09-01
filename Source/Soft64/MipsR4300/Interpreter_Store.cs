@@ -19,9 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 
-namespace Soft64.MipsR4300.Interpreter
+namespace Soft64.MipsR4300
 {
-    public partial class PureInterpreter
+    public partial class Interpreter
     {
         [OpcodeHook("SW")]
         private void Inst_Sw(MipsInstruction inst)
@@ -30,7 +30,7 @@ namespace Soft64.MipsR4300.Interpreter
 
             if ((address & 3) != 0)
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorStore;
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorStore;
             }
             else
             {
@@ -50,7 +50,7 @@ namespace Soft64.MipsR4300.Interpreter
 
             if ((address & 7) != 0)
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorStore;
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorStore;
             }
             else
             {

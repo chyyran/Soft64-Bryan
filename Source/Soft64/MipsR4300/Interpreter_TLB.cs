@@ -19,9 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 
-namespace Soft64.MipsR4300.Interpreter
+namespace Soft64.MipsR4300
 {
-    public partial class PureInterpreter
+    public partial class Interpreter
     {
         [OpcodeHook("TLBR")]
         private void Inst_tlbr(MipsInstruction inst)
@@ -55,7 +55,7 @@ namespace Soft64.MipsR4300.Interpreter
         private void Inst_Eret(MipsInstruction inst)
         {
             if (MipsState.CP0Regs.StatusReg.CopUsable0)
-                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.CopUnstable;
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.CopUnstable;
 
             if (MipsState.CP0Regs.StatusReg.ExceptionLevel)
             {

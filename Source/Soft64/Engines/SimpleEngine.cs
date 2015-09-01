@@ -30,6 +30,10 @@ namespace Soft64.Engines
                     /* Execute a step in the CPU */
                     Machine.Current.DeviceCPU.StepOnce();
 
+                    /* Run compare core */
+                    if (Machine.Current.MipsCompareEngine != null)
+                        Machine.Current.MipsCompareEngine.Run();
+
                     End();
                 }
             };

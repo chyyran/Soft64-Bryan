@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Soft64.MipsR4300.CP0;
+using Soft64.MipsR4300;
 using Soft64.MipsR4300.CP1;
 
 namespace Soft64.MipsR4300

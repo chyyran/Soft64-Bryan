@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 using System;
 using System.Runtime.InteropServices;
 
-namespace Soft64.MipsR4300.CP0
+namespace Soft64.MipsR4300
 {
     [RegisterField("IE", 1, 0, typeof(Boolean))]
     [RegisterField("EXL", 1, 1, typeof(Boolean))]

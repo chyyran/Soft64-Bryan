@@ -17,13 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-namespace Soft64.MipsR4300.CP0
+namespace Soft64.MipsR4300
 {
-    public enum TLBExceptionType
+    public enum PageCoherencyMode : byte
     {
-        Undefined,
-        Refill,
-        Mod,
-        Invalid
+        Reserved = 0,
+        Uncached = 2,
+        Noncoherent = 3,
+        Exclusive = 4,
+        Sharable = 5,
+        Update = 6
     }
 }

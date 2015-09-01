@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Soft64.MipsR4300.CP0
+namespace Soft64.MipsR4300
 {
     public sealed class MipsExceptionHandler
     {

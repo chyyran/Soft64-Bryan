@@ -24,9 +24,8 @@ using System.Linq;
 /* TODO: Ditch the entyr info class and use raw TLB entries ? */
 /* TODO: Improve the event so its clear it only fires when the CPU calls TLB write instructions */
 
-namespace Soft64.MipsR4300.CP0
+namespace Soft64.MipsR4300
 {
-    [CLSCompliant(false)]
     public class TLBCache : IEnumerable<TLBEntryInfo>, IList<TLBEntry>
     {
         private CP0Registers m_Cp0Regs;

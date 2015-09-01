@@ -21,8 +21,7 @@ using System;
 using System.Linq;
 using Soft64.Debugging;
 using Soft64.IO;
-using Soft64.MipsR4300.CP0;
-using Soft64.MipsR4300.IO;
+using Soft64.MipsR4300;
 
 namespace Soft64.MipsR4300.Debugging
 {

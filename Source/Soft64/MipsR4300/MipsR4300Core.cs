@@ -19,9 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 using System.IO;
-using Soft64.MipsR4300.CP0;
+using Soft64.MipsR4300;
 using Soft64.MipsR4300.Debugging;
-using Soft64.MipsR4300.IO;
 
 namespace Soft64.MipsR4300
 {
@@ -40,6 +39,7 @@ namespace Soft64.MipsR4300
             m_MMU = new VMemStream(this);
             m_IOMonitor = new IOMonitor();
             m_SyncMMU = new SychronizedStream(m_MMU);
+            m_ExecEngine = new Interpreter();
         }
 
         public virtual void Initialize()

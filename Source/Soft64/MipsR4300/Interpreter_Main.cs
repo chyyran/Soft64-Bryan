@@ -17,26 +17,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-using System;
-
-namespace Soft64.MipsR4300.Interpreter
+namespace Soft64.MipsR4300
 {
-    public static class ALUHelper
+    public partial class Interpreter
     {
-        /// <summary>
-        /// Resolves the signed 64 bit address into unsigned 32 bit address.
-        /// </summary>
-        /// <param name="address"></param>
-        /// <returns></returns>
-        public static Int64 ResolveAddress(this Int64 address)
+        [OpcodeHook("CACHE")]
+        private void Inst_Cache(MipsInstruction inst)
         {
-            return (Int64)(UInt32)address;
+            logger.Debug("Cache instruction ignored");
         }
 
-        public static Boolean IsSigned32(this UInt64 value)
+        [OpcodeHook("BREAK")]
+        private void Inst_Break(MipsInstruction inst)
         {
-            UInt32 val = (UInt32)(value >> 32);
-            return  val == 0xFFFFFFFF || val == 0x00000000;
+            MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Breakpoint;
         }
     }
 }

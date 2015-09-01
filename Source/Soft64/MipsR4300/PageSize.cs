@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 
-namespace Soft64.MipsR4300.CP0
+namespace Soft64.MipsR4300
 {
     public enum NamedPageSize
     {
@@ -33,7 +33,6 @@ namespace Soft64.MipsR4300.CP0
         Size16MB
     }
 
-    [CLSCompliant(false)]
     public struct PageSize
     {
         private Int32 m_Size;

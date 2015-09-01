@@ -22,7 +22,7 @@ using System.Diagnostics;
 using System.Text;
 using NLog;
 using Soft64.IO;
-using Soft64.MipsR4300.CP0;
+using Soft64.MipsR4300;
 
 /* Notes: CPU Memory addressing regions
  * ------------------
@@ -33,7 +33,7 @@ using Soft64.MipsR4300.CP0;
  * 0xE0000000 - 0xFFFFFFFF: TLB Mapped
  */
 
-namespace Soft64.MipsR4300.IO
+namespace Soft64.MipsR4300
 {
     /// <summary>
     /// Provides the virtual memory management and CPU addressing logic core for the MIPS R4300I engine.

@@ -19,9 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 
-namespace Soft64.MipsR4300.Interpreter
+namespace Soft64.MipsR4300
 {
-    public partial class PureInterpreter
+    public partial class Interpreter
     {
         [OpcodeHook("LUI")]
         private void Inst_Lui(MipsInstruction inst)
@@ -45,7 +45,7 @@ namespace Soft64.MipsR4300.Interpreter
 
             if ((address & 3) != 0)
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorLoad;
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
             }
             else
             {
@@ -65,7 +65,7 @@ namespace Soft64.MipsR4300.Interpreter
         {
             if (MipsState.Is32BitMode())
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.ReservedInstruction;
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
                 return;
             }
 
@@ -73,7 +73,7 @@ namespace Soft64.MipsR4300.Interpreter
 
             if ((address & 3) != 0)
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = CP0.ExceptionCode.AddressErrorLoad;
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
             }
             else
             {

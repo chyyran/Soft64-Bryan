@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
-using Soft64.MipsR4300.CP0;
+using Soft64.MipsR4300;
 
 namespace Soft64Binding.WPF
 {

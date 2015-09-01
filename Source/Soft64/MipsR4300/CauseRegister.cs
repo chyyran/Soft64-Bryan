@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Soft64.MipsR4300.CP0
+namespace Soft64.MipsR4300
 {
     [RegisterField("ExcCode", 5, 2, typeof(Byte))]
     [RegisterField("IP0", 1, 8, typeof(Boolean))]

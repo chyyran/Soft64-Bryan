@@ -17,38 +17,36 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-namespace Soft64.MipsR4300.Interpreter
+using System;
+
+namespace Soft64.MipsR4300
 {
-    public partial class PureInterpreter
+    public partial class Interpreter
     {
-        [OpcodeHook("MTC0")]
-        private void Inst_Mtc0(MipsInstruction inst)
+        [OpcodeHook("CFC1")]
+        private void Inst_Cfc1(MipsInstruction inst)
         {
-            MipsState.CP0Regs.SetReg(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt));
-        }
-
-        [OpcodeHook("DMFC0")]
-        private void Inst_Dmfc0(MipsInstruction inst)
-        {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Is32BitMode())
             {
-                MipsState.WriteGPRUnsigned(inst.Rt, MipsState.CP0Regs[inst.Rd]);
+                MipsState.WriteGPR32Unsigned(inst.Rt, MipsState.Fpr.ReadFPR32Unsigned(inst.Rd));
+            }
+            else
+            {
+                MipsState.WriteGPRUnsigned(inst.Rt, MipsState.Fpr.ReadFPRUnsigned(inst.Rd));
             }
         }
 
-        [OpcodeHook("DMTC0")]
-        private void Inst_Dmtc0(MipsInstruction inst)
+        [OpcodeHook("CTC1")]
+        private void Inst_Ctc1(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Is32BitMode())
             {
-                MipsState.CP0Regs[inst.Rd] = MipsState.ReadGPRUnsigned(inst.Rt);
+                MipsState.Fpr.WriteFPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rt));
+            }
+            else
+            {
+                MipsState.Fpr.WriteFPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt));
             }
         }
-
-        //[OpcodeHook("MFC0")]
-        //private void Inst_Mfc0(MipsInstruction inst)
-        //{
-
-        //}
     }
 }

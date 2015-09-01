@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 using System;
 using System.IO;
 
-namespace Soft64.MipsR4300.CP0
+namespace Soft64.MipsR4300
 {
     internal sealed class TLBMapStream : Stream
     {

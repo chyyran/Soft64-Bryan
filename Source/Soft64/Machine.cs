@@ -27,7 +27,6 @@ using NLog;
 using Soft64.Debugging;
 using Soft64.Engines;
 using Soft64.MipsR4300;
-using Soft64.MipsR4300.Interpreter;
 using Soft64.PIF;
 using Soft64.RCP;
 
@@ -180,10 +179,6 @@ namespace Soft64
 
             try
             {
-                /* Setup Core */
-                DeviceCPU.Engine = new PureInterpreter();
-                DeviceRCP.Engine = new PureInterpreter();
-
                 /* Initialize N64 componenets */
                 DevicePIF.Initialize();
                 DeviceRCP.Initialize();

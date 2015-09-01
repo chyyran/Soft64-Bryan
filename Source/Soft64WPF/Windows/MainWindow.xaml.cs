@@ -29,7 +29,7 @@ using NLog.Targets;
 using NLog.Targets.Wrappers;
 using Soft64;
 using Soft64.Debugging;
-using Soft64.MipsR4300.Interpreter;
+using Soft64.MipsR4300;
 using Soft64Binding.WPF;
 using Soft64WPF.Helper;
 
@@ -133,7 +133,7 @@ namespace Soft64WPF.Windows
                 LogManager.Configuration.AddTarget(asyncWrapper.Name, asyncWrapper);
                 LogManager.Configuration.AddTarget(cpuLogTarget.Name, cpuLogTarget);
 
-                var cpulogrule = new LoggingRule("Soft64.MipsR4300.Interpreter.PureInterpreter", LogLevel.Trace, cpuLogTarget);
+                var cpulogrule = new LoggingRule("Soft64.MipsR4300.Interpreter", LogLevel.Trace, cpuLogTarget);
                 cpulogrule.Final = true;
 
                 LogManager.Configuration.LoggingRules.Add(cpulogrule);

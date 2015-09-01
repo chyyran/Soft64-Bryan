@@ -19,12 +19,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 
-namespace Soft64.MipsR4300.CP0
+namespace Soft64.MipsR4300
 {
     /// <summary>
     /// Stores physical page information used in TLB address translation.
     /// </summary>
-    [CLSCompliant(false)]
     public struct PageFrameNumber
     {
         private Int32 m_PFN; // Page Frame Number

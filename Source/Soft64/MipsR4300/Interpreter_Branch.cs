@@ -19,35 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 
-namespace Soft64.MipsR4300.Interpreter
+namespace Soft64.MipsR4300
 {
-    public partial class PureInterpreter
+    public partial class Interpreter
     {
-        public static Int64 BranchComputeTargetAddress(Int64 pc, UInt16 immediate)
-        {
-            return (pc + 4) + (((Int64)(Int16)immediate) << 2);
-        }
-
-        private void DoBranch(Boolean condition, MipsInstruction inst)
-        {
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-            m_BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
-        }
-
-        private void DoBranchLikely(Boolean condition, MipsInstruction inst)
-        {
-            m_NullifiedInstruction = !condition;
-            DoBranch(condition, inst);
-        }
-
-        private void DoJump(Int64 addressTarget)
-        {
-            m_IsBranch = true;
-            m_BranchDelaySlot = MipsState.PC + 4;
-            m_BranchTarget = addressTarget.ResolveAddress();
-        }
-
         [OpcodeHook("BNE")]
         private void Inst_Bne(MipsInstruction inst)
         {
@@ -107,7 +82,7 @@ namespace Soft64.MipsR4300.Interpreter
         }
 
         [OpcodeHook("JALR")]
-        private void Inst_Jr(MipsInstruction inst)
+        private void Inst_Jalr(MipsInstruction inst)
         {
             DoJump(MipsState.ReadGPRSigned(inst.Rs));
             MipsState.WriteGPRSigned(inst.Rd, inst.Address + 8);
@@ -234,28 +209,28 @@ namespace Soft64.MipsR4300.Interpreter
         private void Inst_Bltzal(MipsInstruction inst)
         {
             Inst_Bltz(inst);
-            LinkAddress(inst.Address + 8);
+            MipsState.WriteGPRSigned(31, inst.Address + 8);
         }
 
         [OpcodeHook("BLTZALL")]
         private void Inst_Bltzall(MipsInstruction inst)
         {
             Inst_Bltzl(inst);
-            LinkAddress(inst.Address + 8);
+            MipsState.WriteGPRSigned(31, inst.Address + 8);
         }
 
         [OpcodeHook("BGEZAL")]
         private void Inst_Bgezal(MipsInstruction inst)
         {
             Inst_Bgez(inst);
-            LinkAddress(inst.Address + 8);
+            MipsState.WriteGPRSigned(31, inst.Address + 8);
         }
 
         [OpcodeHook("BGEZALL")]
         private void Inst_Bgezall(MipsInstruction inst)
         {
             Inst_Bgezl(inst);
-            LinkAddress(inst.Address + 8);
+            MipsState.WriteGPRSigned(31, inst.Address + 8);
         }
 
         [OpcodeHook("BC1F")]
