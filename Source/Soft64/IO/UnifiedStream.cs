@@ -207,6 +207,15 @@ namespace Soft64.IO
 
         public virtual void Add(long key, Stream value)
         {
+            /* Do an sanity check on possible overlaps */
+            foreach (var entry in m_StreamLUT)
+            {
+                if (key >= entry.Key && key < entry.Key + entry.Value.Length)
+                {
+                    throw new ArgumentException("Stream overlaps another stream");
+                }
+            }
+
             m_StreamLUT.Add(key, value);
         }
 

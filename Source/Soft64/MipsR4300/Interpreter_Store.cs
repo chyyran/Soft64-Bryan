@@ -37,8 +37,7 @@ namespace Soft64.MipsR4300
             else
             {
 
-                DataBinaryWriter.BaseStream.Position = address;
-                DataBinaryWriter.Write(MipsState.ReadGPR32Unsigned(inst.Rt));
+                DataManipulator.Write(address, MipsState.ReadGPR32Unsigned(inst.Rt));
             }
         }
 
@@ -56,9 +55,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-
-                DataBinaryWriter.BaseStream.Position = address;
-                DataBinaryWriter.Write(MipsState.ReadGPRUnsigned(inst.Rt));
+                DataManipulator.Write(address, MipsState.ReadGPRUnsigned(inst.Rt));
             }
         }
     }

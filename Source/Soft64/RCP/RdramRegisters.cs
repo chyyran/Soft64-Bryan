@@ -42,21 +42,11 @@ namespace Soft64.RCP
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (Position >= 0 && Position < OFFSET_RDRAM_DEVICE_MANUF_REG + 4)
-            {
-                return count;
-            }
-
             return base.Read(buffer, offset, count);
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (Position >= 0 && Position < OFFSET_RDRAM_DEVICE_MANUF_REG + 4)
-            {
-                return;
-            }
-
             base.Write(buffer, offset, count);
         }
     }

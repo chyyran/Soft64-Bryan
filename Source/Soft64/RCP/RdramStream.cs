@@ -145,7 +145,7 @@ namespace Soft64.RCP
 
         public override long Length
         {
-            get { return 0x03FFFFFF + 1; }
+            get { return 0x03EFFFFF + 1; }
         }
 
         public override long Seek(long offset, System.IO.SeekOrigin origin)

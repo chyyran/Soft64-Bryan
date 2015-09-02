@@ -49,9 +49,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-
-                DataBinaryReader.BaseStream.Position = address;
-                UInt32 read = DataBinaryReader.ReadUInt32();
+                UInt32 read = DataManipulator.ReadUInt32(address);
 
                 if (MipsState.Is32BitMode())
                     MipsState.WriteGPR32Unsigned(inst.Rt, read);
@@ -66,20 +64,20 @@ namespace Soft64.MipsR4300
             if (MipsState.Is32BitMode())
             {
                 MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
-                return;
-            }
-
-            Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
-
-            if ((address & 3) != 0)
-            {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
             }
             else
             {
+                Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
 
-                DataBinaryReader.BaseStream.Position = address;
-                MipsState.WriteGPRUnsigned(inst.Rt, DataBinaryReader.ReadUInt64());
+                if ((address & 3) != 0)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                }
+                else
+                {
+
+                    MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.ReadUInt64(address));
+                }
             }
         }
 
@@ -93,16 +91,14 @@ namespace Soft64.MipsR4300
                     Int64 address = (Int32)(Int16)inst.Immediate;
                     address += MipsState.ReadGPR32Signed(inst.Rd);
                     address = address.ResolveAddress();
-                    DataBinaryReader.BaseStream.Position = address;
-                    MipsState.WriteGPR32Signed(inst.Rt, (Int16)DataBinaryReader.ReadByte());
+                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.ReadInt8(address));
                 }
                 else
                 {
                     Int64 address = (Int64)(Int16)inst.Immediate;
                     address += MipsState.ReadGPRSigned(inst.Rd);
                     address = address.ResolveAddress();
-                    DataBinaryReader.BaseStream.Position = address;
-                    MipsState.WriteGPRSigned(inst.Rt, (Int16)DataBinaryReader.ReadByte());
+                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadInt8(address));
                 }
             }
             catch (TLBException tlbe)

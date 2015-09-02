@@ -76,6 +76,7 @@
     <Compile Include="MipsR4300\FpuRegisters.cs" />
     <Compile Include="MipsR4300\InterpreterExtensions.cs" />
     <Compile Include="MipsR4300\Interpreter_FPU.cs" />
+    <Compile Include="MipsR4300\MipsDataManipulator.cs" />
     <Compile Include="MipsR4300\OpcodeHookAttribute.cs" />
     <Compile Include="RCP\MipsInterface.cs" />
     <Compile Include="RCP\RdramRegisters.cs" />

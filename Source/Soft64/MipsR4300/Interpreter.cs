@@ -36,8 +36,7 @@ namespace Soft64.MipsR4300
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private InstructionReader m_InstReader;
-        private BinaryReader m_DataBinReader;
-        private BinaryWriter m_DataBinWriter;
+        private MipsDataManipulator m_DataManipulator;
         private ExecutionState m_CPUState;
         private Int32 m_OpcodeErrorCount = 0;
         private MipsOp m_SubSpecial;
@@ -74,8 +73,7 @@ namespace Soft64.MipsR4300
             base.Initialize();
             m_CPUState = ParentMips.State;
             m_InstReader = new InstructionReader(MemoryAccessMode.Virtual);
-            m_DataBinReader = new BinaryReader(ParentMips.VirtualMemoryStream);
-            m_DataBinWriter = new BinaryWriter(ParentMips.VirtualMemoryStream);
+            m_DataManipulator = new MipsDataManipulator(ParentMips.VirtualMemoryStream);
             InitializeOpcodes();
         }
 
@@ -271,14 +269,9 @@ namespace Soft64.MipsR4300
             get { return m_CPUState; }
         }
 
-        protected BinaryReader DataBinaryReader
+        protected MipsDataManipulator DataManipulator
         {
-            get { return m_DataBinReader; }
-        }
-
-        protected BinaryWriter DataBinaryWriter
-        {
-            get { return m_DataBinWriter; }
+            get { return m_DataManipulator; }
         }
 
         protected MipsInstruction FetchInstruction(Int64 address)

@@ -153,9 +153,9 @@ namespace Soft64.IO
 
         public IEnumerator<KeyValuePair<long, Stream>> GetEnumerator()
         {
-            foreach (var pair in this)
+            foreach (var entry in m_MemZones)
             {
-                yield return pair;
+                yield return entry;
             }
         }
 
