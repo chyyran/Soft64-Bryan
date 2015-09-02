@@ -38,7 +38,7 @@ namespace Soft64.MipsR4300
             
         }
 
-        public UInt64 ReadUInt64(Int64 address)
+        public UInt64 ReadDoublewordUnsigned(Int64 address)
         {
             m_SourceStream.Position = address;
             m_SourceStream.Read(m_Buffer, 0, 8);
@@ -60,7 +60,7 @@ namespace Soft64.MipsR4300
             m_SourceStream.Write(m_Buffer, 0, 8);
         }
 
-        public UInt32 ReadUInt32(Int64 address)
+        public UInt32 ReadWordUnsigned(Int64 address)
         {
             m_SourceStream.Position = address;
             m_SourceStream.Read(m_Buffer, 0, 4);
@@ -82,7 +82,7 @@ namespace Soft64.MipsR4300
             m_SourceStream.Write(m_Buffer, 0, 4);
         }
 
-        public UInt16 ReadUInt16(Int64 address)
+        public UInt16 ReadHalfwordUnsigned(Int64 address)
         {
             m_SourceStream.Position = address;
             m_SourceStream.Read(m_Buffer, 0, 2);
@@ -104,9 +104,9 @@ namespace Soft64.MipsR4300
             m_SourceStream.Write(m_Buffer, 0, 2);
         }
 
-        public Int64 ReadInt64(Int64 address)
+        public Int64 ReadDoublewordSigned(Int64 address)
         {
-            return (Int64)ReadUInt64(address);
+            return (Int64)ReadDoublewordUnsigned(address);
         }
 
         public void Write(Int64 address, Int64 value)
@@ -114,9 +114,9 @@ namespace Soft64.MipsR4300
             Write(address, (UInt64)value);
         }
 
-        public Int32 ReadInt32(Int64 address)
+        public Int32 ReadWordSigned(Int64 address)
         {
-            return (Int32)ReadUInt32(address);
+            return (Int32)ReadWordUnsigned(address);
         }
 
         public void Write(Int64 address, Int32 value)
@@ -124,9 +124,9 @@ namespace Soft64.MipsR4300
             Write(address, (UInt32)value);
         }
 
-        public Int16 ReadInt16(Int64 address)
+        public Int16 ReadHalfwordSigned(Int64 address)
         {
-            return (Int16)ReadUInt16(address);
+            return (Int16)ReadHalfwordUnsigned(address);
         }
 
         public void Write(Int64 address, Int16 value)
@@ -134,7 +134,7 @@ namespace Soft64.MipsR4300
             Write(address, (UInt16)value);
         }
 
-        public Byte ReadUInt8(Int64 address)
+        public Byte ReadByteUnsigned(Int64 address)
         {
             m_SourceStream.Position = address;
             return (Byte)m_SourceStream.ReadByte();
@@ -146,9 +146,9 @@ namespace Soft64.MipsR4300
             m_SourceStream.WriteByte(value);
         }
 
-        public SByte ReadInt8(Int64 address)
+        public SByte ReadByteSigned(Int64 address)
         {
-            return (SByte)ReadUInt8(address);
+            return (SByte)ReadByteUnsigned(address);
         }
 
         public void Write(Int64 address, SByte value)

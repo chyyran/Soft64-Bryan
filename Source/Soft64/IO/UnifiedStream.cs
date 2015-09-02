@@ -40,6 +40,9 @@ namespace Soft64.IO
         private _SafeUnifiedStream m_SafeStream;
         private const Int32 CACHE_MAX = 450;
 
+        /* TODO: Implement a decent cache system to prevent the need of accessing the individual streams
+           TODO: When caching blocks, some may require flags to make IO operations always volatile */
+
         protected UnifiedStream()
         {
             m_StreamLUT = new _StreamLUT();

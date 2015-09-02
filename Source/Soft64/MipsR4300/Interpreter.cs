@@ -312,24 +312,34 @@ namespace Soft64.MipsR4300
             return (pc + 4) + (((Int64)(Int16)immediate) << 2);
         }
 
-        private void DoBranch(Boolean condition, MipsInstruction inst)
+        protected void DoBranch(Boolean condition, MipsInstruction inst)
         {
             BranchEnabled = true;
             BranchDelaySlot = MipsState.PC + 4;
             BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
         }
 
-        private void DoBranchLikely(Boolean condition, MipsInstruction inst)
+        protected void DoBranchLikely(Boolean condition, MipsInstruction inst)
         {
             NullifyEnabled = !condition;
             DoBranch(condition, inst);
         }
 
-        private void DoJump(Int64 addressTarget)
+        protected void DoJump(Int64 addressTarget)
         {
             BranchEnabled = true;
             BranchDelaySlot = MipsState.PC + 4;
             BranchTarget = addressTarget.ResolveAddress();
+        }
+
+        protected Int64 ComputeAddress32(MipsInstruction inst)
+        {
+            return ((Int32)(Int16)inst.Immediate) + MipsState.ReadGPR32Signed(inst.Rs);
+        }
+
+        protected Int64 ComputeAddress64(MipsInstruction inst)
+        {
+            return (((Int64)(Int16)inst.Immediate) + MipsState.ReadGPRSigned(inst.Rs)).ResolveAddress();
         }
 
         [Conditional("DEBUGFULL")]

@@ -90,7 +90,6 @@
     <Compile Include="Engines\SimpleEngine.cs" />
     <Compile Include="Engines\SingleCoreScheduler.cs" />
     <Compile Include="Engines\CoreTaskScheduler.cs" />
-    <Compile Include="MipsR4300\Cache.cs" />
     <Compile Include="MipsR4300\CauseRegister.cs" />
     <Compile Include="MipsR4300\MipsExceptionHandler.cs" />
     <Compile Include="MipsR4300\TLBCacheChangeEventArgs.cs" />

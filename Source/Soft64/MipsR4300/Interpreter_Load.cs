@@ -49,7 +49,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                UInt32 read = DataManipulator.ReadUInt32(address);
+                UInt32 read = DataManipulator.ReadWordUnsigned(address);
 
                 if (MipsState.Is32BitMode())
                     MipsState.WriteGPR32Unsigned(inst.Rt, read);
@@ -67,7 +67,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
+                Int64 address = ComputeAddress64(inst);
 
                 if ((address & 3) != 0)
                 {
@@ -75,8 +75,7 @@ namespace Soft64.MipsR4300
                 }
                 else
                 {
-
-                    MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.ReadUInt64(address));
+                    MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.ReadDoublewordUnsigned(address));
                 }
             }
         }
@@ -88,17 +87,37 @@ namespace Soft64.MipsR4300
             {
                 if (MipsState.Is32BitMode())
                 {
-                    Int64 address = (Int32)(Int16)inst.Immediate;
-                    address += MipsState.ReadGPR32Signed(inst.Rd);
-                    address = address.ResolveAddress();
-                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.ReadInt8(address));
+                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.ReadByteSigned(ComputeAddress32(inst)));
                 }
                 else
                 {
-                    Int64 address = (Int64)(Int16)inst.Immediate;
-                    address += MipsState.ReadGPRSigned(inst.Rd);
-                    address = address.ResolveAddress();
-                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadInt8(address));
+                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadByteSigned(ComputeAddress64(inst)));
+                }
+            }
+            catch (TLBException tlbe)
+            {
+                switch (tlbe.ExceptionType)
+                {
+                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    default: break;
+                }
+            }
+        }
+
+        [OpcodeHook("LBU")]
+        private void Inst_Lbu(MipsInstruction inst)
+        {
+            try
+            {
+                if (MipsState.Is32BitMode())
+                {
+                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.ReadByteUnsigned(ComputeAddress32(inst)));
+                }
+                else
+                {
+                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadByteUnsigned(ComputeAddress64(inst)));
                 }
             }
             catch (TLBException tlbe)
