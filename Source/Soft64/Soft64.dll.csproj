@@ -68,7 +68,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitExtractor.cs" />
     <Compile Include="BootSnapReader.cs" />
     <Compile Include="Cartridge.cs" />
     <Compile Include="CartridgeInfo.cs" />
