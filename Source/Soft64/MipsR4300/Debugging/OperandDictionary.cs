@@ -25,7 +25,7 @@ internal delegate String OperandFunc(MipsInstruction inst, Boolean o32);
 
 namespace Soft64.MipsR4300.Debugging
 {
-    internal sealed class OperandDictionary : Dictionary<Byte, OperandFunc>
+    internal sealed class OperandDictionary : Dictionary<Int32, OperandFunc>
     {
         public OperandDictionary()
             : base()

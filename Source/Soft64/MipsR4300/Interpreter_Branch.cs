@@ -39,14 +39,14 @@ namespace Soft64.MipsR4300
         [OpcodeHook("J")]
         private void Inst_J(MipsInstruction inst)
         {
-            DoJump((inst.Offset << 2) | ((inst.Address + 4) & 0xFFFF0000));
+            DoJump((inst.Target << 2) | ((inst.Address + 4) & 0xFFFF0000));
         }
 
         [OpcodeHook("JAL")]
         private void Inst_Jal(MipsInstruction inst)
         {
             MipsState.WriteGPRSigned(31, inst.Address + 8);
-            DoJump(((inst.Address + 4) & 0xFFFF0000) | (inst.Offset << 2));
+            DoJump(((inst.Address + 4) & 0xFFFF0000) | (inst.Target << 2));
         }
 
         [OpcodeHook("BEQL")]

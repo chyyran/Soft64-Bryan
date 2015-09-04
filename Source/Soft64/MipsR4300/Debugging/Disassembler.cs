@@ -64,7 +64,7 @@ namespace Soft64.MipsR4300.Debugging
             (inst, o32) => { return String.Format("{0}, 0x{1:x4}", DecodeGprReg(inst.Rs, o32), inst.Immediate); },
 
             /* 11: Common Jump Format */
-            (inst, o32) => { return "0x" + inst.Offset.ToString("x8"); },
+            (inst, o32) => { return "0x" + inst.Target.ToString("x8"); },
 
             /* 12: Instructions that only use Rs and Rd */
             (inst, o32) => { return String.Format("{0}, {1}", DecodeGprReg(inst.Rs, o32), DecodeGprReg(inst.Rd, o32)); },
@@ -142,10 +142,10 @@ namespace Soft64.MipsR4300.Debugging
                             switch (s_OpTableCop1[asmInstruction.Rs])
                             {
                                 case "_BC1": opName = s_OpTableBC1[asmInstruction.Rt]; break;
-                                case "_SI": opName = s_OpTableFpu_Single[asmInstruction.Function]; break;
-                                case "_DI": opName = s_OpTableFpu_Double[asmInstruction.Function]; break;
-                                case "_WI": opName = s_OpTableFpu_FixedPoint[asmInstruction.Function]; break;
-                                case "_LI": opName = s_OpTableFpu_FixedPoint[asmInstruction.Function]; break;
+                                case "_SI": opName = s_OpTableFpu_Single[asmInstruction.Function] + ".s"; break;
+                                case "_DI": opName = s_OpTableFpu_Double[asmInstruction.Function] + ".d"; break;
+                                case "_WI": opName = s_OpTableFpu_FixedPoint[asmInstruction.Function] + ".w"; break;
+                                case "_LI": opName = s_OpTableFpu_FixedPoint[asmInstruction.Function] + ".l"; break;
                                 default: opName = s_OpTableCop1[asmInstruction.Rs]; break;
                             }
                             break;
@@ -161,7 +161,7 @@ namespace Soft64.MipsR4300.Debugging
             }
         }
 
-        public static string DecodeGprReg(byte reg, Boolean o32)
+        public static string DecodeGprReg(Int32 reg, Boolean o32)
         {
             if (o32)
                 return s_O32GprLabel[reg];
@@ -169,7 +169,7 @@ namespace Soft64.MipsR4300.Debugging
                 return s_GprLabel[reg];
         }
 
-        private static String DecodeOperand(MipsInstruction inst, Boolean o32, OperandDictionary lut, Byte reg, String defaultValue)
+        private static String DecodeOperand(MipsInstruction inst, Boolean o32, OperandDictionary lut, Int32 reg, String defaultValue)
         {
             if (inst.Instruction == 0)
                 return "";
@@ -237,12 +237,12 @@ namespace Soft64.MipsR4300.Debugging
             }
         }
 
-        public static string DecodeFpuReg(Byte reg)
+        public static string DecodeFpuReg(Int32 reg)
         {
             return s_Cop1RegLabel[reg];
         }
 
-        public static string DecodeCop0Reg(Byte reg)
+        public static string DecodeCop0Reg(Int32 reg)
         {
             return s_Cop0RegLabel[reg];
         }

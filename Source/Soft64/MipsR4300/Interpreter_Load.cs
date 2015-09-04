@@ -131,5 +131,11 @@ namespace Soft64.MipsR4300
                 }
             }
         }
+
+        [OpcodeHook("LCD1")]
+        private void Inst_Lcd1(MipsInstruction isnt)
+        {
+            
+        }
     }
 }

@@ -30,8 +30,6 @@ using MipsOp = System.Action<Soft64.MipsR4300.MipsInstruction>;
 
 namespace Soft64.MipsR4300
 {
-    /* TODO: Implement optable for fixed FPU opcodes */
-
     public partial class Interpreter : ExecutionEngine
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -55,7 +53,8 @@ namespace Soft64.MipsR4300
         private MipsOp[] m_OpsTableCP0;
         private MipsOp[] m_OpsTableCP1;
         private MipsOp[] m_OpsTableBC1;
-        private MipsOp[] m_OpsTableFloat;
+        private MipsOp[] m_OpsTableSingle;
+        private MipsOp[] m_OpsTableDouble;
         private MipsOp[] m_OpsTableFixed;
         private MipsOp[] m_OpsTableTLB;
 
@@ -85,10 +84,10 @@ namespace Soft64.MipsR4300
             m_COP0 = (inst) => OpCall(m_OpsTableCP0, inst.Rs, inst);
             m_COP1 = (inst) => OpCall(m_OpsTableCP1, inst.Rs, inst);
             m_BC1 = (inst) => OpCall(m_OpsTableBC1, inst.Rt & 0x3, inst);
-            m_WI = (inst) => { inst.DataFormat = DataFormat.FixedWord; OpCall(m_OpsTableFixed, inst.Function, inst); };
-            m_LI = (inst) => { inst.DataFormat = DataFormat.FixedLong; OpCall(m_OpsTableFixed, inst.Function, inst); };
-            m_SI = (inst) => { inst.DataFormat = DataFormat.FloatingSingle; OpCall(m_OpsTableFloat, inst.Function, inst); };
-            m_DI = (inst) => { inst.DataFormat = DataFormat.FloatingDouble; OpCall(m_OpsTableFloat, inst.Function, inst); };
+            m_WI = (inst) => { FpuDataMode = DataFormat.FixedWord; OpCall(m_OpsTableFixed, inst.Function, inst); };
+            m_LI = (inst) => { FpuDataMode = DataFormat.FixedLong; OpCall(m_OpsTableFixed, inst.Function, inst); };
+            m_SI = (inst) => { FpuDataMode = DataFormat.FloatingSingle; OpCall(m_OpsTableSingle, inst.Function, inst); };
+            m_DI = (inst) => { FpuDataMode = DataFormat.FloatingDouble; OpCall(m_OpsTableDouble, inst.Function, inst); };
 
             m_OpsTableMain = new MipsOp[] {
                 m_SubSpecial, m_SubRegImm, J, JAL, BEQ, BNE, BLEZ, BGTZ,
@@ -97,8 +96,8 @@ namespace Soft64.MipsR4300
                 DADDI, DADDIU, LDL, LDR, null, null, null, null,
                 LB, LH, LWL, LW, LBU, LHU, LWR, LWU,
                 SB, SH, SWL, SW, SDL, SDR, SWR, CACHE,
-                LL, LWC1, null, null, LLD, LDC1, LDC2, LD,
-                SC, SWC1, null, null, SCD, SDC1, SDC2, SD
+                LL, LWC1, null, null, LLD, LDC1, null, LD,
+                SC, SWC1, null, null, SCD, SDC1, null, SD
             };
 
             m_OpsTableSpecial = new MipsOp[] {
@@ -146,15 +145,37 @@ namespace Soft64.MipsR4300
                 BC1F, BC1T, BC1FL, BC1TL
             };
 
-            m_OpsTableFloat = new MipsOp[] {
+            m_OpsTableSingle = new MipsOp[] {
                 FPU_ADD, FPU_SUB, FPU_MUL, FPU_DIV, FPU_SQRT, FPU_ABS, FPU_MOV, FPU_NEG,
                 FPU_ROUND_L, FPU_TRUNC_L, FPU_CEIL_L, FPU_FLOOR_L, FPU_ROUND_W, FPU_TRUNC_W, FPU_CEIL_W, FPU_FLOOR_W,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null,
-                FPU_CVT_S, FPU_CVT_D, null, null, FPU_CVT_W, FPU_CVT_L, null, null,
+                FPU_CVT_S, null, null, null, FPU_CVT_W, FPU_CVT_L, null, null,
                 null, null, null, null, null, null, null, null,
                 FPU_C_F, FPU_C_UN, FPU_C_EQ, FPU_C_UEQ, FPU_C_UEQ, FPU_C_OLT, FPU_C_ULT, FPU_C_OLE, FPU_C_ULE,
                 FPU_C_SF, FPU_C_NGLE, FPU_C_SEQ, FPU_C_NGL, FPU_C_LT, FPU_C_NGE, FPU_C_LE, FPU_C_NGT
+            };
+
+            m_OpsTableDouble = new MipsOp[] {
+                FPU_ADD, FPU_SUB, FPU_MUL, FPU_DIV, FPU_SQRT, FPU_ABS, FPU_MOV, FPU_NEG,
+                FPU_ROUND_L, FPU_TRUNC_L, FPU_CEIL_L, FPU_FLOOR_L, FPU_ROUND_W, FPU_TRUNC_W, FPU_CEIL_W, FPU_FLOOR_W,
+                null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null,
+                null, FPU_CVT_D, null, null, FPU_CVT_W, FPU_CVT_L, null, null,
+                null, null, null, null, null, null, null, null,
+                FPU_C_F, FPU_C_UN, FPU_C_EQ, FPU_C_UEQ, FPU_C_UEQ, FPU_C_OLT, FPU_C_ULT, FPU_C_OLE, FPU_C_ULE,
+                FPU_C_SF, FPU_C_NGLE, FPU_C_SEQ, FPU_C_NGL, FPU_C_LT, FPU_C_NGE, FPU_C_LE, FPU_C_NGT
+            };
+
+            m_OpsTableFixed = new MipsOp[] {
+            null,    null,    null, null, null, null, null, null,
+            null,    null,    null, null, null, null, null, null,
+            null,    null,    null, null, null, null, null, null,
+            null,    null,    null, null, null, null, null, null,
+            FPU_CVT_S, FPU_CVT_D, null, null, null, null, null, null,
+            null,    null,    null, null, null, null, null, null,
+            null,    null,    null, null, null, null, null, null,
+            null,    null,    null, null, null, null, null, null,
             };
         }
 
@@ -167,96 +188,61 @@ namespace Soft64.MipsR4300
         {
             /* Do one step through the interpreter */
 
-            try
+            /* Go to branch */
+            if (BranchEnabled)
+                MipsState.PC = BranchTarget;
+
+            /* Fetch instruction at PC */
+            MipsInstruction inst = FetchInstruction(MipsState.PC);
+
+            /* If we branched, execute the delay slot */
+            if (BranchEnabled)
             {
-                /* Go to branch */
-                if (BranchEnabled)
-                    MipsState.PC = BranchTarget;
-
-                /* Fetch instruction at PC */
-                MipsInstruction inst = FetchInstruction(MipsState.PC);
-
-                /* If we branched, execute the delay slot */
-                if (BranchEnabled)
+                if (!NullifyEnabled)
                 {
-                    if (!NullifyEnabled)
-                    {
-                        MipsState.BranchPC = BranchDelaySlot;
-                        MipsInstruction bsdInst = FetchInstruction(BranchDelaySlot);
-                        TraceOp(BranchDelaySlot, bsdInst);
-                        CallInstruction(bsdInst);
-                        BranchEnabled = false;
-                    }
-                    else
-                    {
-                        /* Skip the delay slot */
-                        NullifyEnabled = false;
-                        BranchEnabled = false;
-                    }
+                    MipsState.BranchPC = BranchDelaySlot;
+                    MipsInstruction bsdInst = FetchInstruction(BranchDelaySlot);
+                    TraceOp(BranchDelaySlot, bsdInst);
+                    CallInstruction(bsdInst);
+                    BranchEnabled = false;
                 }
                 else
                 {
-
-                    TraceOp(MipsState.PC, inst);
-                    CallInstruction(inst);
-
-                    /* If branching has been set, skip PC increment */
-                    if (!BranchEnabled)
-                        MipsState.PC += 4;
-                    else
-                        MipsState.PC += 8;
+                    /* Skip the delay slot */
+                    NullifyEnabled = false;
+                    BranchEnabled = false;
                 }
-
             }
-            catch (Exception e)
+            else
             {
-                MipsState.PC -= 4; /* Move the counter back to the instruction that has faulted */
-                HasFaulted = true;
 
-                /* Important: This ensures that the engine thread comes to an halt seeing the thrown exception */
-                throw e;
+                TraceOp(MipsState.PC, inst);
+                CallInstruction(inst);
+
+                /* If branching has been set, skip PC increment */
+                if (!BranchEnabled)
+                    MipsState.PC += 4;
+                else
+                    MipsState.PC += 8;
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void OpCall(MipsOp[] callTable, Int32 index, MipsInstruction inst)
         {
+            /* NOP */
             if (inst.Instruction == 0)
                 return;
 
+            MipsOp call = callTable[index];
 
-            /* TODO: Clean this mess up */
-
-#if !FAST_UNSAFE_BUILD
-            try
+            if (call != null)
             {
-                MipsOp e = callTable[index];
-
-                if (e != null)
-                    e(inst);
-                else
-                    throw new InvalidOperationException("Unsupport Instruction: " + inst.ToString());
+                call(inst);
             }
-            catch (OverflowException e)
+            else
             {
-#if DEBUG
-                Console.WriteLine("Overflow at " + e.TargetSite.Name);
-#endif
-                return;
+                throw new InvalidOperationException("Unsupport Instruction: " + inst.ToString());
             }
-            catch (Exception e)
-            {
-                m_OpcodeErrorCount++;
-                Console.WriteLine("Interpreter Opcode Error: " + e.Message);
-
-                if (m_OpcodeErrorCount >= 1)
-                    throw new InvalidOperationException("Too many opcode errors have occured");
-
-                return;
-            }
-#else
-            callTable[index](inst);
-#endif
         }
 
         protected void CallInstruction(MipsInstruction inst)
@@ -357,6 +343,8 @@ namespace Soft64.MipsR4300
 
         public Int64 BranchDelaySlot { get; set; }
 
+        public DataFormat FpuDataMode { get; set; }
+
         #region Instruction Delegates
 
         protected MipsOp J { get; set; }
@@ -441,8 +429,6 @@ namespace Soft64.MipsR4300
 
         protected MipsOp LDC1 { get; set; }
 
-        protected MipsOp LDC2 { get; set; }
-
         protected MipsOp LD { get; set; }
 
         protected MipsOp SC { get; set; }
@@ -452,8 +438,6 @@ namespace Soft64.MipsR4300
         protected MipsOp SCD { get; set; }
 
         protected MipsOp SDC1 { get; set; }
-
-        protected MipsOp SDC2 { get; set; }
 
         protected MipsOp SD { get; set; }
 
