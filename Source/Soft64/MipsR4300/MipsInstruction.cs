@@ -52,7 +52,7 @@ namespace Soft64.MipsR4300
                     UInt16 h = *(UInt16*)(ptr + 2);
 
                     m_Immediate = l;
-                    m_Target = m_Inst & 0xFC000000;
+                    m_Target = m_Inst & 0x3FFFFFF;
                     m_Opcode = h >> 10;
                     m_Rs = h >> 5 & 0x1F;
                     m_Rt = h & 0x1F;
