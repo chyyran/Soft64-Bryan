@@ -246,7 +246,6 @@ namespace Soft64.MipsR4300
             }
         }
 
-
         [OpcodeHook("ORI")]
         private void Inst_Ori(MipsInstruction inst)
         {

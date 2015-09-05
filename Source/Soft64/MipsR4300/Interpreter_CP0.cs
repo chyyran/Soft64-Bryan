@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
+using System;
+
 namespace Soft64.MipsR4300
 {
     public partial class Interpreter
@@ -24,7 +26,14 @@ namespace Soft64.MipsR4300
         [OpcodeHook("MTC0")]
         private void Inst_Mtc0(MipsInstruction inst)
         {
-            MipsState.CP0Regs.SetReg(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt));
+            if (MipsState.CP0Regs.StatusReg.CopUsable0)
+            {
+                MipsState.CP0Regs[inst.Rd] = MipsState.ReadGPRUnsigned(inst.Rt);
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.CopUnstable;
+            }
         }
 
         [OpcodeHook("DMFC0")]
@@ -33,6 +42,10 @@ namespace Soft64.MipsR4300
             if (MipsState.Is64BitMode())
             {
                 MipsState.WriteGPRUnsigned(inst.Rt, MipsState.CP0Regs[inst.Rd]);
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -43,12 +56,30 @@ namespace Soft64.MipsR4300
             {
                 MipsState.CP0Regs[inst.Rd] = MipsState.ReadGPRUnsigned(inst.Rt);
             }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+            }
         }
 
-        //[OpcodeHook("MFC0")]
-        //private void Inst_Mfc0(MipsInstruction inst)
-        //{
-
-        //}
+        [OpcodeHook("MFC0")]
+        private void Inst_Mfc0(MipsInstruction inst)
+        {
+            if (MipsState.CP0Regs.StatusReg.CopUsable0)
+            {
+                if (MipsState.Is32BitMode())
+                {
+                    MipsState.WriteGPR32Unsigned(inst.Rt, (UInt32)MipsState.CP0Regs[inst.Rd]);
+                }
+                else
+                {
+                    MipsState.WriteGPRUnsigned(inst.Rt, MipsState.CP0Regs[inst.Rd]);
+                }
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.CopUnstable;
+            }
+        }
     }
 }

@@ -41,7 +41,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("LW")]
         private void Inst_Lw(MipsInstruction inst)
         {
-            Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
+            Int64 address = ComputeAddress64(inst);
 
             if ((address & 3) != 0)
             {
@@ -49,12 +49,31 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                UInt32 read = DataManipulator.ReadWordUnsigned(address);
-
                 if (MipsState.Is32BitMode())
-                    MipsState.WriteGPR32Unsigned(inst.Rt, read);
+                    MipsState.WriteGPR32Unsigned(inst.Rt, DataManipulator.ReadWordUnsigned(address));
                 else
-                    MipsState.WriteGPRUnsigned(inst.Rt, (UInt64)(Int64)(Int32)read);
+                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadWordSigned(address));
+            }
+        }
+
+        [OpcodeHook("LWU")]
+        private void Inst_Lwu(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                return;
+            }
+
+            Int64 address = ComputeAddress64(inst);
+
+            if ((address & 3) != 0)
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+            }
+            else
+            {
+                MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.ReadWordUnsigned(address));
             }
         }
 
@@ -132,8 +151,8 @@ namespace Soft64.MipsR4300
             }
         }
 
-        [OpcodeHook("LCD1")]
-        private void Inst_Lcd1(MipsInstruction inst)
+        [OpcodeHook("LDC1")]
+        private void Inst_Ldc1(MipsInstruction inst)
         {
             Int64 address = ComputeAddress64(inst);
 
@@ -185,6 +204,178 @@ namespace Soft64.MipsR4300
             else
             {
                 MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("LH")]
+        private void Inst_Lh(MipsInstruction inst)
+        {
+            try
+            {
+                Int64 address = ComputeAddress64(inst);
+
+                if ((address & 3) != 0)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                    return;
+                }
+
+                if (MipsState.Is32BitMode())
+                {
+                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.ReadHalfwordSigned(address));
+                }
+                else
+                {
+                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadHalfwordSigned(address));
+                }
+            }
+            catch (TLBException tlbe)
+            {
+                switch (tlbe.ExceptionType)
+                {
+                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    default: break;
+                }
+            }
+        }
+
+        [OpcodeHook("LHU")]
+        private void Inst_Lhu(MipsInstruction inst)
+        {
+            try
+            {
+                Int64 address = ComputeAddress64(inst);
+
+                if ((address & 1) != 0)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                    return;
+                }
+
+                if (MipsState.Is32BitMode())
+                {
+                    MipsState.WriteGPR32Unsigned(inst.Rt, DataManipulator.ReadHalfwordUnsigned(address));
+                }
+                else
+                {
+                    MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.ReadHalfwordUnsigned(address));
+                }
+            }
+            catch (TLBException tlbe)
+            {
+                switch (tlbe.ExceptionType)
+                {
+                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    default: break;
+                }
+            }
+        }
+
+        [OpcodeHook("LL")]
+        private void Inst_Ll(MipsInstruction inst)
+        {
+            /* This is used in MIPS atomic memory operations, however
+             * this will not function like the real processor since the emulator
+             * does used a cache system */
+
+            /* Do a normal load word operation, assuming no cache is in place */
+
+            if (logger.IsDebugEnabled)
+                logger.Debug("Load Linked: " + inst.Address.ToString("X8"));
+
+            Inst_Lw(inst);
+        }
+
+        [OpcodeHook("LLD")]
+        private void Inst_Lld(MipsInstruction inst)
+        {
+            /* This is used in MIPS atomic memory operations, however
+             * this will not function like the real processor since the emulator
+             * does used a cache system */
+
+            /* Do a normal load doubleword operation, assuming no cache is in place */
+
+            if (logger.IsDebugEnabled)
+                logger.Debug("Load Linked Doubleword: " + inst.Address.ToString("X8"));
+
+            Inst_Ld(inst);
+        }
+
+        [OpcodeHook("LWC1")]
+        private void Inst_Lcd1(MipsInstruction inst)
+        {
+            try
+            {
+                Int64 address = ComputeAddress64(inst);
+
+                if ((address & 3) != 0)
+                {
+                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                    return;
+                }
+
+                MipsState.CP0Regs[inst.Rt] = DataManipulator.ReadWordUnsigned(address);
+
+            }
+            catch (TLBException tlbe)
+            {
+                switch (tlbe.ExceptionType)
+                {
+                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    default: break;
+                }
+            }
+        }
+
+        [OpcodeHook("LWL")]
+        private void Inst_Lwl(MipsInstruction inst)
+        {
+            Int64 address = ComputeAddress64(inst);
+            UInt32 value = DataManipulator.ReadWordUnsigned(address);
+            UInt32 reg = MipsState.ReadGPR32Unsigned(inst.Rt);
+            Int32 shiftAmount = (Int32)(address % 4);
+            value <<= shiftAmount;
+            reg <<= (4 - shiftAmount);
+            reg >>= shiftAmount;
+            value |= reg;
+            MipsState.WriteGPR32Unsigned(inst.Rt, value);
+
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPR32Unsigned(inst.Rt, value);
+            }
+            else
+            {
+                MipsState.WriteGPRSigned(inst.Rt, (Int32)value);
+            }
+        }
+
+        [OpcodeHook("LWR")]
+        private void Inst_Lwr(MipsInstruction inst)
+        {
+            Int64 address = ComputeAddress64(inst);
+            UInt32 value = DataManipulator.ReadWordUnsigned(address);
+            UInt32 reg = MipsState.ReadGPR32Unsigned(inst.Rt);
+            Int32 shiftAmount = (Int32)(address % 4);
+            value >>= shiftAmount;
+            reg >>= (4 - shiftAmount);
+            reg <<= shiftAmount;
+            value |= reg;
+            MipsState.WriteGPR32Unsigned(inst.Rt, value);
+
+            if (MipsState.Is64BitMode())
+            {
+                MipsState.WriteGPR32Unsigned(inst.Rt, value);
+            }
+            else
+            {
+                MipsState.WriteGPRSigned(inst.Rt, (Int32)value);
             }
         }
     }

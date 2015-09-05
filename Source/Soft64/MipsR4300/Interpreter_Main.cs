@@ -32,5 +32,29 @@ namespace Soft64.MipsR4300
         {
             MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Breakpoint;
         }
+
+        [OpcodeHook("MFHI")]
+        private void Inst_Mfhi(MipsInstruction inst)
+        {
+            MipsState.WriteGPRUnsigned(inst.Rd, MipsState.Hi);
+        }
+
+        [OpcodeHook("MFLO")]
+        private void Inst_Mflo(MipsInstruction inst)
+        {
+            MipsState.WriteGPRUnsigned(inst.Rd, MipsState.Lo);
+        }
+
+        [OpcodeHook("MTHI")]
+        private void Inst_Mthi(MipsInstruction inst)
+        {
+            MipsState.Hi = MipsState.ReadGPRUnsigned(inst.Rs);
+        }
+
+        [OpcodeHook("MTLO")]
+        private void Inst_Mtlo(MipsInstruction inst)
+        {
+            MipsState.Lo = MipsState.ReadGPRUnsigned(inst.Rs);
+        }
     }
 }
