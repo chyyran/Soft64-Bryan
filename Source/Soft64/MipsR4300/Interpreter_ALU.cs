@@ -620,5 +620,45 @@ namespace Soft64.MipsR4300
                 MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
             }
         }
+
+        [OpcodeHook("MULT")]
+        private void Inst_Mult(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                Int64 product = MipsState.ReadGPR32Signed(inst.Rs) * MipsState.ReadGPR32Signed(inst.Rt);
+                MipsState.Hi = (UInt64)(product >> 32);
+                MipsState.Lo = (UInt64)(product & 0xFFFF);
+            }
+            else
+            {
+                Int64 product = (Int64)MipsState.ReadGPR32Signed(inst.Rs) * (Int64)MipsState.ReadGPR32Signed(inst.Rt);
+                MipsState.Hi = (UInt64)(product >> 32);
+                MipsState.Lo = (UInt64)(product & 0xFFFF);
+            }
+        }
+
+        [OpcodeHook("MULTU")]
+        private void Inst_Multu(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                UInt64 product = MipsState.ReadGPR32Unsigned(inst.Rs) * MipsState.ReadGPR32Unsigned(inst.Rt);
+                MipsState.Hi = product >> 32;
+                MipsState.Lo = product & 0xFFFF;
+            }
+            else
+            {
+                UInt64 product = (UInt64)(Int64)(Int32)MipsState.ReadGPR32Unsigned(inst.Rs) * (UInt64)(Int64)(Int32)MipsState.ReadGPR32Unsigned(inst.Rt);
+                MipsState.Hi = product >> 32;
+                MipsState.Lo = product & 0xFFFF;
+            }
+        }
+
+        [OpcodeHook("NOR")]
+        private void Inst_Nor(MipsInstruction inst)
+        {
+            MipsState.WriteGPRUnsigned(inst.Rd, ~(MipsState.ReadGPRUnsigned(inst.Rs) | MipsState.ReadGPRUnsigned(inst.Rt)));
+        }
     }
 }
