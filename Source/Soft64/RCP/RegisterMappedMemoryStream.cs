@@ -31,7 +31,7 @@ namespace Soft64.RCP
             }
         }
 
-        protected void WriteUInt32(Int32 offset, UInt32 value)
+        protected void Write(Int32 offset, UInt32 value)
         {
             unsafe
             {
@@ -47,7 +47,7 @@ namespace Soft64.RCP
             return m_Buffer[offset];
         }
 
-        protected void WriteByte(Int32 offset, Byte value)
+        protected void Write(Int32 offset, Byte value)
         {
             m_Buffer[offset] = value;
         }
@@ -63,7 +63,7 @@ namespace Soft64.RCP
             }
         }
 
-        protected void WriteUInt16(Int32 offset, UInt16 value)
+        protected void Write(Int32 offset, UInt16 value)
         {
             unsafe
             {
@@ -79,9 +79,9 @@ namespace Soft64.RCP
             return (Int32)ReadUInt32(offset);
         }
 
-        protected void WriteInt32(Int32 offset, Int32 value)
+        protected void Write(Int32 offset, Int32 value)
         {
-            WriteUInt32(offset, (UInt32)value);
+            Write(offset, (UInt32)value);
         }
 
         protected Int16 ReadInt16(Int32 offset)
@@ -89,9 +89,9 @@ namespace Soft64.RCP
             return (Int16)ReadUInt16(offset);
         }
 
-        protected void WriteInt16(Int32 offset, Int16 value)
+        protected void Write(Int32 offset, Int16 value)
         {
-            WriteUInt16(offset, (UInt16)value);
+            Write(offset, (UInt16)value);
         }
 
         public override bool CanRead

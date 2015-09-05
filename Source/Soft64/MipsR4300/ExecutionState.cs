@@ -135,6 +135,16 @@ namespace Soft64.MipsR4300
         /// </summary>
         public UInt32 FCR31 { get; set; }
 
+        public Boolean NullifyEnabled { get; set; }
+
+        public Boolean BranchEnabled { get; set; }
+
+        public Int64 BranchTarget { get; set; }
+
+        public Int64 BranchDelaySlot { get; set; }
+
+        public DataFormat FpuDataMode { get; set; }
+
         public Int64 BranchPC
         {
             get;

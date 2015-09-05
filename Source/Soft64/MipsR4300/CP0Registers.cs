@@ -160,7 +160,6 @@ namespace Soft64.MipsR4300
     {
         private UInt64[] m_Regs;
         private StatusRegister m_SR;
-        private CP0Registers32 m_R32;
         private CauseRegister m_CauseReg;
         private UInt64 m_Condition;
 
@@ -168,13 +167,7 @@ namespace Soft64.MipsR4300
         {
             m_Regs = new UInt64[32];
             m_SR = new StatusRegister();
-            m_R32 = new CP0Registers32(this);
             m_CauseReg = new CauseRegister();
-        }
-
-        public CP0Registers32 _32
-        {
-            get { return m_R32; }
         }
 
         public UInt64 this[CP0RegName index]
@@ -235,16 +228,6 @@ namespace Soft64.MipsR4300
             return GetEnumerator();
         }
 
-        public void SetReg(Int32 index, UInt64 value)
-        {
-            this[(CP0RegName)index] = value;
-        }
-
-        public UInt64 GetReg(Int32 index)
-        {
-            return this[(CP0RegName)index];
-        }
-
         public RingMode GetCurrentRingMode(out WordSize size)
         {
             size = WordSize.MIPS32;
@@ -260,6 +243,8 @@ namespace Soft64.MipsR4300
         {
             get { return m_CauseReg; }
         }
+
+
 
         public void Clear()
         {
@@ -340,8 +325,14 @@ namespace Soft64.MipsR4300
 
         public UInt64 Cause
         {
-            get { return this[CP0RegName.Cause]; }
-            set { this[CP0RegName.Cause] = value; }
+            get { return m_CauseReg.RegisterValue64; }
+            set { m_CauseReg.RegisterValue64 = value; }
+        }
+
+        public UInt64 Status
+        {
+            get { return m_SR.RegisterValue64; }
+            set { m_SR.RegisterValue64 = value; }
         }
 
         public UInt64 EPC
@@ -420,28 +411,6 @@ namespace Soft64.MipsR4300
         {
             get { return m_Condition; }
             set { m_Condition = value; }
-        }
-    }
-
-    public sealed class CP0Registers32
-    {
-        private CP0Registers _64;
-
-        public CP0Registers32(CP0Registers regs64)
-        {
-            _64 = regs64;
-        }
-
-        public UInt32 this[Int32 index]
-        {
-            get { return (UInt32)_64[index]; }
-            set { _64[index] = value; }
-        }
-
-        public UInt32 this[CP0RegName name]
-        {
-            get { return (UInt32)_64[name]; }
-            set { _64[name] = value; }
         }
     }
 }

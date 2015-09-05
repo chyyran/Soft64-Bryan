@@ -36,7 +36,6 @@ namespace Soft64.MipsR4300
         private InstructionReader m_InstReader;
         private MipsDataManipulator m_DataManipulator;
         private ExecutionState m_CPUState;
-        private Int32 m_OpcodeErrorCount = 0;
         private MipsOp m_SubSpecial;
         private MipsOp m_SubRegImm;
         private MipsOp m_COP0;
@@ -84,10 +83,10 @@ namespace Soft64.MipsR4300
             m_COP0 = (inst) => OpCall(m_OpsTableCP0, inst.Rs, inst);
             m_COP1 = (inst) => OpCall(m_OpsTableCP1, inst.Rs, inst);
             m_BC1 = (inst) => OpCall(m_OpsTableBC1, inst.Rt & 0x3, inst);
-            m_WI = (inst) => { FpuDataMode = DataFormat.FixedWord; OpCall(m_OpsTableFixed, inst.Function, inst); };
-            m_LI = (inst) => { FpuDataMode = DataFormat.FixedLong; OpCall(m_OpsTableFixed, inst.Function, inst); };
-            m_SI = (inst) => { FpuDataMode = DataFormat.FloatingSingle; OpCall(m_OpsTableSingle, inst.Function, inst); };
-            m_DI = (inst) => { FpuDataMode = DataFormat.FloatingDouble; OpCall(m_OpsTableDouble, inst.Function, inst); };
+            m_WI = (inst) => { MipsState.FpuDataMode = DataFormat.FixedWord; OpCall(m_OpsTableFixed, inst.Function, inst); };
+            m_LI = (inst) => { MipsState.FpuDataMode = DataFormat.FixedLong; OpCall(m_OpsTableFixed, inst.Function, inst); };
+            m_SI = (inst) => { MipsState.FpuDataMode = DataFormat.FloatingSingle; OpCall(m_OpsTableSingle, inst.Function, inst); };
+            m_DI = (inst) => { MipsState.FpuDataMode = DataFormat.FloatingDouble; OpCall(m_OpsTableDouble, inst.Function, inst); };
 
             m_OpsTableMain = new MipsOp[] {
                 m_SubSpecial, m_SubRegImm, J, JAL, BEQ, BNE, BLEZ, BGTZ,
@@ -188,29 +187,32 @@ namespace Soft64.MipsR4300
         {
             /* Do one step through the interpreter */
 
+            /* Increment the count register */
+            MipsState.CP0Regs.Count += 2;
+
             /* Go to branch */
-            if (BranchEnabled)
-                MipsState.PC = BranchTarget;
+            if (MipsState.BranchEnabled)
+                MipsState.PC = MipsState.BranchTarget;
 
             /* Fetch instruction at PC */
             MipsInstruction inst = FetchInstruction(MipsState.PC);
 
             /* If we branched, execute the delay slot */
-            if (BranchEnabled)
+            if (MipsState.BranchEnabled)
             {
-                if (!NullifyEnabled)
+                if (!MipsState.NullifyEnabled)
                 {
-                    MipsState.BranchPC = BranchDelaySlot;
-                    MipsInstruction bsdInst = FetchInstruction(BranchDelaySlot);
-                    TraceOp(BranchDelaySlot, bsdInst);
+                    MipsState.BranchPC = MipsState.BranchDelaySlot;
+                    MipsInstruction bsdInst = FetchInstruction(MipsState.BranchDelaySlot);
+                    TraceOp(MipsState.BranchDelaySlot, bsdInst);
                     CallInstruction(bsdInst);
-                    BranchEnabled = false;
+                    MipsState.BranchEnabled = false;
                 }
                 else
                 {
                     /* Skip the delay slot */
-                    NullifyEnabled = false;
-                    BranchEnabled = false;
+                    MipsState.NullifyEnabled = false;
+                    MipsState.BranchEnabled = false;
                 }
             }
             else
@@ -220,7 +222,7 @@ namespace Soft64.MipsR4300
                 CallInstruction(inst);
 
                 /* If branching has been set, skip PC increment */
-                if (!BranchEnabled)
+                if (!MipsState.BranchEnabled)
                     MipsState.PC += 4;
                 else
                     MipsState.PC += 8;
@@ -300,22 +302,22 @@ namespace Soft64.MipsR4300
 
         protected void DoBranch(Boolean condition, MipsInstruction inst)
         {
-            BranchEnabled = true;
-            BranchDelaySlot = MipsState.PC + 4;
-            BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
+            MipsState.BranchEnabled = true;
+            MipsState.BranchDelaySlot = MipsState.PC + 4;
+            MipsState.BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
         }
 
         protected void DoBranchLikely(Boolean condition, MipsInstruction inst)
         {
-            NullifyEnabled = !condition;
+            MipsState.NullifyEnabled = !condition;
             DoBranch(condition, inst);
         }
 
         protected void DoJump(Int64 addressTarget)
         {
-            BranchEnabled = true;
-            BranchDelaySlot = MipsState.PC + 4;
-            BranchTarget = addressTarget.ResolveAddress();
+            MipsState.BranchEnabled = true;
+            MipsState.BranchDelaySlot = MipsState.PC + 4;
+            MipsState.BranchTarget = addressTarget.ResolveAddress();
         }
 
         protected Int64 ComputeAddress32(MipsInstruction inst)
@@ -334,16 +336,6 @@ namespace Soft64.MipsR4300
             if (logger.IsDebugEnabled)
                 logger.Debug("{0:X8} {1:X4} {2:X4} {3}", pc, inst.Instruction >> 16, inst.Instruction & 0xFFFF, inst.ToString());
         }
-
-        public Boolean NullifyEnabled { get; set; }
-
-        public Boolean BranchEnabled { get; set; }
-
-        public Int64 BranchTarget { get; set; }
-
-        public Int64 BranchDelaySlot { get; set; }
-
-        public DataFormat FpuDataMode { get; set; }
 
         #region Instruction Delegates
 
