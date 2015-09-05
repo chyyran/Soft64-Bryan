@@ -133,9 +133,59 @@ namespace Soft64.MipsR4300
         }
 
         [OpcodeHook("LCD1")]
-        private void Inst_Lcd1(MipsInstruction isnt)
+        private void Inst_Lcd1(MipsInstruction inst)
         {
-            
+            Int64 address = ComputeAddress64(inst);
+
+            if ((address & 3) != 0)
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+
+            if ((inst.Rt & 1) != 0)
+                return;
+
+            MipsState.CP0Regs[inst.Rt]  = DataManipulator.ReadDoublewordUnsigned(address);
+        }
+
+        [OpcodeHook("LDL")]
+        private void Inst_Ldl(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                Int64 address = ComputeAddress64(inst);
+                UInt64 value = DataManipulator.ReadDoublewordUnsigned(address);
+                UInt64 reg = MipsState.ReadGPRUnsigned(inst.Rt);
+                Int32 shiftAmount = (Int32)(address % 8);
+                value <<= shiftAmount;
+                reg <<= (8 - shiftAmount);
+                reg >>= shiftAmount;
+                value |= reg;
+                MipsState.WriteGPRUnsigned(inst.Rt, value);
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("LDR")]
+        private void Inst_Ldr(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                Int64 address = ComputeAddress64(inst);
+                UInt64 value = DataManipulator.ReadDoublewordUnsigned(address);
+                UInt64 reg = MipsState.ReadGPRUnsigned(inst.Rt);
+                Int32 shiftAmount = (Int32)(address % 8);
+                value >>= shiftAmount;
+                reg >>= (8 - shiftAmount);
+                reg <<= shiftAmount;
+                value |= reg;
+                MipsState.WriteGPRUnsigned(inst.Rt, value);
+            }
+            else
+            {
+                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+            }
         }
     }
 }
