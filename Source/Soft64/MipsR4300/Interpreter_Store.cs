@@ -26,11 +26,11 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SW")]
         private void Inst_Sw(MipsInstruction inst)
         {
-            Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
+            Int64 address = ComputeAddress64(inst);
 
             if ((address & 3) != 0)
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorStore;
+                CauseException = ExceptionCode.AddressErrorStore;
             }
             else
             {
@@ -49,7 +49,7 @@ namespace Soft64.MipsR4300
 
             if ((address & 7) != 0)
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorStore;
+                CauseException = ExceptionCode.AddressErrorStore;
             }
             else
             {
@@ -78,6 +78,23 @@ namespace Soft64.MipsR4300
             /* This is used in atomic operations, for now let it always pass */
             MipsState.WriteGPRUnsigned(inst.Rt, 1);
             Inst_Sd(inst);
+        }
+
+        [OpcodeHook("SDC1")]
+        private void Inst_Sdc1(MipsInstruction inst)
+        {
+            Int64 address = ComputeAddress64(inst);
+
+            if ((address & 3) != 0)
+            {
+                CauseException = ExceptionCode.ReservedInstruction;
+                return;
+            }
+
+            if ((inst.Rt & 1) != 0)
+                return;
+
+            DataManipulator.Write(address, MipsState.CP0Regs[inst.Rt]);
         }
     }
 }

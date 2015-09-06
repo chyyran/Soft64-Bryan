@@ -55,7 +55,7 @@ namespace Soft64.MipsR4300
         private void Inst_Eret(MipsInstruction inst)
         {
             if (MipsState.CP0Regs.StatusReg.CopUsable0)
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.CopUnstable;
+                CauseException = ExceptionCode.CopUnstable;
 
             if (MipsState.CP0Regs.StatusReg.ExceptionLevel)
             {

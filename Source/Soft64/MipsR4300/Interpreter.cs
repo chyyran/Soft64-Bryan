@@ -337,6 +337,12 @@ namespace Soft64.MipsR4300
                 logger.Debug("{0:X8} {1:X4} {2:X4} {3}", pc, inst.Instruction >> 16, inst.Instruction & 0xFFFF, inst.ToString());
         }
 
+        protected ExceptionCode CauseException
+        {
+            get { return MipsState.CP0Regs.CauseReg.ExceptionType; }
+            set { MipsState.CP0Regs.CauseReg.ExceptionType = value; }
+        }
+
         #region Instruction Delegates
 
         protected MipsOp J { get; set; }

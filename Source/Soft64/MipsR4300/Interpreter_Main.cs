@@ -30,7 +30,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BREAK")]
         private void Inst_Break(MipsInstruction inst)
         {
-            MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Breakpoint;
+            CauseException = ExceptionCode.Breakpoint;
         }
 
         [OpcodeHook("MFHI")]

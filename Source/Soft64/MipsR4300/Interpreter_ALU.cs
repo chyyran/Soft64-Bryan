@@ -127,7 +127,7 @@ namespace Soft64.MipsR4300
                 }
                 catch (OverflowException)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.OverFlow;
+                    CauseException = ExceptionCode.OverFlow;
                 }
                 
             }
@@ -141,7 +141,7 @@ namespace Soft64.MipsR4300
                     }
                     catch (OverflowException)
                     {
-                        MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.OverFlow;
+                        CauseException = ExceptionCode.OverFlow;
                     }
                 }
             }
@@ -158,7 +158,7 @@ namespace Soft64.MipsR4300
                 }
                 catch (OverflowException)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.OverFlow;
+                    CauseException = ExceptionCode.OverFlow;
                 }
             }
             else
@@ -169,7 +169,7 @@ namespace Soft64.MipsR4300
                 }
                 catch (OverflowException)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.OverFlow;
+                    CauseException = ExceptionCode.OverFlow;
                 }
             }
         }
@@ -185,12 +185,12 @@ namespace Soft64.MipsR4300
                 }
                 catch (OverflowException)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.OverFlow;
+                    CauseException = ExceptionCode.OverFlow;
                 }
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -205,12 +205,12 @@ namespace Soft64.MipsR4300
                 }
                 catch (OverflowException)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.OverFlow;
+                    CauseException = ExceptionCode.OverFlow;
                 }
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -219,7 +219,7 @@ namespace Soft64.MipsR4300
         {
             if (MipsState.Is32BitMode())
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
             else
             {
@@ -235,7 +235,7 @@ namespace Soft64.MipsR4300
         {
             if (MipsState.Is32BitMode())
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
             else
             {
@@ -360,12 +360,12 @@ namespace Soft64.MipsR4300
                 }
                 catch (OverflowException)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.OverFlow;
+                    CauseException = ExceptionCode.OverFlow;
                 }
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -382,7 +382,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -446,7 +446,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -464,7 +464,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -477,7 +477,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -490,7 +490,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -503,7 +503,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -516,7 +516,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -529,7 +529,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -542,7 +542,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -555,7 +555,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -568,7 +568,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -581,7 +581,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -596,12 +596,12 @@ namespace Soft64.MipsR4300
                 }
                 catch (OverflowException)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.OverFlow;
+                    CauseException = ExceptionCode.OverFlow;
                 }
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -617,7 +617,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 

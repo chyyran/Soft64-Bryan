@@ -32,7 +32,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.CopUnstable;
+                CauseException = ExceptionCode.CopUnstable;
             }
         }
 
@@ -45,7 +45,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -58,7 +58,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -78,7 +78,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.CopUnstable;
+                CauseException = ExceptionCode.CopUnstable;
             }
         }
     }

@@ -45,7 +45,7 @@ namespace Soft64.MipsR4300
 
             if ((address & 3) != 0)
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                CauseException = ExceptionCode.AddressErrorLoad;
             }
             else
             {
@@ -61,7 +61,7 @@ namespace Soft64.MipsR4300
         {
             if (MipsState.Is32BitMode())
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
                 return;
             }
 
@@ -69,7 +69,7 @@ namespace Soft64.MipsR4300
 
             if ((address & 3) != 0)
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                CauseException = ExceptionCode.AddressErrorLoad;
             }
             else
             {
@@ -82,7 +82,7 @@ namespace Soft64.MipsR4300
         {
             if (MipsState.Is32BitMode())
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
             else
             {
@@ -90,7 +90,7 @@ namespace Soft64.MipsR4300
 
                 if ((address & 3) != 0)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                    CauseException = ExceptionCode.AddressErrorLoad;
                 }
                 else
                 {
@@ -117,9 +117,9 @@ namespace Soft64.MipsR4300
             {
                 switch (tlbe.ExceptionType)
                 {
-                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
-                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
-                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    case TLBExceptionType.Invalid: CauseException = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: CauseException = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: CauseException = ExceptionCode.TlbStore; break;
                     default: break;
                 }
             }
@@ -143,9 +143,9 @@ namespace Soft64.MipsR4300
             {
                 switch (tlbe.ExceptionType)
                 {
-                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
-                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
-                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    case TLBExceptionType.Invalid: CauseException = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: CauseException = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: CauseException = ExceptionCode.TlbStore; break;
                     default: break;
                 }
             }
@@ -157,7 +157,7 @@ namespace Soft64.MipsR4300
             Int64 address = ComputeAddress64(inst);
 
             if ((address & 3) != 0)
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                CauseException = ExceptionCode.AddressErrorLoad;
 
             if ((inst.Rt & 1) != 0)
                 return;
@@ -182,7 +182,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -203,7 +203,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.ReservedInstruction;
+                CauseException = ExceptionCode.ReservedInstruction;
             }
         }
 
@@ -216,7 +216,7 @@ namespace Soft64.MipsR4300
 
                 if ((address & 3) != 0)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                    CauseException = ExceptionCode.AddressErrorLoad;
                     return;
                 }
 
@@ -233,9 +233,9 @@ namespace Soft64.MipsR4300
             {
                 switch (tlbe.ExceptionType)
                 {
-                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
-                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
-                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    case TLBExceptionType.Invalid: CauseException = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: CauseException = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: CauseException = ExceptionCode.TlbStore; break;
                     default: break;
                 }
             }
@@ -250,7 +250,7 @@ namespace Soft64.MipsR4300
 
                 if ((address & 1) != 0)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                    CauseException = ExceptionCode.AddressErrorLoad;
                     return;
                 }
 
@@ -267,9 +267,9 @@ namespace Soft64.MipsR4300
             {
                 switch (tlbe.ExceptionType)
                 {
-                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
-                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
-                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    case TLBExceptionType.Invalid: CauseException = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: CauseException = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: CauseException = ExceptionCode.TlbStore; break;
                     default: break;
                 }
             }
@@ -314,7 +314,7 @@ namespace Soft64.MipsR4300
 
                 if ((address & 3) != 0)
                 {
-                    MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.AddressErrorLoad;
+                    CauseException = ExceptionCode.AddressErrorLoad;
                     return;
                 }
 
@@ -325,9 +325,9 @@ namespace Soft64.MipsR4300
             {
                 switch (tlbe.ExceptionType)
                 {
-                    case TLBExceptionType.Invalid: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.Invalid; break;
-                    case TLBExceptionType.Mod: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
-                    case TLBExceptionType.Refill: MipsState.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
+                    case TLBExceptionType.Invalid: CauseException = ExceptionCode.Invalid; break;
+                    case TLBExceptionType.Mod: CauseException = ExceptionCode.TlbMod; break;
+                    case TLBExceptionType.Refill: CauseException = ExceptionCode.TlbStore; break;
                     default: break;
                 }
             }
