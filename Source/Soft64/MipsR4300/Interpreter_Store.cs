@@ -56,5 +56,28 @@ namespace Soft64.MipsR4300
                 DataManipulator.Write(address, MipsState.ReadGPRUnsigned(inst.Rt));
             }
         }
+
+        [OpcodeHook("SB")]
+        private void Inst_Sb(MipsInstruction inst)
+        {
+            Int64 address = ComputeAddress64(inst);
+            DataManipulator.Write(address, MipsState.ReadGPRUnsigned(inst.Rt) & 0xFF);
+        }
+
+        [OpcodeHook("SC")]
+        private void Inst_Sc(MipsInstruction inst)
+        {
+            /* This is used in atomic operations, for now let it always pass */
+            MipsState.WriteGPRUnsigned(inst.Rt, 1);
+            Inst_Sw(inst);
+        }
+
+        [OpcodeHook("SCD")]
+        private void Inst_Scd(MipsInstruction inst)
+        {
+            /* This is used in atomic operations, for now let it always pass */
+            MipsState.WriteGPRUnsigned(inst.Rt, 1);
+            Inst_Sd(inst);
+        }
     }
 }
