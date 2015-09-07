@@ -202,6 +202,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SWL")]
         private void Inst_Swl(MipsInstruction inst)
         {
+            /* Thanks to PJ64 */
             Int64 address = ComputeAddress64(inst);
             Int32 offset = (Int32)(address & 3);
             UInt32 value = DataManipulator.LoadWordUnsigned(address & ~3);
@@ -213,6 +214,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SWR")]
         private void Inst_Swr(MipsInstruction inst)
         {
+            /* Thanks to PJ64 */
             Int64 address = ComputeAddress64(inst);
             Int32 offset = (Int32)(address & 3);
             UInt32 value = DataManipulator.LoadWordUnsigned(address & ~3);
