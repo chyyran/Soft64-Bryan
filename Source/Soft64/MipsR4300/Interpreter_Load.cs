@@ -23,6 +23,26 @@ namespace Soft64.MipsR4300
 {
     public partial class Interpreter
     {
+        private static readonly UInt32[] LWLMask = { 0x00000000, 0x000000FF, 0x0000FFFF, 0x00FFFFFF };
+
+        private static readonly Int32[] LWLShift = { 0, 8, 16, 24 };
+
+        private static readonly UInt32[] LWRMask = { 0xFFFFFF00, 0xFFFF0000, 0xFF000000, 0x0000000 };
+
+        private static readonly Int32[] LWRShift = { 24, 16, 8, 0 };
+
+        private static readonly UInt64[] LDLMask = { 0, 0xFF, 0xFFFF, 0xFFFFFF, 0xFFFFFFFF, 0xFFFFFFFFFF, 0xFFFFFFFFFFFF, 0xFFFFFFFFFFFFFF };
+
+        private static readonly Int32[] LDLShift = { 0, 8, 16, 24, 32, 40, 48, 56 };
+
+        private static readonly UInt64[] LDRMask = { 0xFFFFFFFFFFFFFF00, 0xFFFFFFFFFFFF0000,
+                      0xFFFFFFFFFF000000, 0xFFFFFFFF00000000,
+                      0xFFFFFF0000000000, 0xFFFF000000000000,
+                      0xFF00000000000000, 0 };
+
+        private static readonly Int32[] LDRShift = { 56, 48, 40, 32, 24, 16, 8, 0 };
+
+
         [OpcodeHook("LUI")]
         private void Inst_Lui(MipsInstruction inst)
         {
@@ -50,9 +70,9 @@ namespace Soft64.MipsR4300
             else
             {
                 if (MipsState.Is32BitMode())
-                    MipsState.WriteGPR32Unsigned(inst.Rt, DataManipulator.ReadWordUnsigned(address));
+                    MipsState.WriteGPR32Unsigned(inst.Rt, DataManipulator.LoadWordUnsigned(address));
                 else
-                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadWordSigned(address));
+                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.LoadWordSigned(address));
             }
         }
 
@@ -73,7 +93,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.ReadWordUnsigned(address));
+                MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.LoadWordUnsigned(address));
             }
         }
 
@@ -94,7 +114,7 @@ namespace Soft64.MipsR4300
                 }
                 else
                 {
-                    MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.ReadDoublewordUnsigned(address));
+                    MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.LoadDoublewordUnsigned(address));
                 }
             }
         }
@@ -106,11 +126,11 @@ namespace Soft64.MipsR4300
             {
                 if (MipsState.Is32BitMode())
                 {
-                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.ReadByteSigned(ComputeAddress32(inst)));
+                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.LoadByteSigned(ComputeAddress32(inst)));
                 }
                 else
                 {
-                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadByteSigned(ComputeAddress64(inst)));
+                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.LoadByteSigned(ComputeAddress64(inst)));
                 }
             }
             catch (TLBException tlbe)
@@ -132,11 +152,11 @@ namespace Soft64.MipsR4300
             {
                 if (MipsState.Is32BitMode())
                 {
-                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.ReadByteUnsigned(ComputeAddress32(inst)));
+                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.LoadByteUnsigned(ComputeAddress32(inst)));
                 }
                 else
                 {
-                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadByteUnsigned(ComputeAddress64(inst)));
+                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.LoadByteUnsigned(ComputeAddress64(inst)));
                 }
             }
             catch (TLBException tlbe)
@@ -162,7 +182,7 @@ namespace Soft64.MipsR4300
             if ((inst.Rt & 1) != 0)
                 return;
 
-            MipsState.CP0Regs[inst.Rt]  = DataManipulator.ReadDoublewordUnsigned(address);
+            MipsState.CP0Regs[inst.Rt]  = DataManipulator.LoadDoublewordUnsigned(address);
         }
 
         [OpcodeHook("LDL")]
@@ -170,15 +190,12 @@ namespace Soft64.MipsR4300
         {
             if (MipsState.Is64BitMode())
             {
+                /* Thanks to PJ64 Implementation */
                 Int64 address = ComputeAddress64(inst);
-                UInt64 value = DataManipulator.ReadDoublewordUnsigned(address);
-                UInt64 reg = MipsState.ReadGPRUnsigned(inst.Rt);
-                Int32 shiftAmount = (Int32)(address % 8);
-                value <<= shiftAmount;
-                reg <<= (8 - shiftAmount);
-                reg >>= shiftAmount;
-                value |= reg;
-                MipsState.WriteGPRUnsigned(inst.Rt, value);
+                Int32 offset = (Int32)(address & 7);
+                UInt64 value = DataManipulator.LoadDoublewordUnsigned(address & ~7);
+                MipsState.WriteGPRUnsigned(inst.Rt, MipsState.ReadGPRUnsigned(inst.Rt) & LDLMask[offset]);
+                MipsState.WriteGPRUnsigned(inst.Rt, MipsState.ReadGPRUnsigned(inst.Rt) + (value << LDLShift[offset]));
             }
             else
             {
@@ -191,15 +208,12 @@ namespace Soft64.MipsR4300
         {
             if (MipsState.Is64BitMode())
             {
+                /* Thanks to PJ64 Implementation */
                 Int64 address = ComputeAddress64(inst);
-                UInt64 value = DataManipulator.ReadDoublewordUnsigned(address);
-                UInt64 reg = MipsState.ReadGPRUnsigned(inst.Rt);
-                Int32 shiftAmount = (Int32)(address % 8);
-                value >>= shiftAmount;
-                reg >>= (8 - shiftAmount);
-                reg <<= shiftAmount;
-                value |= reg;
-                MipsState.WriteGPRUnsigned(inst.Rt, value);
+                Int32 offset = (Int32)(address & 7);
+                UInt64 value = DataManipulator.LoadDoublewordUnsigned(address & ~7);
+                MipsState.WriteGPRUnsigned(inst.Rt, MipsState.ReadGPRUnsigned(inst.Rt) & LDRMask[offset]);
+                MipsState.WriteGPRUnsigned(inst.Rt, MipsState.ReadGPRUnsigned(inst.Rt) + (value >> LDRShift[offset]));
             }
             else
             {
@@ -222,11 +236,11 @@ namespace Soft64.MipsR4300
 
                 if (MipsState.Is32BitMode())
                 {
-                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.ReadHalfwordSigned(address));
+                    MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.LoadHalfwordSigned(address));
                 }
                 else
                 {
-                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.ReadHalfwordSigned(address));
+                    MipsState.WriteGPRSigned(inst.Rt, DataManipulator.LoadHalfwordSigned(address));
                 }
             }
             catch (TLBException tlbe)
@@ -256,11 +270,11 @@ namespace Soft64.MipsR4300
 
                 if (MipsState.Is32BitMode())
                 {
-                    MipsState.WriteGPR32Unsigned(inst.Rt, DataManipulator.ReadHalfwordUnsigned(address));
+                    MipsState.WriteGPR32Unsigned(inst.Rt, DataManipulator.LoadHalfwordUnsigned(address));
                 }
                 else
                 {
-                    MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.ReadHalfwordUnsigned(address));
+                    MipsState.WriteGPRUnsigned(inst.Rt, DataManipulator.LoadHalfwordUnsigned(address));
                 }
             }
             catch (TLBException tlbe)
@@ -318,7 +332,7 @@ namespace Soft64.MipsR4300
                     return;
                 }
 
-                MipsState.CP0Regs[inst.Rt] = DataManipulator.ReadWordUnsigned(address);
+                MipsState.CP0Regs[inst.Rt] = DataManipulator.LoadWordUnsigned(address);
 
             }
             catch (TLBException tlbe)
@@ -336,47 +350,25 @@ namespace Soft64.MipsR4300
         [OpcodeHook("LWL")]
         private void Inst_Lwl(MipsInstruction inst)
         {
+            /* Thanks to PJ64 implementation */
             Int64 address = ComputeAddress64(inst);
-            UInt32 value = DataManipulator.ReadWordUnsigned(address);
-            UInt32 reg = MipsState.ReadGPR32Unsigned(inst.Rt);
-            Int32 shiftAmount = (Int32)(address % 4);
-            value <<= shiftAmount;
-            reg <<= (4 - shiftAmount);
-            reg >>= shiftAmount;
-            value |= reg;
-            MipsState.WriteGPR32Unsigned(inst.Rt, value);
-
-            if (MipsState.Is64BitMode())
-            {
-                MipsState.WriteGPR32Unsigned(inst.Rt, value);
-            }
-            else
-            {
-                MipsState.WriteGPRSigned(inst.Rt, (Int32)value);
-            }
+            Int32 offset = (Int32)(address & 3);
+            UInt32 value = DataManipulator.LoadWordUnsigned(address & ~3);
+            value &= SWLMask[offset];
+            value += MipsState.ReadGPR32Unsigned(inst.Rt) >> SWLShift[offset];
+            DataManipulator.Store(address & ~3, value);
         }
 
         [OpcodeHook("LWR")]
         private void Inst_Lwr(MipsInstruction inst)
         {
+            /* Thanks to PJ64 implementation */
             Int64 address = ComputeAddress64(inst);
-            UInt32 value = DataManipulator.ReadWordUnsigned(address);
-            UInt32 reg = MipsState.ReadGPR32Unsigned(inst.Rt);
-            Int32 shiftAmount = (Int32)(address % 4);
-            value >>= shiftAmount;
-            reg >>= (4 - shiftAmount);
-            reg <<= shiftAmount;
-            value |= reg;
-            MipsState.WriteGPR32Unsigned(inst.Rt, value);
-
-            if (MipsState.Is64BitMode())
-            {
-                MipsState.WriteGPR32Unsigned(inst.Rt, value);
-            }
-            else
-            {
-                MipsState.WriteGPRSigned(inst.Rt, (Int32)value);
-            }
+            Int32 offset = (Int32)(address & 3);
+            UInt32 value = DataManipulator.LoadWordUnsigned(address & ~3);
+            value &= SWRMask[offset];
+            value += MipsState.ReadGPR32Unsigned(inst.Rt) << SWRShift[offset];
+            DataManipulator.Store(address & ~3, value);
         }
     }
 }

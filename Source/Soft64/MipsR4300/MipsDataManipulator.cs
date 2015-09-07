@@ -38,7 +38,7 @@ namespace Soft64.MipsR4300
             
         }
 
-        public UInt64 ReadDoublewordUnsigned(Int64 address)
+        public UInt64 LoadDoublewordUnsigned(Int64 address)
         {
             m_SourceStream.Position = address;
             m_SourceStream.Read(m_Buffer, 0, 8);
@@ -49,7 +49,7 @@ namespace Soft64.MipsR4300
             }
         }
 
-        public void Write(Int64 address, UInt64 value)
+        public void Store(Int64 address, UInt64 value)
         {
             unsafe
             {
@@ -60,7 +60,7 @@ namespace Soft64.MipsR4300
             m_SourceStream.Write(m_Buffer, 0, 8);
         }
 
-        public UInt32 ReadWordUnsigned(Int64 address)
+        public UInt32 LoadWordUnsigned(Int64 address)
         {
             m_SourceStream.Position = address;
             m_SourceStream.Read(m_Buffer, 0, 4);
@@ -71,7 +71,7 @@ namespace Soft64.MipsR4300
             }
         }
 
-        public void Write(Int64 address, UInt32 value)
+        public void Store(Int64 address, UInt32 value)
         {
             unsafe
             {
@@ -82,7 +82,7 @@ namespace Soft64.MipsR4300
             m_SourceStream.Write(m_Buffer, 0, 4);
         }
 
-        public UInt16 ReadHalfwordUnsigned(Int64 address)
+        public UInt16 LoadHalfwordUnsigned(Int64 address)
         {
             m_SourceStream.Position = address;
             m_SourceStream.Read(m_Buffer, 0, 2);
@@ -93,7 +93,7 @@ namespace Soft64.MipsR4300
             }
         }
 
-        public void Write(Int64 address, UInt16 value)
+        public void Store(Int64 address, UInt16 value)
         {
             unsafe
             {
@@ -104,56 +104,56 @@ namespace Soft64.MipsR4300
             m_SourceStream.Write(m_Buffer, 0, 2);
         }
 
-        public Int64 ReadDoublewordSigned(Int64 address)
+        public Int64 LoadDoublewordSigned(Int64 address)
         {
-            return (Int64)ReadDoublewordUnsigned(address);
+            return (Int64)LoadDoublewordUnsigned(address);
         }
 
-        public void Write(Int64 address, Int64 value)
+        public void Store(Int64 address, Int64 value)
         {
-            Write(address, (UInt64)value);
+            Store(address, (UInt64)value);
         }
 
-        public Int32 ReadWordSigned(Int64 address)
+        public Int32 LoadWordSigned(Int64 address)
         {
-            return (Int32)ReadWordUnsigned(address);
+            return (Int32)LoadWordUnsigned(address);
         }
 
-        public void Write(Int64 address, Int32 value)
+        public void Store(Int64 address, Int32 value)
         {
-            Write(address, (UInt32)value);
+            Store(address, (UInt32)value);
         }
 
-        public Int16 ReadHalfwordSigned(Int64 address)
+        public Int16 LoadHalfwordSigned(Int64 address)
         {
-            return (Int16)ReadHalfwordUnsigned(address);
+            return (Int16)LoadHalfwordUnsigned(address);
         }
 
-        public void Write(Int64 address, Int16 value)
+        public void Store(Int64 address, Int16 value)
         {
-            Write(address, (UInt16)value);
+            Store(address, (UInt16)value);
         }
 
-        public Byte ReadByteUnsigned(Int64 address)
+        public Byte LoadByteUnsigned(Int64 address)
         {
             m_SourceStream.Position = address;
             return (Byte)m_SourceStream.ReadByte();
         }
 
-        public void Write(Int64 address, Byte value)
+        public void Store(Int64 address, Byte value)
         {
             m_SourceStream.Position = address;
             m_SourceStream.WriteByte(value);
         }
 
-        public SByte ReadByteSigned(Int64 address)
+        public SByte LoadByteSigned(Int64 address)
         {
-            return (SByte)ReadByteUnsigned(address);
+            return (SByte)LoadByteUnsigned(address);
         }
 
-        public void Write(Int64 address, SByte value)
+        public void Store(Int64 address, SByte value)
         {
-            Write(address, (Byte)value);
+            Store(address, (Byte)value);
         }
 
         #region IDisposable Members

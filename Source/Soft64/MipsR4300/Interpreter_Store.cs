@@ -23,6 +23,42 @@ namespace Soft64.MipsR4300
 {
     public partial class Interpreter
     {
+        private static readonly UInt64[] SDLMask = 
+        {
+            0x0000000000000000,
+            0xFF00000000000000, 
+ 			0xFFFF000000000000, 
+ 			0xFFFFFF0000000000, 
+ 			0xFFFFFFFF00000000, 
+ 			0xFFFFFFFFFF000000, 
+ 			0xFFFFFFFFFFFF0000, 
+ 			0xFFFFFFFFFFFFFF00
+        };
+
+        private static readonly Int32[] SDLShift = { 0, 8, 16, 24, 32, 40, 48, 56 };
+
+        private static readonly UInt64[] SDRMask = 
+        {
+            0x00FFFFFFFFFFFFFF, 
+ 			0x0000FFFFFFFFFFFF, 
+ 			0x000000FFFFFFFFFF, 
+ 			0x00000000FFFFFFFF, 
+ 			0x0000000000FFFFFF, 
+ 			0x000000000000FFFF, 
+ 			0x00000000000000FF,  
+ 			0x0000000000000000
+        };
+
+        private static readonly Int32[] SDRShift = { 56, 48, 40, 32, 24, 16, 8, 0 };
+
+        private static readonly UInt32[] SWRMask = { 0x00FFFFFF, 0x0000FFFF, 0x000000FF, 0x00000000 };
+
+        private static readonly Int32[] SWRShift = { 24, 16, 8, 0 };
+
+        private static readonly UInt32[] SWLMask = { 0x00000000, 0xFF000000, 0xFFFF0000, 0xFFFFFF00 };
+
+        private static readonly Int32[] SWLShift = { 0, 8, 16, 24 };
+
         [OpcodeHook("SW")]
         private void Inst_Sw(MipsInstruction inst)
         {
@@ -35,7 +71,7 @@ namespace Soft64.MipsR4300
             else
             {
 
-                DataManipulator.Write(address, MipsState.ReadGPR32Unsigned(inst.Rt));
+                DataManipulator.Store(address, MipsState.ReadGPR32Unsigned(inst.Rt));
             }
         }
 
@@ -53,7 +89,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                DataManipulator.Write(address, MipsState.ReadGPRUnsigned(inst.Rt));
+                DataManipulator.Store(address, MipsState.ReadGPRUnsigned(inst.Rt));
             }
         }
 
@@ -61,7 +97,7 @@ namespace Soft64.MipsR4300
         private void Inst_Sb(MipsInstruction inst)
         {
             Int64 address = ComputeAddress64(inst);
-            DataManipulator.Write(address, MipsState.ReadGPRUnsigned(inst.Rt) & 0xFF);
+            DataManipulator.Store(address, MipsState.ReadGPRUnsigned(inst.Rt) & 0xFF);
         }
 
         [OpcodeHook("SC")]
@@ -94,7 +130,95 @@ namespace Soft64.MipsR4300
             if ((inst.Rt & 1) != 0)
                 return;
 
-            DataManipulator.Write(address, MipsState.CP0Regs[inst.Rt]);
+            DataManipulator.Store(address, MipsState.CP0Regs[inst.Rt]);
+        }
+
+        [OpcodeHook("SDL")]
+        private void Inst_Sdl(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                /* Thanks to PJ64 implementation */
+                Int64 address = ComputeAddress64(inst);
+                Int32 offset = (Int32)(address & 7);
+                UInt64 value = DataManipulator.LoadDoublewordUnsigned(address & ~7);
+                value &= SDLMask[offset];
+                value += MipsState.ReadGPRUnsigned(inst.Rt) >> SDLShift[offset];
+                DataManipulator.Store(address & ~7, value);
+            }
+            else
+            {
+                CauseException = ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("SDR")]
+        private void Inst_Sdr(MipsInstruction inst)
+        {
+            if (MipsState.Is64BitMode())
+            {
+                /* Thanks to PJ64 implementation */
+                Int64 address = ComputeAddress64(inst);
+                Int32 offset = (Int32)(address & 7);
+                UInt64 value = DataManipulator.LoadDoublewordUnsigned(address & ~7);
+                value &= SDRMask[offset];
+                value += MipsState.ReadGPRUnsigned(inst.Rt) << SDLShift[offset];
+                DataManipulator.Store(address & ~7, value);
+            }
+            else
+            {
+                CauseException = ExceptionCode.ReservedInstruction;
+            }
+        }
+
+        [OpcodeHook("SH")]
+        private void Inst_Sh(MipsInstruction inst)
+        {
+            Int64 address = ComputeAddress64(inst);
+
+            if ((address & 1) != 0)
+            {
+                CauseException = ExceptionCode.AddressErrorStore;
+                return;
+            }
+
+            DataManipulator.Store(address, (UInt16)MipsState.ReadGPRUnsigned(inst.Rt));
+        }
+
+        [OpcodeHook("SWC1")]
+        private void Inst_Swc1(MipsInstruction inst)
+        {
+            Int64 address = ComputeAddress64(inst);
+
+            if ((address & 2) != 0)
+            {
+                CauseException = ExceptionCode.AddressErrorStore;
+                return;
+            }
+
+            DataManipulator.Store(address, (UInt32)MipsState.CP0Regs[inst.Rt]);
+        }
+
+        [OpcodeHook("SWL")]
+        private void Inst_Swl(MipsInstruction inst)
+        {
+            Int64 address = ComputeAddress64(inst);
+            Int32 offset = (Int32)(address & 3);
+            UInt32 value = DataManipulator.LoadWordUnsigned(address & ~3);
+            value &= SWLMask[offset];
+            value += MipsState.ReadGPR32Unsigned(inst.Rt) >> SWLShift[offset];
+            DataManipulator.Store(address & ~3, value);
+        }
+
+        [OpcodeHook("SWR")]
+        private void Inst_Swr(MipsInstruction inst)
+        {
+            Int64 address = ComputeAddress64(inst);
+            Int32 offset = (Int32)(address & 3);
+            UInt32 value = DataManipulator.LoadWordUnsigned(address & ~3);
+            value &= SWRMask[offset];
+            value += MipsState.ReadGPR32Unsigned(inst.Rt) << SWRShift[offset];
+            DataManipulator.Store(address & ~3, value);
         }
     }
 }

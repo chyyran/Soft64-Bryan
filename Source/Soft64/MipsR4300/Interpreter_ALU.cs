@@ -279,6 +279,21 @@ namespace Soft64.MipsR4300
             }
         }
 
+        [OpcodeHook("SLTIU")]
+        private void Inst_Sltiu(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                Boolean condition = MipsState.ReadGPR32Unsigned(inst.Rs) < ((UInt32)(Int32)(Int16)inst.Immediate);
+                MipsState.WriteGPR32Unsigned(inst.Rt, condition ? 1U : 0U);
+            }
+            else
+            {
+                Boolean condition = MipsState.ReadGPRUnsigned(inst.Rs) < ((UInt64)(Int64)(Int16)inst.Immediate);
+                MipsState.WriteGPRUnsigned(inst.Rt, condition ? 1UL : 0UL);
+            }
+        }
+
         [OpcodeHook("ANDI")]
         private void Inst_Andi(MipsInstruction inst)
         {
@@ -330,6 +345,32 @@ namespace Soft64.MipsR4300
             else
             {
                 MipsState.WriteGPRUnsigned(inst.Rd, (UInt64)(Int64)(Int16)result);
+            }
+        }
+
+        [OpcodeHook("SLLV")]
+        private void Inst_Sllv(MipsInstruction inst)
+        {
+            Int32 shiftAmount = MipsState.ReadGPR32Signed(inst.Rs) & 0x1F;
+
+            if (MipsState.Is32BitMode())
+            {
+                MipsState.WriteGPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rt) << shiftAmount);
+            }
+            else
+            {
+                
+                UInt64 result = MipsState.ReadGPRUnsigned(inst.Rt) << shiftAmount;
+
+                /* Truncate */
+                if (shiftAmount == 0)
+                {
+                    MipsState.WriteGPRSigned(inst.Rd, (Int32)(UInt32)result);
+                }
+                else
+                {
+                    MipsState.WriteGPRUnsigned(inst.Rd, result);
+                }
             }
         }
 
@@ -525,7 +566,7 @@ namespace Soft64.MipsR4300
         {
             if (MipsState.Is64BitMode())
             {
-                MipsState.WriteGPRUnsigned(inst.Rd, (UInt64)(MipsState.ReadGPRSigned(inst.Rt) >> (Int32)(MipsState.ReadGPR32Unsigned(inst.Rs) & 0x3FUL)));
+                MipsState.WriteGPRSigned(inst.Rd, MipsState.ReadGPRSigned(inst.Rt) >> (MipsState.ReadGPR32Signed(inst.Rs) & 0x3F));
             }
             else
             {
@@ -538,7 +579,7 @@ namespace Soft64.MipsR4300
         {
             if (MipsState.Is64BitMode())
             {
-                MipsState.WriteGPRUnsigned(inst.Rd, (UInt64)(MipsState.ReadGPRSigned(inst.Rt) >> (32 + inst.ShiftAmount)));
+                MipsState.WriteGPRSigned(inst.Rd, (MipsState.ReadGPRSigned(inst.Rt) >> (32 + inst.ShiftAmount)));
             }
             else
             {
@@ -659,6 +700,73 @@ namespace Soft64.MipsR4300
         private void Inst_Nor(MipsInstruction inst)
         {
             MipsState.WriteGPRUnsigned(inst.Rd, ~(MipsState.ReadGPRUnsigned(inst.Rs) | MipsState.ReadGPRUnsigned(inst.Rt)));
+        }
+
+        [OpcodeHook("SRA")]
+        private void Inst_Sra(MipsInstruction inst)
+        {
+            Int32 result = MipsState.ReadGPR32Signed(inst.Rt) >> inst.ShiftAmount;
+
+            if (MipsState.Is32BitMode())
+            {
+                MipsState.WriteGPR32Signed(inst.Rd, result);
+            }
+            else
+            {
+                MipsState.WriteGPRSigned(inst.Rd, result);
+            }
+        }
+
+        [OpcodeHook("SRAV")]
+        private void Inst_Srav(MipsInstruction inst)
+        {
+            Int32 result = MipsState.ReadGPR32Signed(inst.Rt) >> (MipsState.ReadGPR32Signed(inst.Rs) & 0x1F);
+
+            if (MipsState.Is32BitMode())
+            {
+                MipsState.WriteGPR32Signed(inst.Rd, result);
+            }
+            else
+            {
+                MipsState.WriteGPRSigned(inst.Rd, result);
+            }
+        }
+
+        [OpcodeHook("SRLV")]
+        private void Inst_Srvl(MipsInstruction inst)
+        {
+            UInt32 result = MipsState.ReadGPR32Unsigned(inst.Rt) >> MipsState.ReadGPR32Signed(inst.Rs) & 0x1F;
+
+            if (MipsState.Is32BitMode())
+            {
+                MipsState.WriteGPR32Unsigned(inst.Rd, result);
+            }
+            else
+            {
+                MipsState.WriteGPRUnsigned(inst.Rd, (UInt32)(Int32)result);
+            }
+        }
+
+        [OpcodeHook("SUB")]
+        private void Inst_Sub(MipsInstruction inst)
+        {
+            try
+            {
+                MipsState.WriteGPR32Signed(inst.Rd, MipsState.ReadGPR32Signed(inst.Rs) - MipsState.ReadGPR32Signed(inst.Rt));
+            }
+            catch (OverflowException)
+            {
+                CauseException = ExceptionCode.OverFlow;
+            }
+        }
+
+        [OpcodeHook("SUBU")]
+        private void Inst_Subu(MipsInstruction inst)
+        {
+            unchecked
+            {
+                MipsState.WriteGPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rs) - MipsState.ReadGPR32Unsigned(inst.Rt));
+            }
         }
     }
 }
