@@ -320,19 +320,6 @@ namespace Soft64.MipsR4300
             }
         }
 
-        [OpcodeHook("XORI")]
-        private void Inst_Xori(MipsInstruction inst)
-        {
-            if (MipsState.Is32BitMode())
-            {
-                MipsState.WriteGPR32Unsigned(inst.Rt, MipsState.ReadGPR32Unsigned(inst.Rs) ^ (UInt32)inst.Immediate);
-            }
-            else
-            {
-                MipsState.WriteGPRUnsigned(inst.Rt, MipsState.ReadGPRUnsigned(inst.Rs) ^ (UInt64)inst.Immediate);
-            }
-        }
-
         [OpcodeHook("SLL")]
         private void Inst_Sll(MipsInstruction inst)
         {
