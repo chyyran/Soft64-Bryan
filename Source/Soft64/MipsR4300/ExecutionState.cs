@@ -178,6 +178,36 @@ namespace Soft64.MipsR4300
             return WordSizeMode == WordSize.MIPS64;
         }
 
+        public void FPU_Store(Int32 fpr, DataFormat format, UInt64 value)
+        {
+            if (CP0Regs.StatusReg.AdditionalFPR)
+            {
+                if (format == DataFormat.Single || format == DataFormat.Word)
+                {
+                    Fpr.WriteFPR32Unsigned(fpr, (UInt32)value);
+                }
+                
+                if (format == DataFormat.Double || format == DataFormat.Doubleword)
+                {
+                    Fpr.WriteFPRUnsigned(fpr, value);
+                }
+            }
+            else
+            {
+                Fpr.WriteFPR32Unsigned(fpr, (UInt32)value);
+
+                if (format == DataFormat.Single || format == DataFormat.Word)
+                {
+                    Fpr.WriteFPR32Unsigned(fpr + 1, 0);
+                }
+
+                if (format == DataFormat.Double || format == DataFormat.Doubleword)
+                {
+                    Fpr.WriteFPR32Unsigned(fpr + 1, (UInt32)(value >> 32));
+                }
+            }
+        }
+
         public ExecutionState()
         {
             CP0Regs = new CP0Registers();

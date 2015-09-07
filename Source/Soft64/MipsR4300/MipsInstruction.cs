@@ -83,6 +83,26 @@ namespace Soft64.MipsR4300
 
         public Int64 Address { get { return m_Address; } }
 
+        public Int32 Format { get { return m_Rs; } }
+
+        public Int32 Ft { get { return m_Rt; } }
+
+        public Int32 Fs { get { return m_Rd; } }
+
+        public Int32 Fd { get { return m_ShiftAmount; } }
+
+        public DataFormat DecodeDataFormat()
+        {
+            switch (Format)
+            {
+                case 16: return DataFormat.Single;
+                case 17: return DataFormat.Double;
+                case 20: return DataFormat.Word;
+                case 21: return DataFormat.Doubleword;
+                default: return DataFormat.Reserved;
+            }
+        }
+
         public override string ToString()
         {
             try

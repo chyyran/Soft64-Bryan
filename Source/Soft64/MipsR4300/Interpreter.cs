@@ -83,10 +83,10 @@ namespace Soft64.MipsR4300
             m_COP0 = (inst) => OpCall(m_OpsTableCP0, inst.Rs, inst);
             m_COP1 = (inst) => OpCall(m_OpsTableCP1, inst.Rs, inst);
             m_BC1 = (inst) => OpCall(m_OpsTableBC1, inst.Rt & 0x3, inst);
-            m_WI = (inst) => { MipsState.FpuDataMode = DataFormat.FixedWord; OpCall(m_OpsTableFixed, inst.Function, inst); };
-            m_LI = (inst) => { MipsState.FpuDataMode = DataFormat.FixedLong; OpCall(m_OpsTableFixed, inst.Function, inst); };
-            m_SI = (inst) => { MipsState.FpuDataMode = DataFormat.FloatingSingle; OpCall(m_OpsTableSingle, inst.Function, inst); };
-            m_DI = (inst) => { MipsState.FpuDataMode = DataFormat.FloatingDouble; OpCall(m_OpsTableDouble, inst.Function, inst); };
+            m_WI = (inst) => { MipsState.FpuDataMode = DataFormat.Word; OpCall(m_OpsTableFixed, inst.Function, inst); };
+            m_LI = (inst) => { MipsState.FpuDataMode = DataFormat.Doubleword; OpCall(m_OpsTableFixed, inst.Function, inst); };
+            m_SI = (inst) => { MipsState.FpuDataMode = DataFormat.Single; OpCall(m_OpsTableSingle, inst.Function, inst); };
+            m_DI = (inst) => { MipsState.FpuDataMode = DataFormat.Double; OpCall(m_OpsTableDouble, inst.Function, inst); };
 
             m_OpsTableMain = new MipsOp[] {
                 m_SubSpecial, m_SubRegImm, J, JAL, BEQ, BNE, BLEZ, BGTZ,

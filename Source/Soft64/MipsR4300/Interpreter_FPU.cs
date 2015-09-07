@@ -23,6 +23,8 @@ namespace Soft64.MipsR4300
 {
     public partial class Interpreter
     {
+
+
         [OpcodeHook("CFC1")]
         private void Inst_Cfc1(MipsInstruction inst)
         {
@@ -48,5 +50,7 @@ namespace Soft64.MipsR4300
                 MipsState.Fpr.WriteFPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt));
             }
         }
+
+
     }
 }

@@ -21,10 +21,10 @@ namespace Soft64.MipsR4300
 {
     public enum DataFormat
     {
-        Invalid,
-        FixedWord,
-        FixedLong,
-        FloatingSingle,
-        FloatingDouble,
+        Reserved,
+        Word,
+        Doubleword,
+        Single,
+        Double,
     }
 }
