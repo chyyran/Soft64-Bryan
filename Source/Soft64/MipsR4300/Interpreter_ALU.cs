@@ -768,5 +768,31 @@ namespace Soft64.MipsR4300
                 MipsState.WriteGPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rs) - MipsState.ReadGPR32Unsigned(inst.Rt));
             }
         }
+
+        [OpcodeHook("XOR")]
+        private void Inst_Xor(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                MipsState.WriteGPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rs) ^ MipsState.ReadGPR32Unsigned(inst.Rt));
+            }
+            else
+            {
+                MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rs) ^ MipsState.ReadGPRUnsigned(inst.Rt));
+            }
+        }
+
+        [OpcodeHook("XORI")]
+        private void Inst_Xori(MipsInstruction inst)
+        {
+            if (MipsState.Is32BitMode())
+            {
+                MipsState.WriteGPR32Signed(inst.Rt, MipsState.ReadGPR32Signed(inst.Rs) ^ (Int32)(Int16)inst.Immediate);
+            }
+            else
+            {
+                MipsState.WriteGPRSigned(inst.Rt, MipsState.ReadGPRSigned(inst.Rs) ^ (Int64)(Int16)inst.Immediate);
+            }
+        }
     }
 }
