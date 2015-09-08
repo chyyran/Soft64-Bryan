@@ -23,8 +23,6 @@ namespace Soft64.MipsR4300
 {
     public partial class Interpreter
     {
-
-
         [OpcodeHook("CFC1")]
         private void Inst_Cfc1(MipsInstruction inst)
         {
@@ -51,6 +49,25 @@ namespace Soft64.MipsR4300
             }
         }
 
+        [OpcodeHook("FPU_ABS")]
+        private void Inst_FpuAbs(MipsInstruction inst)
+        {
+            if (!MipsState.CP0Regs.StatusReg.AdditionalFPR)
+                return;
 
+            DataFormat format = inst.DecodeDataFormat();
+
+            if (format == DataFormat.Single || format == DataFormat.Double)
+            {
+                FPUEntity value = new FPUEntity(format, MipsState);
+                value.Load(inst.Fs);
+                dynamic result = Math.Abs(value.Value);
+                MipsState.FPU_Store(inst.Fd, format, (UInt64)result);
+            }
+            else
+            {
+                CauseException = ExceptionCode.Invalid;
+            }
+        }
     }
 }

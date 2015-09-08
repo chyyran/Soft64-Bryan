@@ -143,8 +143,6 @@ namespace Soft64.MipsR4300
 
         public Int64 BranchDelaySlot { get; set; }
 
-        public DataFormat FpuDataMode { get; set; }
-
         public Int64 BranchPC
         {
             get;

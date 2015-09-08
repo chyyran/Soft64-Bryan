@@ -41,10 +41,7 @@ namespace Soft64.MipsR4300
         private MipsOp m_COP0;
         private MipsOp m_COP1;
         private MipsOp m_BC1;
-        private MipsOp m_SI;
-        private MipsOp m_DI;
-        private MipsOp m_WI;
-        private MipsOp m_LI;
+        private MipsOp m_FPU;
         private MipsOp m_TLB;
         private MipsOp[] m_OpsTableMain;
         private MipsOp[] m_OpsTableSpecial;
@@ -52,9 +49,7 @@ namespace Soft64.MipsR4300
         private MipsOp[] m_OpsTableCP0;
         private MipsOp[] m_OpsTableCP1;
         private MipsOp[] m_OpsTableBC1;
-        private MipsOp[] m_OpsTableSingle;
-        private MipsOp[] m_OpsTableDouble;
-        private MipsOp[] m_OpsTableFixed;
+        private MipsOp[] m_OpsTableFPU;
         private MipsOp[] m_OpsTableTLB;
 
         public Interpreter()
@@ -83,10 +78,7 @@ namespace Soft64.MipsR4300
             m_COP0 = (inst) => OpCall(m_OpsTableCP0, inst.Rs, inst);
             m_COP1 = (inst) => OpCall(m_OpsTableCP1, inst.Rs, inst);
             m_BC1 = (inst) => OpCall(m_OpsTableBC1, inst.Rt & 0x3, inst);
-            m_WI = (inst) => { MipsState.FpuDataMode = DataFormat.Word; OpCall(m_OpsTableFixed, inst.Function, inst); };
-            m_LI = (inst) => { MipsState.FpuDataMode = DataFormat.Doubleword; OpCall(m_OpsTableFixed, inst.Function, inst); };
-            m_SI = (inst) => { MipsState.FpuDataMode = DataFormat.Single; OpCall(m_OpsTableSingle, inst.Function, inst); };
-            m_DI = (inst) => { MipsState.FpuDataMode = DataFormat.Double; OpCall(m_OpsTableDouble, inst.Function, inst); };
+            m_FPU = (inst) => OpCall(m_OpsTableFPU, inst.Function, inst);
 
             m_OpsTableMain = new MipsOp[] {
                 m_SubSpecial, m_SubRegImm, J, JAL, BEQ, BNE, BLEZ, BGTZ,
@@ -136,7 +128,7 @@ namespace Soft64.MipsR4300
             m_OpsTableCP1 = new MipsOp[] {
                 MFC1, DMFC1, CFC1, null, MTC1, DMTC1, CTC1, null,
                 m_BC1, null, null, null, null, null, null, null,
-                m_SI, m_DI, null, null, m_WI, m_LI, null, null,
+                m_FPU, m_FPU, null, null, m_FPU, m_FPU, null, null,
                 null, null, null, null, null, null, null, null
             };
 
@@ -144,37 +136,15 @@ namespace Soft64.MipsR4300
                 BC1F, BC1T, BC1FL, BC1TL
             };
 
-            m_OpsTableSingle = new MipsOp[] {
+            m_OpsTableFPU= new MipsOp[] {
                 FPU_ADD, FPU_SUB, FPU_MUL, FPU_DIV, FPU_SQRT, FPU_ABS, FPU_MOV, FPU_NEG,
                 FPU_ROUND_L, FPU_TRUNC_L, FPU_CEIL_L, FPU_FLOOR_L, FPU_ROUND_W, FPU_TRUNC_W, FPU_CEIL_W, FPU_FLOOR_W,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null,
-                FPU_CVT_S, null, null, null, FPU_CVT_W, FPU_CVT_L, null, null,
+                FPU_CVT_S, FPU_CVT_D, null, null, FPU_CVT_W, FPU_CVT_L, null, null,
                 null, null, null, null, null, null, null, null,
                 FPU_C_F, FPU_C_UN, FPU_C_EQ, FPU_C_UEQ, FPU_C_UEQ, FPU_C_OLT, FPU_C_ULT, FPU_C_OLE, FPU_C_ULE,
                 FPU_C_SF, FPU_C_NGLE, FPU_C_SEQ, FPU_C_NGL, FPU_C_LT, FPU_C_NGE, FPU_C_LE, FPU_C_NGT
-            };
-
-            m_OpsTableDouble = new MipsOp[] {
-                FPU_ADD, FPU_SUB, FPU_MUL, FPU_DIV, FPU_SQRT, FPU_ABS, FPU_MOV, FPU_NEG,
-                FPU_ROUND_L, FPU_TRUNC_L, FPU_CEIL_L, FPU_FLOOR_L, FPU_ROUND_W, FPU_TRUNC_W, FPU_CEIL_W, FPU_FLOOR_W,
-                null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null,
-                null, FPU_CVT_D, null, null, FPU_CVT_W, FPU_CVT_L, null, null,
-                null, null, null, null, null, null, null, null,
-                FPU_C_F, FPU_C_UN, FPU_C_EQ, FPU_C_UEQ, FPU_C_UEQ, FPU_C_OLT, FPU_C_ULT, FPU_C_OLE, FPU_C_ULE,
-                FPU_C_SF, FPU_C_NGLE, FPU_C_SEQ, FPU_C_NGL, FPU_C_LT, FPU_C_NGE, FPU_C_LE, FPU_C_NGT
-            };
-
-            m_OpsTableFixed = new MipsOp[] {
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            FPU_CVT_S, FPU_CVT_D, null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
             };
         }
 

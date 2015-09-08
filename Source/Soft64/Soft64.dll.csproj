@@ -72,6 +72,7 @@
     <Compile Include="Cartridge.cs" />
     <Compile Include="CartridgeInfo.cs" />
     <Compile Include="CPUProcessor.cs" />
+    <Compile Include="MipsR4300\FPUEntity.cs" />
     <Compile Include="MipsR4300\FpuRegisters.cs" />
     <Compile Include="MipsR4300\InterpreterExtensions.cs" />
     <Compile Include="MipsR4300\Interpreter_FPU.cs" />
