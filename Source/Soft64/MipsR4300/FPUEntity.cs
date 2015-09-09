@@ -19,9 +19,12 @@ namespace Soft64.MipsR4300
         private FpuRegisters m_FPR;
         private Func<FPUEntity, dynamic> m_DynamicGet;
         private Action<FPUEntity, dynamic> m_DynamicSet;
+        private IntPtr m_BufferPtr;
 
         public FPUEntity(DataFormat format, ExecutionState state)
         {
+            m_BufferPtr = Marshal.AllocHGlobal(8);
+
             m_Tag = format;
             m_Wide = state.CP0Regs.StatusReg.AdditionalFPR;
             m_FPR = state.Fpr;
@@ -57,49 +60,50 @@ namespace Soft64.MipsR4300
             }
         }
 
-        private static unsafe UInt32 _FIXED(Single single)
+        ~FPUEntity()
         {
-            Single* ptr = (Single*)Marshal.AllocHGlobal(4);
+            Marshal.FreeHGlobal(m_BufferPtr);
+        }
+
+        private unsafe UInt32 _FIXED(Single single)
+        {
+            Single* ptr = (Single*)m_BufferPtr;
             *ptr = single;
             UInt32 value = *(UInt32*)ptr;
-            Marshal.FreeHGlobal((IntPtr)ptr);
             return value;
         }
 
-        private static UInt32 _FIXED(UInt32 word)
+        private UInt32 _FIXED(UInt32 word)
         {
             return word;
         }
 
-        private static unsafe UInt64 _FIXED(Double d)
+        private unsafe UInt64 _FIXED(Double d)
         {
-            Double* ptr = (Double*)Marshal.AllocHGlobal(8);
+            Double* ptr = (Double*)m_BufferPtr;
             *ptr = d;
             UInt64 value = *(UInt64*)ptr;
-            Marshal.FreeHGlobal((IntPtr)ptr);
             return value;
         }
 
-        private static UInt64 _FIXED(UInt64 dword)
+        private UInt64 _FIXED(UInt64 dword)
         {
             return dword;
         }
 
-        private unsafe static Single _FLOAT(UInt32 word)
+        private unsafe Single _FLOAT(UInt32 word)
         {
-            UInt32* ptr = (UInt32*)Marshal.AllocHGlobal(4);
+            UInt32* ptr = (UInt32*)m_BufferPtr;
             *ptr = word;
             Single value = *(Single *)ptr;
-            Marshal.FreeHGlobal((IntPtr)ptr);
             return value;
         }
 
-        private unsafe static Double _FLOAT(UInt64 dword)
+        private unsafe Double _FLOAT(UInt64 dword)
         {
-            UInt64* ptr = (UInt64*)Marshal.AllocHGlobal(4);
+            UInt64* ptr = (UInt64*)m_BufferPtr;
             *ptr = dword;
             Double value = *(Double*)ptr;
-            Marshal.FreeHGlobal((IntPtr)ptr);
             return value;
         }
 
