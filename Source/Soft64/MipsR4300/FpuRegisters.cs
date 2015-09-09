@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Soft64.MipsR4300.CP1
 {
-    public sealed class FpuRegisters
+    public sealed class FpuRegisters : IDisposable
     {
+        private GCHandle m_RegHandle;
         private UInt64[] m_Regs;
+        private IntPtr m_RegsPtr;
 
         public FpuRegisters()
         {
             m_Regs = new ulong[32];
+            m_RegHandle = GCHandle.Alloc(m_Regs, GCHandleType.Pinned);
+            /* TODO: Free handle on dispose */
         }
 
         public void Clear()
@@ -44,10 +49,8 @@ namespace Soft64.MipsR4300.CP1
         {
             unsafe
             {
-                fixed (UInt64 * ptr = m_Regs)
-                {
-                    return *(Double*)(UInt64*)(ptr + index);
-                }
+                UInt64* ptr = (UInt64*)m_RegsPtr;
+                return *(Double*)(ptr + index);
             }
         }
 
@@ -55,10 +58,8 @@ namespace Soft64.MipsR4300.CP1
         {
             unsafe
             {
-                fixed (UInt64* ptr = m_Regs)
-                {
-                    *(Double*)(UInt64*)(ptr + index) = value;
-                }
+                UInt64* ptr = (UInt64*)m_RegsPtr;
+                *(Double*)(ptr + index) = value;
             }
         }
 
@@ -66,10 +67,8 @@ namespace Soft64.MipsR4300.CP1
         {
             unsafe
             {
-                fixed (UInt64* ptr = m_Regs)
-                {
-                    return *(Single*)(UInt32*)(ptr + index);
-                }
+                UInt64* ptr = (UInt64*)m_RegsPtr;
+                return *(Single*)(ptr + index);
             }
         }
 
@@ -77,13 +76,20 @@ namespace Soft64.MipsR4300.CP1
         {
             unsafe
             {
-                fixed (UInt64* ptr = m_Regs)
-                {
-                    *(Single*)(UInt32*)(ptr + index) = value;
-                }
+                UInt64* ptr = (UInt64*)m_RegsPtr;
+                *(Single*)(ptr + index) = value;
             }
         }
 
         public UInt64 Condition { get; set; }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }
