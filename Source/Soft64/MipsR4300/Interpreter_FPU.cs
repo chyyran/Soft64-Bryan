@@ -59,10 +59,10 @@ namespace Soft64.MipsR4300
 
             if (format == DataFormat.Single || format == DataFormat.Double)
             {
-                FPUEntity value = new FPUEntity(format, MipsState);
-                value.Load(inst.Fs);
-                dynamic result = Math.Abs(value.Value);
-                MipsState.FPU_Store(inst.Fd, format, (UInt64)result);
+                FPUEntity fpuEntitiy = new FPUEntity(format, MipsState);
+                fpuEntitiy.Load(inst.Fs);
+                fpuEntitiy.Value = Math.Abs(fpuEntitiy.Value);
+                fpuEntitiy.Store(inst.Fd);
             }
             else
             {

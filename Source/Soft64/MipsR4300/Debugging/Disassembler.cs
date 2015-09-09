@@ -142,10 +142,7 @@ namespace Soft64.MipsR4300.Debugging
                             switch (s_OpTableCop1[asmInstruction.Rs])
                             {
                                 case "_BC1": opName = s_OpTableBC1[asmInstruction.Rt]; break;
-                                case "_SI": opName = s_OpTableFpu_Single[asmInstruction.Function] + ".s"; break;
-                                case "_DI": opName = s_OpTableFpu_Double[asmInstruction.Function] + ".d"; break;
-                                case "_WI": opName = s_OpTableFpu_FixedPoint[asmInstruction.Function] + ".w"; break;
-                                case "_LI": opName = s_OpTableFpu_FixedPoint[asmInstruction.Function] + ".l"; break;
+                                case "_FPU": opName = s_OpTableFpu[asmInstruction.Function]; break;
                                 default: opName = s_OpTableCop1[asmInstruction.Rs]; break;
                             }
                             break;

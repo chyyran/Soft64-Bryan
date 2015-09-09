@@ -17,6 +17,7 @@ namespace Soft64.MipsR4300.CP1
         {
             m_Regs = new ulong[32];
             m_RegHandle = GCHandle.Alloc(m_Regs, GCHandleType.Pinned);
+            m_RegsPtr = m_RegHandle.AddrOfPinnedObject();
             /* TODO: Free handle on dispose */
         }
 

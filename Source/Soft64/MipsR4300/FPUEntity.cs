@@ -8,7 +8,7 @@ using Soft64.MipsR4300.CP1;
 
 namespace Soft64.MipsR4300
 {
-    public struct FPUEntity
+    public sealed class FPUEntity
     {
         private DataFormat m_Tag;
         private UInt64 m_Long = 0;
@@ -17,20 +17,52 @@ namespace Soft64.MipsR4300
         private Double m_Double = 0.0d;
         private Boolean m_Wide;
         private FpuRegisters m_FPR;
+        private Func<FPUEntity, dynamic> m_DynamicGet;
+        private Action<FPUEntity, dynamic> m_DynamicSet;
 
         public FPUEntity(DataFormat format, ExecutionState state)
         {
             m_Tag = format;
             m_Wide = state.CP0Regs.StatusReg.AdditionalFPR;
             m_FPR = state.Fpr;
+
+            switch (m_Tag)
+            {
+                case DataFormat.Double:
+                    {
+                        m_DynamicGet = (e) => { return e.m_Double; };
+                        m_DynamicSet = (e, v) => { e.m_Double = v; };
+                        break;
+                    }
+                case DataFormat.Doubleword:
+                    {
+                        m_DynamicGet = (e) => { return e.m_Long; };
+                        m_DynamicSet = (e, v) => { e.m_Long = v; };
+                        break;
+                    }
+                case DataFormat.Single:
+                    {
+                        m_DynamicGet = (e) => { return e.m_Single; };
+                        m_DynamicSet = (e, v) => { e.m_Single = v; };
+                        break;
+                    }
+                case DataFormat.Word:
+                    {
+                        m_DynamicGet = (e) => { return e.m_Word; };
+                        m_DynamicSet = (e, v) => { e.m_Word = v; };
+                        break;
+                    }
+                default:
+                case DataFormat.Reserved: throw new InvalidOperationException("Cannot return a value with reserved data format");
+            }
         }
 
         private static unsafe UInt32 _FIXED(Single single)
         {
-            Single* ptr = (Single *)Marshal.AllocCoTaskMem(4);
+            Single* ptr = (Single*)Marshal.AllocHGlobal(4);
             *ptr = single;
             UInt32 value = *(UInt32*)ptr;
-            Marshal.FreeCoTaskMem((IntPtr)ptr);
+            Marshal.FreeHGlobal((IntPtr)ptr);
             return value;
         }
 
@@ -41,10 +73,10 @@ namespace Soft64.MipsR4300
 
         private static unsafe UInt64 _FIXED(Double d)
         {
-            Double* ptr = (Double*)Marshal.AllocCoTaskMem(8);
+            Double* ptr = (Double*)Marshal.AllocHGlobal(8);
             *ptr = d;
             UInt64 value = *(UInt64*)ptr;
-            Marshal.FreeCoTaskMem((IntPtr)ptr);
+            Marshal.FreeHGlobal((IntPtr)ptr);
             return value;
         }
 
@@ -55,19 +87,19 @@ namespace Soft64.MipsR4300
 
         private unsafe static Single _FLOAT(UInt32 word)
         {
-            UInt32* ptr = (UInt32*)Marshal.AllocCoTaskMem(4);
+            UInt32* ptr = (UInt32*)Marshal.AllocHGlobal(4);
             *ptr = word;
             Single value = *(Single *)ptr;
-            Marshal.FreeCoTaskMem((IntPtr)ptr);
+            Marshal.FreeHGlobal((IntPtr)ptr);
             return value;
         }
 
         private unsafe static Double _FLOAT(UInt64 dword)
         {
-            UInt64* ptr = (UInt64*)Marshal.AllocCoTaskMem(4);
+            UInt64* ptr = (UInt64*)Marshal.AllocHGlobal(4);
             *ptr = dword;
             Double value = *(Double*)ptr;
-            Marshal.FreeCoTaskMem((IntPtr)ptr);
+            Marshal.FreeHGlobal((IntPtr)ptr);
             return value;
         }
 
@@ -147,25 +179,10 @@ namespace Soft64.MipsR4300
             }
         }
 
-        public void RunFPUOp(Func<dynamic, dynamic> opFunction)
-        {
-            /* TODO: */
-        }
-
         public dynamic Value
         {
-            get
-            {
-                switch (m_Tag)
-                {
-                    case DataFormat.Double: return m_Double;
-                    case DataFormat.Doubleword: return m_Long;
-                    case DataFormat.Single: return m_Single;
-                    case DataFormat.Word: return m_Word;
-                    default:
-                    case DataFormat.Reserved: throw new InvalidOperationException("Cannot return a value with reserved data format");
-                }
-            }
+            get { return m_DynamicGet(this); }
+            set { m_DynamicSet(this, value); }
         }
     }
 }

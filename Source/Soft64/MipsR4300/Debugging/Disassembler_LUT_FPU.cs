@@ -27,7 +27,7 @@ namespace Soft64.MipsR4300.Debugging
         {
             "mfc1", "dmfc1", "cfc1", null, "mtc1", "dmtc1", "ctc1", null,
             "_BC1", null,    null,   null, null,   null,    null,   null,
-            "_SI", "_DI",    null,   null, "_WI",  "_LI",   null,   null,
+            "_FPU", "_FPU",    null,   null, "_FPU",  "_FPU",   null,   null,
             null,  null,     null,   null, null,   null,    null,   null,
         };
 
@@ -37,40 +37,16 @@ namespace Soft64.MipsR4300.Debugging
             "bc1fl", "bc1tl",
         };
 
-        private static String[] s_OpTableFpu_Single =
+        private static String[] s_OpTableFpu =
         {
-            "add",     "sub",     "mul",    "div",     "sqrt",    "abs",     "mov",    "neg",
-            "round.l", "trunc.l", "ceil.l", "floor.l", "round.w", "trunc.w", "ceil.w", "floor.w",
+            "add.fmt",     "sub.fmt",     "mul.fmt",    "div.fmt",     "sqrt.fmt",    "abs.fmt",     "mov.fmt",    "neg.fmt",
+            "round.l.fmt", "trunc.l.fmt", "ceil.l.fmt", "floor.l.fmt", "round.w.fmt", "trunc.w.fmt", "ceil.w.fmt", "floor.w.fmt",
             null,      null,      null,     null,      null,      null,      null,     null,
             null,      null,      null,     null,      null,      null,      null,     null,
-            null,      "cvt.d",   null,     null,      "cvt.w",   "cvt.l",   null,     null,
+            "cvt.s.fmt",   "cvt.d.fmt",   null,     null,      "cvt.w.fmt",   "cvt.l.fmt",   null,     null,
             null,      null,      null,     null,      null,      null,      null,     null,
-            "c.f",     "c.un",    "c.eq",   "c.ueq",   "c.olt",   "c.ult",   "c.ole",  "c.ule",
-            "c.sf",    "c.ngle",  "c.seq",  "c.ngl",   "c.lt",    "c.nge",   "c.le",   "c.ngr",
-        };
-
-        private static String[] s_OpTableFpu_Double =
-        {
-            "add",     "sub",     "mul",    "div",     "sqrt",    "abs",     "mov",    "neg",
-            "round.l", "trunc.l", "ceil.l", "floor.l", "round.w", "trunc.w", "ceil.w", "floor.w",
-            null,      null,      null,     null,      null,      null,      null,     null,
-            null,      null,      null,     null,      null,      null,      null,     null,
-            "cvt.s",   null,      null,     null,      "cvt.w",   "cvt.l",   null,     null,
-            null,      null,      null,     null,      null,      null,      null,     null,
-            "c.f",     "c.un",    "c.eq",   "c.ueq",   "c.olt",   "c.ult",   "c.ole",  "c.ule",
-            "c.sf",    "c.ngle",  "c.seq",  "c.ngl",   "c.lt",    "c.nge",   "c.le",   "c.ngr",
-        };
-
-        private static String[] s_OpTableFpu_FixedPoint =
-        {
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            "cvt.s", "cvt.d", null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
-            null,    null,    null, null, null, null, null, null,
+            "c.f.fmt",     "c.un.fmt",    "c.eq.fmt",   "c.ueq.fmt",   "c.olt.fmt",   "c.ult.fmt",   "c.ole.fmt",  "c.ule.fmt",
+            "c.sf.fmt",    "c.ngle.fmt",  "c.seq.fmt",  "c.ngl.fmt",   "c.lt.fmt",    "c.nge.fmt",   "c.le.fmt",   "c.ngr.fmt",
         };
 
         private static String[] s_Cop1RegLabel =
