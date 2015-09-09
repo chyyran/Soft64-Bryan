@@ -236,25 +236,25 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BC1F")]
         private void Inst_Bc1f(MipsInstruction inst)
         {
-            DoBranch(MipsState.Fpr.Condition == 0, inst);
+            DoBranch(MipsState.Fpr.Condition, inst);
         }
 
         [OpcodeHook("BC1FL")]
         private void Inst_Bc1fl(MipsInstruction inst)
         {
-            DoBranchLikely(MipsState.Fpr.Condition == 0, inst);
+            DoBranchLikely(MipsState.Fpr.Condition, inst);
         }
 
         [OpcodeHook("BC1T")]
         private void Inst_Bc1t(MipsInstruction inst)
         {
-            DoBranch(MipsState.Fpr.Condition != 0, inst);
+            DoBranch(MipsState.Fpr.Condition, inst);
         }
 
         [OpcodeHook("BC1TL")]
         private void Inst_Bc1tl(MipsInstruction inst)
         {
-            DoBranchLikely(MipsState.Fpr.Condition != 0, inst);
+            DoBranchLikely(MipsState.Fpr.Condition, inst);
         }
     }
 }

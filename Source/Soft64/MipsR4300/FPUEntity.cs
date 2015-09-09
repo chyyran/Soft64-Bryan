@@ -188,5 +188,52 @@ namespace Soft64.MipsR4300
             get { return m_DynamicGet(this); }
             set { m_DynamicSet(this, value); }
         }
+
+        public Boolean IsNaN
+        {
+            get
+            {
+                if (m_Tag == DataFormat.Double)
+                    return Double.IsNaN(m_Double);
+                else if (m_Tag == DataFormat.Single)
+                    return Single.IsNaN(m_Single);
+                else
+                    return false;
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (Object.ReferenceEquals(this, obj))
+                return true;
+
+            if ((obj as FPUEntity) == null)
+                return false;
+
+            return this == (FPUEntity)obj;
+        }
+
+        public static dynamic operator +(FPUEntity a, FPUEntity b)
+        {
+            return a.Value + b.Value;
+        }
+
+        public static Boolean operator <(FPUEntity a, FPUEntity b)
+        {
+            return a.Value < b.Value;
+        }
+
+        public static Boolean operator ==(FPUEntity a, FPUEntity b)
+        {
+            return a.Value == b.Value;
+        }
+
+        public static Boolean operator !=(FPUEntity a, FPUEntity b)
+        {
+            return a.Value != b.Value;
+        }
     }
 }

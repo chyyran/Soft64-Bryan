@@ -69,5 +69,79 @@ namespace Soft64.MipsR4300
                 CauseException = ExceptionCode.Invalid;
             }
         }
+
+        [OpcodeHook("FPU_ADD")]
+        private void Inst_FpuAdd(MipsInstruction inst)
+        {
+            if (!MipsState.CP0Regs.StatusReg.AdditionalFPR)
+                return;
+
+            DataFormat format = inst.DecodeDataFormat();
+
+            if (format == DataFormat.Single || format == DataFormat.Double)
+            {
+                FPUEntity left = new FPUEntity(format, MipsState);
+                FPUEntity right = new FPUEntity(format, MipsState);
+                FPUEntity result = new FPUEntity(format, MipsState);
+
+                left.Load(inst.Fs);
+                right.Load(inst.Ft);
+
+                try
+                {
+                    result.Value = left + right;
+                    result.Store(inst.Fd);
+                }
+                catch (ArithmeticException)
+                {
+                    CauseException = ExceptionCode.FloatingPoint;
+                }
+
+            }
+            else
+            {
+                CauseException = ExceptionCode.Invalid;
+            }
+        }
+
+        [OpcodeHook("FPU_COND")]
+        private void Inst_FpuCond(MipsInstruction inst)
+        {
+            if (!MipsState.CP0Regs.StatusReg.AdditionalFPR)
+                return;
+
+            DataFormat format = inst.DecodeDataFormat();
+
+            if (format == DataFormat.Single || format == DataFormat.Double)
+            {
+                FPUEntity a = new FPUEntity(format, MipsState);
+                FPUEntity b = new FPUEntity(format, MipsState);
+                Boolean less = false;
+                Boolean unordered = false;
+                Boolean equal = false;
+                Boolean condU = (inst.Function & 1) != 0;
+                Boolean condE = ((inst.Function >> 1) & 1) != 0;
+                Boolean condL = ((inst.Function >> 2) & 1) != 0;
+
+                a.Load(inst.Fs);
+                b.Load(inst.Ft);
+
+                if (a.IsNaN && b.IsNaN)
+                {
+                    unordered = true;
+                }
+                else
+                {
+                    less = a < b;
+                    equal = a == b;
+                }
+
+                UInt32 condition = ((condL && less) || (condE && equal) || (condU && unordered)) ? 1U : 0;
+
+                MipsState.FCR31 &= 0xFFBFFFFF;
+                MipsState.FCR31 |= condition << 23;
+                MipsState.Fpr.Condition = condition == 1U;
+            }
+        }
     }
 }

@@ -45,8 +45,8 @@ namespace Soft64.MipsR4300.Debugging
             null,      null,      null,     null,      null,      null,      null,     null,
             "cvt.s.fmt",   "cvt.d.fmt",   null,     null,      "cvt.w.fmt",   "cvt.l.fmt",   null,     null,
             null,      null,      null,     null,      null,      null,      null,     null,
-            "c.f.fmt",     "c.un.fmt",    "c.eq.fmt",   "c.ueq.fmt",   "c.olt.fmt",   "c.ult.fmt",   "c.ole.fmt",  "c.ule.fmt",
-            "c.sf.fmt",    "c.ngle.fmt",  "c.seq.fmt",  "c.ngl.fmt",   "c.lt.fmt",    "c.nge.fmt",   "c.le.fmt",   "c.ngr.fmt",
+            "c.cond.fmt",     "c.cond.fmt",    "c.cond.fmt",   "c.cond.fmt",   "c.cond.fmt",   "c.cond.fmt",   "c.cond.fmt",  "c.cond.fmt",
+            "c.cond.fmt",    "c.cond.fmt",  "c.cond.fmt",  "c.cond.fmt",   "c.cond.fmt",    "c.cond.fmt",   "c.cond.fmt",   "c.cond.fmt",
         };
 
         private static String[] s_Cop1RegLabel =
@@ -70,22 +70,22 @@ namespace Soft64.MipsR4300.Debugging
         {
             { 05, s_OperandFormatLUT[19] }, /* ABS.fmt */
             { 00, s_OperandFormatLUT[20] }, /* ADD.fmt */
-            { 48, s_OperandFormatLUT[21] }, /* C.F.fmt */
-            { 49, s_OperandFormatLUT[21] }, /* C.UN.fmt */
-            { 50, s_OperandFormatLUT[21] }, /* C.EQ.fmt */
-            { 51, s_OperandFormatLUT[21] }, /* C.UEQ.fmt */
-            { 52, s_OperandFormatLUT[21] }, /* C.OLT.fmt */
-            { 53, s_OperandFormatLUT[21] }, /* C.ULT.fmt */
-            { 54, s_OperandFormatLUT[21] }, /* C.OLE.fmt */
-            { 55, s_OperandFormatLUT[21] }, /* C.ULE.fmt */
-            { 56, s_OperandFormatLUT[21] }, /* C.SF.fmt */
-            { 57, s_OperandFormatLUT[21] }, /* C.NGLE.fmt */
-            { 58, s_OperandFormatLUT[21] }, /* C.SEQ.fmt */
-            { 59, s_OperandFormatLUT[21] }, /* C.NGL.fmt */
-            { 60, s_OperandFormatLUT[21] }, /* C.LT.fmt */
-            { 61, s_OperandFormatLUT[21] }, /* C.NGE.fmt */
-            { 62, s_OperandFormatLUT[21] }, /* C.LE.fmt */
-            { 63, s_OperandFormatLUT[21] }, /* C.NGT.fmt */
+            { 48, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 49, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 50, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 51, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 52, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 53, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 54, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 55, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 56, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 57, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 58, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 59, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 60, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 61, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 62, s_OperandFormatLUT[21] }, /* C.cond.fmt */
+            { 63, s_OperandFormatLUT[21] }, /* C.cond.fmt */
             { 10, s_OperandFormatLUT[19] }, /* CEIL.L.fmt */
             { 14, s_OperandFormatLUT[19] }, /* CEIL.W.fmt */
             { 33, s_OperandFormatLUT[19] }, /* CVT.D.fmt */ // TODO: Only in D Table

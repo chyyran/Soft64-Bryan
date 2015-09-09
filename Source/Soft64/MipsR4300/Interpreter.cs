@@ -143,8 +143,9 @@ namespace Soft64.MipsR4300
                 null, null, null, null, null, null, null, null,
                 FPU_CVT_S, FPU_CVT_D, null, null, FPU_CVT_W, FPU_CVT_L, null, null,
                 null, null, null, null, null, null, null, null,
-                FPU_C_F, FPU_C_UN, FPU_C_EQ, FPU_C_UEQ, FPU_C_UEQ, FPU_C_OLT, FPU_C_ULT, FPU_C_OLE, FPU_C_ULE,
-                FPU_C_SF, FPU_C_NGLE, FPU_C_SEQ, FPU_C_NGL, FPU_C_LT, FPU_C_NGE, FPU_C_LE, FPU_C_NGT
+                FPU_COND, FPU_COND, FPU_COND, FPU_COND, FPU_COND, FPU_COND, FPU_COND, 
+                FPU_COND, FPU_COND, FPU_COND, FPU_COND, FPU_COND, FPU_COND, FPU_COND, 
+                FPU_COND, FPU_COND, FPU_COND
             };
         }
 
@@ -611,43 +612,13 @@ namespace Soft64.MipsR4300
 
         protected MipsOp FPU_CVT_L { get; set; }
 
-        protected MipsOp FPU_C_F { get; set; }
-
-        protected MipsOp FPU_C_UN { get; set; }
-
-        protected MipsOp FPU_C_EQ { get; set; }
-
-        protected MipsOp FPU_C_UEQ { get; set; }
-
-        protected MipsOp FPU_C_OLT { get; set; }
-
-        protected MipsOp FPU_C_ULT { get; set; }
-
-        protected MipsOp FPU_C_OLE { get; set; }
-
-        protected MipsOp FPU_C_ULE { get; set; }
-
-        protected MipsOp FPU_C_SF { get; set; }
-
-        protected MipsOp FPU_C_NGLE { get; set; }
-
-        protected MipsOp FPU_C_SEQ { get; set; }
-
-        protected MipsOp FPU_C_NGL { get; set; }
-
-        protected MipsOp FPU_C_LT { get; set; }
-
-        protected MipsOp FPU_C_NGE { get; set; }
-
-        protected MipsOp FPU_C_LE { get; set; }
+        protected MipsOp FPU_COND { get; set; }
 
         protected MipsOp LHU { get; set; }
 
         protected MipsOp MULTU { get; set; }
 
         protected MipsOp FPU_CVT_S { get; set; }
-
-        protected MipsOp FPU_C_NGT { get; set; }
 
         protected MipsOp DMFC0 { get; set; }
 
