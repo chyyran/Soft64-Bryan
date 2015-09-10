@@ -126,14 +126,14 @@ namespace Soft64.MipsR4300
         public FpuRegisters Fpr { get; private set; }
 
         /// <summary>
-        /// FPU Control/Status Register
+        /// FPU Implementation/Revision Register
         /// </summary>
         public UInt32 FCR0 { get; set; }
 
         /// <summary>
-        /// FPU Implementation/Revision Register
+        /// FPU Status and Control register
         /// </summary>
-        public UInt32 FCR31 { get; set; }
+        public Fcr32Register FCR31 { get; set; }
 
         public Boolean NullifyEnabled { get; set; }
 
@@ -174,36 +174,6 @@ namespace Soft64.MipsR4300
         public Boolean Is64BitMode()
         {
             return WordSizeMode == WordSize.MIPS64;
-        }
-
-        public void FPU_Store(Int32 fpr, DataFormat format, UInt64 value)
-        {
-            if (CP0Regs.StatusReg.AdditionalFPR)
-            {
-                if (format == DataFormat.Single || format == DataFormat.Word)
-                {
-                    Fpr.WriteFPR32Unsigned(fpr, (UInt32)value);
-                }
-                
-                if (format == DataFormat.Double || format == DataFormat.Doubleword)
-                {
-                    Fpr.WriteFPRUnsigned(fpr, value);
-                }
-            }
-            else
-            {
-                Fpr.WriteFPR32Unsigned(fpr, (UInt32)value);
-
-                if (format == DataFormat.Single || format == DataFormat.Word)
-                {
-                    Fpr.WriteFPR32Unsigned(fpr + 1, 0);
-                }
-
-                if (format == DataFormat.Double || format == DataFormat.Doubleword)
-                {
-                    Fpr.WriteFPR32Unsigned(fpr + 1, (UInt32)(value >> 32));
-                }
-            }
         }
 
         public ExecutionState()

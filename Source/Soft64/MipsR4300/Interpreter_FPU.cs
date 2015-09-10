@@ -26,26 +26,28 @@ namespace Soft64.MipsR4300
         [OpcodeHook("CFC1")]
         private void Inst_Cfc1(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (inst.Rd == 0)
             {
-                MipsState.WriteGPR32Unsigned(inst.Rt, MipsState.Fpr.ReadFPR32Unsigned(inst.Rd));
+                MipsState.WriteGPRUnsigned(inst.Rd, MipsState.FCR0);
             }
-            else
+
+            if (inst.Rd == 31)
             {
-                MipsState.WriteGPRUnsigned(inst.Rt, MipsState.Fpr.ReadFPRUnsigned(inst.Rd));
+                MipsState.WriteGPRUnsigned(inst.Rd, MipsState.FCR31.RegisterValue);
             }
         }
 
         [OpcodeHook("CTC1")]
         private void Inst_Ctc1(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (inst.Fs == 0)
             {
-                MipsState.Fpr.WriteFPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rt));
+                MipsState.FCR0 = MipsState.ReadGPR32Unsigned(inst.Rt);
             }
-            else
+
+            if (inst.Fs == 31)
             {
-                MipsState.Fpr.WriteFPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt));
+                MipsState.FCR31.RegisterValue = MipsState.ReadGPR32Unsigned(inst.Rt);
             }
         }
 
@@ -61,6 +63,7 @@ namespace Soft64.MipsR4300
             {
                 FPUEntity fpuEntitiy = new FPUEntity(format, MipsState);
                 fpuEntitiy.Load(inst.Fs);
+                FPUEntity.SetRoundingMode(MipsState.FCR31.RM);
                 fpuEntitiy.Value = Math.Abs(fpuEntitiy.Value);
                 fpuEntitiy.Store(inst.Fd);
             }
@@ -89,6 +92,7 @@ namespace Soft64.MipsR4300
 
                 try
                 {
+                    FPUEntity.SetRoundingMode(MipsState.FCR31.RM);
                     result.Value = left + right;
                     result.Store(inst.Fd);
                 }
@@ -129,6 +133,12 @@ namespace Soft64.MipsR4300
                 if (a.IsNaN && b.IsNaN)
                 {
                     unordered = true;
+
+                    if ((inst.Function & 8) != 0)
+                    {
+                        CauseException = ExceptionCode.Invalid;
+                        return;
+                    }
                 }
                 else
                 {
@@ -136,11 +146,7 @@ namespace Soft64.MipsR4300
                     equal = a == b;
                 }
 
-                UInt32 condition = ((condL && less) || (condE && equal) || (condU && unordered)) ? 1U : 0;
-
-                MipsState.FCR31 &= 0xFFBFFFFF;
-                MipsState.FCR31 |= condition << 23;
-                MipsState.Fpr.Condition = condition == 1U;
+                MipsState.FCR31.Condition = ((condL && less) || (condE && equal) || (condU && unordered));
             }
         }
     }

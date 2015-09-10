@@ -82,8 +82,6 @@ namespace Soft64.MipsR4300.CP1
             }
         }
 
-        public Boolean Condition { get; set; }
-
         #region IDisposable Members
 
         public void Dispose()

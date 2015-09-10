@@ -88,7 +88,7 @@ namespace Soft64.MipsR4300
             m_State.Hi = 0;
             m_State.Lo = 0;
             m_State.FCR0 = 0x511;
-            m_State.FCR31 = 0;
+            m_State.FCR31.RegisterValue = 0;
 
             /* Setup Cop0 Registers */
             m_State.CP0Regs[CP0RegName.Cause] = 0x5C;

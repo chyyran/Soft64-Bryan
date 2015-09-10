@@ -21,6 +21,11 @@ namespace Soft64.MipsR4300
         private Action<FPUEntity, dynamic> m_DynamicSet;
         private IntPtr m_BufferPtr;
 
+        public const Int32 _MCW_RC = 0x00000300;
+
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int _controlfp(int newControl, int mask);
+
         public FPUEntity(DataFormat format, ExecutionState state)
         {
             m_BufferPtr = Marshal.AllocHGlobal(8);
@@ -226,6 +231,11 @@ namespace Soft64.MipsR4300
             return a.Value < b.Value;
         }
 
+        public static Boolean operator >(FPUEntity a, FPUEntity b)
+        {
+            return a.Value > b.Value;
+        }
+
         public static Boolean operator ==(FPUEntity a, FPUEntity b)
         {
             return a.Value == b.Value;
@@ -235,5 +245,18 @@ namespace Soft64.MipsR4300
         {
             return a.Value != b.Value;
         }
+
+        public static void SetRoundingMode(FPURoundMode mode)
+        {
+            _controlfp((Int32)mode, _MCW_RC);
+        }
+    }
+
+    public enum FPURoundMode : int
+    {
+        Chop = 0x00000300,
+        Up = 0x00000200,
+        Down = 0x00000100,
+        Near = 0x00000000
     }
 }
