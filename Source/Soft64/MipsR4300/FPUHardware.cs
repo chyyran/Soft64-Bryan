@@ -18,14 +18,18 @@ namespace Soft64.MipsR4300
         private const Int32 _EM_INVALID = 0x00000010;
 
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int _controlfp(int newControl, int mask);
+        private static extern uint _controlfp(uint newControl, uint mask);
 
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int _statusfp();
+        private static extern uint _statusfp();
+
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint _clearfp();
+
 
         public static void SetRoundingMode(FPURoundMode mode)
         {
-            _controlfp((Int32)mode, _MCW_RC);
+            _controlfp((UInt32)mode, _MCW_RC);
         }
 
         public static void ClearFPUExceptionMask()
@@ -40,7 +44,8 @@ namespace Soft64.MipsR4300
 
         public static FPUExceptionType GetFPUException()
         {
-            Int32 status = _statusfp();
+            UInt32 status = _statusfp();
+            _clearfp();
 
             if (status != 0)
             {

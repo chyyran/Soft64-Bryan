@@ -223,7 +223,7 @@ namespace Soft64.MipsR4300
                     FPUHardware.SetRoundingMode(FPURoundMode.Up);
                     FPUEntity value = new FPUEntity(format, MipsState);
 
-                    value.Value = Math.Ceiling(value.Value, 0);
+                    value.Value = Math.Ceiling(value.Value);
 
                     if (FPUHardware.CheckFPUException())
                         CauseFPUException(FPUHardware.GetFPUException());
