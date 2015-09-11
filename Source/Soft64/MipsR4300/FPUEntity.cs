@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Soft64.MipsR4300.CP1;
@@ -20,11 +19,6 @@ namespace Soft64.MipsR4300
         private Func<FPUEntity, dynamic> m_DynamicGet;
         private Action<FPUEntity, dynamic> m_DynamicSet;
         private IntPtr m_BufferPtr;
-
-        public const Int32 _MCW_RC = 0x00000300;
-
-        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int _controlfp(int newControl, int mask);
 
         public FPUEntity(DataFormat format, ExecutionState state)
         {
@@ -246,10 +240,7 @@ namespace Soft64.MipsR4300
             return a.Value != b.Value;
         }
 
-        public static void SetRoundingMode(FPURoundMode mode)
-        {
-            _controlfp((Int32)mode, _MCW_RC);
-        }
+
     }
 
     public enum FPURoundMode : int

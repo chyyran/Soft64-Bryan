@@ -74,6 +74,8 @@
     <Compile Include="CPUProcessor.cs" />
     <Compile Include="MipsR4300\Fcr32Register.cs" />
     <Compile Include="MipsR4300\FPUEntity.cs" />
+    <Compile Include="MipsR4300\FPUExceptionType.cs" />
+    <Compile Include="MipsR4300\FPUHardware.cs" />
     <Compile Include="MipsR4300\FpuRegisters.cs" />
     <Compile Include="MipsR4300\InterpreterExtensions.cs" />
     <Compile Include="MipsR4300\Interpreter_FPU.cs" />

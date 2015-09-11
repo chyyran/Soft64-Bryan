@@ -301,6 +301,115 @@ namespace Soft64.MipsR4300
             return (((Int64)(Int16)inst.Immediate) + MipsState.ReadGPRSigned(inst.Rs)).ResolveAddress();
         }
 
+        private Boolean CheckCop1Usable()
+        {
+            return MipsState.CP0Regs.StatusReg.CopUsable1;
+        }
+
+        private Boolean CheckEvenOddAllowed(MipsInstruction inst)
+        {
+            if (MipsState.CP0Regs.StatusReg.AdditionalFPR)
+            {
+                return true;
+            }
+            else
+            {
+                return
+                    (inst.Fd % 2 == 0) &&
+                    (inst.Fs % 2 == 0) &&
+                    (inst.Ft % 2 == 0);
+            }
+        }
+
+        private void CauseFPUException(FPUExceptionType exceptionType)
+        {
+            Boolean causeCP0Exception = false;
+
+            switch (exceptionType)
+            {
+                default: break;
+
+                case FPUExceptionType.Invalid:
+                    {
+                        if (MipsState.FCR31.EnableInvalidOperation)
+                        {
+                            MipsState.FCR31.CauseInvalidOperation = true;
+                            causeCP0Exception = true;
+                        }
+                        else
+                        {
+                            MipsState.FCR31.FlagInvalidOperation = true;
+                        }
+                        break;
+                    }
+
+                case FPUExceptionType.Inexact:
+                    {
+                        if (MipsState.FCR31.EnableInexact)
+                        {
+                            MipsState.FCR31.CauseInexact = true;
+                            causeCP0Exception = true;
+                        }
+                        else
+                        {
+                            MipsState.FCR31.FlagInexact = true;
+                        }
+                        break;
+                    }
+
+                case FPUExceptionType.DivideByZero:
+                    {
+                        if (MipsState.FCR31.EnableDivideByZero)
+                        {
+                            MipsState.FCR31.CauseDivideByZero = true;
+                            causeCP0Exception = true;
+                        }
+                        else
+                        {
+                            MipsState.FCR31.FlagDivideByZero = true;
+                        }
+                        break;
+                    }
+
+                case FPUExceptionType.Overflow:
+                    {
+                        if (MipsState.FCR31.EnableOverflow)
+                        {
+                            MipsState.FCR31.CauseOverflow = true;
+                            causeCP0Exception = true;
+                        }
+                        else
+                        {
+                            MipsState.FCR31.FlagOverflow = true;
+                        }
+                        break;
+                    }
+
+                case FPUExceptionType.Underflow:
+                    {
+                        if (MipsState.FCR31.EnableUnderflow)
+                        {
+                            MipsState.FCR31.CauseUnderflow = true;
+                            causeCP0Exception = true;
+                        }
+                        else
+                        {
+                            MipsState.FCR31.FlagUnderflow = true;
+                        }
+                        break;
+                    }
+
+                case FPUExceptionType.Unimplemented:
+                    {
+                        causeCP0Exception = true;
+                        break;
+                    }
+            }
+
+            if (causeCP0Exception)
+                CauseException = ExceptionCode.FloatingPoint;
+        }
+
         [Conditional("DEBUGFULL")]
         protected void TraceOp(Int64 pc, MipsInstruction inst)
         {

@@ -46,86 +46,114 @@ namespace Soft64.MipsR4300
                     case 3: return FPURoundMode.Down;
                 }
             }
+
+            set
+            {
+                switch (value)
+                {
+                    default:
+                    case FPURoundMode.Near: AutoRegisterProps.RM = 0; break;
+                    case FPURoundMode.Chop: AutoRegisterProps.RM = 1; break;
+                    case FPURoundMode.Up: AutoRegisterProps.RM = 2; break;
+                    case FPURoundMode.Down: AutoRegisterProps.RM = 3; break;
+                }
+            }
         }
 
         public Boolean FlagInexact
         {
             get { return AutoRegisterProps.FLAG_I; }
+            set { AutoRegisterProps.FLAG_I = value; }
         }
 
         public Boolean FlagUnderflow
         {
             get { return AutoRegisterProps.FLAG_U; }
+            set { AutoRegisterProps.FLAG_U = value; }
         }
 
         public Boolean FlagOverflow
         {
             get { return AutoRegisterProps.FLAG_O; }
+            set { AutoRegisterProps.FLAG_O = value; }
         }
 
         public Boolean FlagDivideByZero
         {
             get { return AutoRegisterProps.FLAG_Z; }
+            set { AutoRegisterProps.FLAG_Z = value; }
         }
 
         public Boolean FlagInvalidOperation
         {
             get { return AutoRegisterProps.FLAG_V; }
+            set { AutoRegisterProps.FLAG_V = value; }
         }
 
         public Boolean EnableInexact
         {
             get { return AutoRegisterProps.ENABLE_I; }
+            set { AutoRegisterProps.ENABLE_I = value; }
         }
 
         public Boolean EnableUnderflow
         {
             get { return AutoRegisterProps.ENABLE_U; }
+            set { AutoRegisterProps.ENABLE_U = value; }
         }
 
         public Boolean EnableOverflow
         {
             get { return AutoRegisterProps.ENABLE_O; }
+            set { AutoRegisterProps.ENABLE_O = value; }
         }
 
         public Boolean EnableDivideByZero
         {
             get { return AutoRegisterProps.ENABLE_Z; }
+            set { AutoRegisterProps.ENABLE_Z = value; }
         }
 
         public Boolean EnableInvalidOperation
         {
             get { return AutoRegisterProps.ENABLE_V; }
+            set { AutoRegisterProps.ENABLE_V = value; }
         }
 
         public Boolean CauseInexact
         {
             get { return AutoRegisterProps.CAUSE_I; }
+            set { AutoRegisterProps.CAUSE_I = value; }
         }
 
         public Boolean CauseUnderflow
         {
             get { return AutoRegisterProps.CAUSE_U; }
+            set { AutoRegisterProps.CAUSE_U = value; }
         }
 
         public Boolean CauseOverflow
         {
             get { return AutoRegisterProps.CAUSE_O; }
+            set { AutoRegisterProps.CAUSE_O = value; }
         }
 
         public Boolean CauseDivideByZero
         {
             get { return AutoRegisterProps.CAUSE_Z; }
+            set { AutoRegisterProps.CAUSE_Z = value; }
         }
 
         public Boolean CauseInvalidOperation
         {
             get { return AutoRegisterProps.CAUSE_V; }
+            set { AutoRegisterProps.CAUSE_V = value; }
         }
 
         public Boolean CauseUnimplemented
         {
             get { return AutoRegisterProps.CAUSE_E; }
+            set { AutoRegisterProps.CAUSE_E = value; }
         }
 
         public Boolean Condition
@@ -137,6 +165,7 @@ namespace Soft64.MipsR4300
         public Boolean FS
         {
             get { return AutoRegisterProps.FS; }
+            set { AutoRegisterProps.FS = value; }
         }
     }
 }

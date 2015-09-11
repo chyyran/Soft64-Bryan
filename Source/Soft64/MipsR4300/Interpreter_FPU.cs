@@ -26,6 +26,12 @@ namespace Soft64.MipsR4300
         [OpcodeHook("CFC1")]
         private void Inst_Cfc1(MipsInstruction inst)
         {
+            if (!CheckCop1Usable())
+            {
+                CauseException = ExceptionCode.CopUnstable;
+                return;
+            }
+
             if (inst.Rd == 0)
             {
                 MipsState.WriteGPRUnsigned(inst.Rd, MipsState.FCR0);
@@ -40,6 +46,12 @@ namespace Soft64.MipsR4300
         [OpcodeHook("CTC1")]
         private void Inst_Ctc1(MipsInstruction inst)
         {
+            if (!CheckCop1Usable())
+            {
+                CauseException = ExceptionCode.CopUnstable;
+                return;
+            }
+
             if (inst.Fs == 0)
             {
                 MipsState.FCR0 = MipsState.ReadGPR32Unsigned(inst.Rt);
@@ -54,65 +66,99 @@ namespace Soft64.MipsR4300
         [OpcodeHook("FPU_ABS")]
         private void Inst_FpuAbs(MipsInstruction inst)
         {
-            if (!MipsState.CP0Regs.StatusReg.AdditionalFPR)
-                return;
-
-            DataFormat format = inst.DecodeDataFormat();
-
-            if (format == DataFormat.Single || format == DataFormat.Double)
+            unchecked
             {
-                FPUEntity fpuEntitiy = new FPUEntity(format, MipsState);
-                fpuEntitiy.Load(inst.Fs);
-                FPUEntity.SetRoundingMode(MipsState.FCR31.RM);
-                fpuEntitiy.Value = Math.Abs(fpuEntitiy.Value);
-                fpuEntitiy.Store(inst.Fd);
-            }
-            else
-            {
-                CauseException = ExceptionCode.Invalid;
+                if (!CheckCop1Usable())
+                {
+                    CauseException = ExceptionCode.CopUnstable;
+                    return;
+                }
+
+                if (!CheckEvenOddAllowed(inst))
+                {
+                    return;
+                }
+
+                DataFormat format = inst.DecodeDataFormat();
+
+                if (format == DataFormat.Single || format == DataFormat.Double)
+                {
+                    FPUHardware.SetRoundingMode(MipsState.FCR31.RM);
+                    FPUEntity fpuEntitiy = new FPUEntity(format, MipsState);
+                    fpuEntitiy.Load(inst.Fs);
+                    fpuEntitiy.Value = Math.Abs(fpuEntitiy.Value);
+                    fpuEntitiy.Store(inst.Fd);
+
+                    if (FPUHardware.CheckFPUException())
+                        CauseFPUException(FPUHardware.GetFPUException());
+                }
+                else
+                {
+                    CauseFPUException(FPUExceptionType.Unimplemented);
+                }
             }
         }
 
         [OpcodeHook("FPU_ADD")]
         private void Inst_FpuAdd(MipsInstruction inst)
         {
-            if (!MipsState.CP0Regs.StatusReg.AdditionalFPR)
-                return;
-
-            DataFormat format = inst.DecodeDataFormat();
-
-            if (format == DataFormat.Single || format == DataFormat.Double)
+            unchecked
             {
-                FPUEntity left = new FPUEntity(format, MipsState);
-                FPUEntity right = new FPUEntity(format, MipsState);
-                FPUEntity result = new FPUEntity(format, MipsState);
-
-                left.Load(inst.Fs);
-                right.Load(inst.Ft);
-
-                try
+                if (!CheckCop1Usable())
                 {
-                    FPUEntity.SetRoundingMode(MipsState.FCR31.RM);
-                    result.Value = left + right;
-                    result.Store(inst.Fd);
-                }
-                catch (ArithmeticException)
-                {
-                    CauseException = ExceptionCode.FloatingPoint;
+                    CauseException = ExceptionCode.CopUnstable;
+                    return;
                 }
 
-            }
-            else
-            {
-                CauseException = ExceptionCode.Invalid;
+                if (!CheckEvenOddAllowed(inst))
+                {
+                    return;
+                }
+
+                DataFormat format = inst.DecodeDataFormat();
+
+                if (format == DataFormat.Single || format == DataFormat.Double)
+                {
+                    FPUHardware.SetRoundingMode(MipsState.FCR31.RM);
+                    FPUEntity left = new FPUEntity(format, MipsState);
+                    FPUEntity right = new FPUEntity(format, MipsState);
+                    FPUEntity result = new FPUEntity(format, MipsState);
+
+                    left.Load(inst.Fs);
+                    right.Load(inst.Ft);
+
+                    try
+                    {
+                        result.Value = left + right;
+                        result.Store(inst.Fd);
+                    }
+                    catch (OverflowException)
+                    {
+                        if (FPUHardware.CheckFPUException())
+                            CauseFPUException(FPUHardware.GetFPUException());
+                    }
+
+                }
+                else
+                {
+                    CauseFPUException(FPUExceptionType.Unimplemented);
+                }
             }
         }
 
         [OpcodeHook("FPU_COND")]
         private void Inst_FpuCond(MipsInstruction inst)
         {
-            if (!MipsState.CP0Regs.StatusReg.AdditionalFPR)
+            if (!CheckCop1Usable())
+            {
+                CauseException = ExceptionCode.CopUnstable;
                 return;
+            }
+
+            if (!CheckEvenOddAllowed(inst))
+            {
+                return;
+            }
 
             DataFormat format = inst.DecodeDataFormat();
 
@@ -136,7 +182,7 @@ namespace Soft64.MipsR4300
 
                     if ((inst.Function & 8) != 0)
                     {
-                        CauseException = ExceptionCode.Invalid;
+                        CauseFPUException(FPUExceptionType.Invalid);
                         return;
                     }
                 }
@@ -147,6 +193,45 @@ namespace Soft64.MipsR4300
                 }
 
                 MipsState.FCR31.Condition = ((condL && less) || (condE && equal) || (condU && unordered));
+            }
+            else
+            {
+                CauseFPUException(FPUExceptionType.Unimplemented);
+            }
+        }
+
+        [OpcodeHook("FPU_CEIL_L")]
+        private void Inst_FpuCeilL(MipsInstruction inst)
+        {
+            unchecked
+            {
+                if (!CheckCop1Usable())
+                {
+                    CauseException = ExceptionCode.CopUnstable;
+                    return;
+                }
+
+                if (!CheckEvenOddAllowed(inst))
+                {
+                    return;
+                }
+
+                DataFormat format = inst.DecodeDataFormat();
+
+                if (format == DataFormat.Single || format == DataFormat.Double)
+                {
+                    FPUHardware.SetRoundingMode(FPURoundMode.Up);
+                    FPUEntity value = new FPUEntity(format, MipsState);
+
+                    value.Value = Math.Ceiling(value.Value, 0);
+
+                    if (FPUHardware.CheckFPUException())
+                        CauseFPUException(FPUHardware.GetFPUException());
+                }
+                else
+                {
+                    CauseFPUException(FPUExceptionType.Unimplemented);
+                }
             }
         }
     }
