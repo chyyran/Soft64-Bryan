@@ -222,8 +222,47 @@ namespace Soft64.MipsR4300
                 {
                     FPUHardware.SetRoundingMode(FPURoundMode.Up);
                     FPUEntity value = new FPUEntity(format, MipsState);
+                    FPUEntity result = new FPUEntity(DataFormat.Doubleword, MipsState);
+                    value.Load(inst.Fs);
+                    result.Value = (UInt64)Math.Ceiling(value.Value);
+                    result.Store(inst.Fd);
 
-                    value.Value = Math.Ceiling(value.Value);
+                    if (FPUHardware.CheckFPUException())
+                        CauseFPUException(FPUHardware.GetFPUException());
+                }
+                else
+                {
+                    CauseFPUException(FPUExceptionType.Unimplemented);
+                }
+            }
+        }
+
+        [OpcodeHook("FPU_CEIL_W")]
+        private void Inst_FpuCeilW(MipsInstruction inst)
+        {
+            unchecked
+            {
+                if (!CheckCop1Usable())
+                {
+                    CauseException = ExceptionCode.CopUnstable;
+                    return;
+                }
+
+                if (!CheckEvenOddAllowed(inst))
+                {
+                    return;
+                }
+
+                DataFormat format = inst.DecodeDataFormat();
+
+                if (format == DataFormat.Single || format == DataFormat.Double)
+                {
+                    FPUHardware.SetRoundingMode(FPURoundMode.Up);
+                    FPUEntity value = new FPUEntity(format, MipsState);
+                    FPUEntity result = new FPUEntity(DataFormat.Word, MipsState);
+                    value.Load(inst.Fs);
+                    result.Value = (UInt32)Math.Ceiling(value.Value);
+                    result.Store(inst.Fd);
 
                     if (FPUHardware.CheckFPUException())
                         CauseFPUException(FPUHardware.GetFPUException());
