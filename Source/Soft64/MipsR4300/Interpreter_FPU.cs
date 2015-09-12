@@ -273,5 +273,141 @@ namespace Soft64.MipsR4300
                 }
             }
         }
+
+        [OpcodeHook("FPU_CVT_D")]
+        private void Inst_FpuConvertD(MipsInstruction inst)
+        {
+            unchecked
+            {
+                if (!CheckCop1Usable())
+                {
+                    CauseException = ExceptionCode.CopUnstable;
+                    return;
+                }
+
+                if (!CheckEvenOddAllowed(inst))
+                    return;
+
+                DataFormat format = inst.DecodeDataFormat();
+
+                if (format != DataFormat.Reserved || format != DataFormat.Double)
+                {
+                    FPUEntity value = new FPUEntity(format, MipsState);
+                    FPUEntity result = new FPUEntity(DataFormat.Double, MipsState);
+                    value.Load(inst.Fs);
+                    result.Value = Convert.ToDouble(value.Value);
+                    value.Store(inst.Fd);
+
+                    if (FPUHardware.CheckFPUException())
+                        CauseFPUException(FPUHardware.GetFPUException());
+                }
+                else
+                {
+                    CauseFPUException(FPUExceptionType.Unimplemented);
+                }
+            }
+        }
+
+        [OpcodeHook("FPU_CVT_L")]
+        private void Inst_FpuConvertL(MipsInstruction inst)
+        {
+            unchecked
+            {
+                if (!CheckCop1Usable())
+                {
+                    CauseException = ExceptionCode.CopUnstable;
+                    return;
+                }
+
+                if (!CheckEvenOddAllowed(inst))
+                    return;
+
+                DataFormat format = inst.DecodeDataFormat();
+
+                if (format != DataFormat.Reserved || format != DataFormat.Doubleword)
+                {
+                    FPUEntity value = new FPUEntity(format, MipsState);
+                    FPUEntity result = new FPUEntity(DataFormat.Doubleword, MipsState);
+                    value.Load(inst.Fs);
+                    result.Value = Convert.ToUInt64(value.Value);
+                    value.Store(inst.Fd);
+
+                    if (FPUHardware.CheckFPUException())
+                        CauseFPUException(FPUHardware.GetFPUException());
+                }
+                else
+                {
+                    CauseFPUException(FPUExceptionType.Unimplemented);
+                }
+            }
+        }
+
+        [OpcodeHook("FPU_CVT_S")]
+        private void Inst_FpuConvertS(MipsInstruction inst)
+        {
+            unchecked
+            {
+                if (!CheckCop1Usable())
+                {
+                    CauseException = ExceptionCode.CopUnstable;
+                    return;
+                }
+
+                if (!CheckEvenOddAllowed(inst))
+                    return;
+
+                DataFormat format = inst.DecodeDataFormat();
+
+                if (format != DataFormat.Reserved || format != DataFormat.Single)
+                {
+                    FPUEntity value = new FPUEntity(format, MipsState);
+                    FPUEntity result = new FPUEntity(DataFormat.Single, MipsState);
+                    value.Load(inst.Fs);
+                    result.Value = Convert.ToSingle(value.Value);
+                    value.Store(inst.Fd);
+
+                    if (FPUHardware.CheckFPUException())
+                        CauseFPUException(FPUHardware.GetFPUException());
+                }
+                else
+                {
+                    CauseFPUException(FPUExceptionType.Unimplemented);
+                }
+            }
+        }
+
+        [OpcodeHook("FPU_CVT_W")]
+        private void Inst_FpuConvertW(MipsInstruction inst)
+        {
+            unchecked
+            {
+                if (!CheckCop1Usable())
+                {
+                    CauseException = ExceptionCode.CopUnstable;
+                    return;
+                }
+
+                if (!CheckEvenOddAllowed(inst))
+                    return;
+
+                DataFormat format = inst.DecodeDataFormat();
+
+                if (format != DataFormat.Reserved || format != DataFormat.Word)
+                {
+                    FPUEntity value = new FPUEntity(format, MipsState);
+                    FPUEntity result = new FPUEntity(DataFormat.Word, MipsState);
+                    value.Load(inst.Fs);
+                    result.Value = Convert.ToUInt32(value.Value);
+                    value.Store(inst.Fd);
+
+                    if (FPUHardware.CheckFPUException())
+                        CauseFPUException(FPUHardware.GetFPUException());
+                }
+                else
+                {
+                    CauseFPUException(FPUExceptionType.Unimplemented);
+                }
+            }
+        }
     }
 }
