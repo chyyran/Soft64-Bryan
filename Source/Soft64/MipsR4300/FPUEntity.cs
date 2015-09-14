@@ -241,7 +241,25 @@ namespace Soft64.MipsR4300
             return a.Value != b.Value;
         }
 
+        public static dynamic operator /(FPUEntity a, FPUEntity b)
+        {
+            return a.Value / b.Value;
+        }
 
+        public static dynamic operator *(FPUEntity a, FPUEntity b)
+        {
+            return a.Value * b.Value;
+        }
+
+        public static dynamic operator -(FPUEntity a)
+        {
+            return -a.Value;
+        }
+
+        public static dynamic operator -(FPUEntity a, FPUEntity b)
+        {
+            return a.Value - b.Value;
+        }
     }
 
     public enum FPURoundMode : int

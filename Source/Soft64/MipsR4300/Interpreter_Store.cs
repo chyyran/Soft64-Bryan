@@ -116,23 +116,6 @@ namespace Soft64.MipsR4300
             Inst_Sd(inst);
         }
 
-        [OpcodeHook("SDC1")]
-        private void Inst_Sdc1(MipsInstruction inst)
-        {
-            Int64 address = ComputeAddress64(inst);
-
-            if ((address & 3) != 0)
-            {
-                CauseException = ExceptionCode.ReservedInstruction;
-                return;
-            }
-
-            if ((inst.Rt & 1) != 0)
-                return;
-
-            DataManipulator.Store(address, MipsState.CP0Regs[inst.Rt]);
-        }
-
         [OpcodeHook("SDL")]
         private void Inst_Sdl(MipsInstruction inst)
         {
@@ -183,20 +166,6 @@ namespace Soft64.MipsR4300
             }
 
             DataManipulator.Store(address, (UInt16)MipsState.ReadGPRUnsigned(inst.Rt));
-        }
-
-        [OpcodeHook("SWC1")]
-        private void Inst_Swc1(MipsInstruction inst)
-        {
-            Int64 address = ComputeAddress64(inst);
-
-            if ((address & 2) != 0)
-            {
-                CauseException = ExceptionCode.AddressErrorStore;
-                return;
-            }
-
-            DataManipulator.Store(address, (UInt32)MipsState.CP0Regs[inst.Rt]);
         }
 
         [OpcodeHook("SWL")]

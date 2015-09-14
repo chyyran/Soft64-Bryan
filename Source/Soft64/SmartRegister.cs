@@ -103,7 +103,7 @@ namespace Soft64
             set { m_Register = value; }
         }
 
-        public dynamic AutoRegisterProps
+        protected dynamic AutoRegisterProps
         {
             get { return m_DynamicObject; }
         }

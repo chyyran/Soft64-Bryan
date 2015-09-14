@@ -171,20 +171,6 @@ namespace Soft64.MipsR4300
             }
         }
 
-        [OpcodeHook("LDC1")]
-        private void Inst_Ldc1(MipsInstruction inst)
-        {
-            Int64 address = ComputeAddress64(inst);
-
-            if ((address & 3) != 0)
-                CauseException = ExceptionCode.AddressErrorLoad;
-
-            if ((inst.Rt & 1) != 0)
-                return;
-
-            MipsState.CP0Regs[inst.Rt]  = DataManipulator.LoadDoublewordUnsigned(address);
-        }
-
         [OpcodeHook("LDL")]
         private void Inst_Ldl(MipsInstruction inst)
         {
@@ -317,34 +303,6 @@ namespace Soft64.MipsR4300
                 logger.Debug("Load Linked Doubleword: " + inst.Address.ToString("X8"));
 
             Inst_Ld(inst);
-        }
-
-        [OpcodeHook("LWC1")]
-        private void Inst_Lcd1(MipsInstruction inst)
-        {
-            try
-            {
-                Int64 address = ComputeAddress64(inst);
-
-                if ((address & 3) != 0)
-                {
-                    CauseException = ExceptionCode.AddressErrorLoad;
-                    return;
-                }
-
-                MipsState.CP0Regs[inst.Rt] = DataManipulator.LoadWordUnsigned(address);
-
-            }
-            catch (TLBException tlbe)
-            {
-                switch (tlbe.ExceptionType)
-                {
-                    case TLBExceptionType.Invalid: CauseException = ExceptionCode.Invalid; break;
-                    case TLBExceptionType.Mod: CauseException = ExceptionCode.TlbMod; break;
-                    case TLBExceptionType.Refill: CauseException = ExceptionCode.TlbStore; break;
-                    default: break;
-                }
-            }
         }
 
         [OpcodeHook("LWL")]

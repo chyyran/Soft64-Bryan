@@ -321,6 +321,18 @@ namespace Soft64.MipsR4300
             }
         }
 
+        private Boolean CheckEvenOddAllowed(Int32 index)
+        {
+            if (MipsState.CP0Regs.StatusReg.AdditionalFPR)
+            {
+                return true;
+            }
+            else
+            {
+                return index % 2 == 0;
+            }
+        }
+
         private void CauseFPUException(FPUExceptionType exceptionType)
         {
             Boolean causeCP0Exception = false;
