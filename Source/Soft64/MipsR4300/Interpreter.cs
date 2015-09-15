@@ -159,7 +159,7 @@ namespace Soft64.MipsR4300
             /* Do one step through the interpreter */
 
             /* Increment the count register */
-            MipsState.CP0Regs.Count += 2;
+            MipsState.CP0Regs.Count += 1;
 
             /* Go to branch */
             if (MipsState.BranchEnabled)

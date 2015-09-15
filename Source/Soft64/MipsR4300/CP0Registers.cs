@@ -162,6 +162,8 @@ namespace Soft64.MipsR4300
         private StatusRegister m_SR;
         private CauseRegister m_CauseReg;
         private UInt64 m_Condition;
+        private UInt32 m_Count;
+        private UInt32 m_Compare;
 
         public CP0Registers()
         {
@@ -299,10 +301,10 @@ namespace Soft64.MipsR4300
             get { return this[CP0RegName.BadVAddr]; }
         }
 
-        public UInt64 Count
+        public UInt32 Count
         {
-            get { return this[CP0RegName.Count]; }
-            set { this[CP0RegName.Count] = value; }
+            get { return m_Count; }
+            set { m_Count = value; }
         }
 
         public UInt64 EntryHi
@@ -311,10 +313,10 @@ namespace Soft64.MipsR4300
             set { this[CP0RegName.EntryHi] = value; }
         }
 
-        public UInt64 Compare
+        public UInt32 Compare
         {
-            get { return this[CP0RegName.Compare]; }
-            set { this[CP0RegName.Compare] = value; }
+            get { return m_Compare; }
+            set { m_Compare = value; m_Count = 0; }
         }
 
         public UInt64 SR
