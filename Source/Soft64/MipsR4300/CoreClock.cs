@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Soft64.MipsR4300
 {
-    public sealed class CoreClock
+    public class CoreClock
     {
         private Int64 m_CoreCycles;
 
@@ -49,7 +49,5 @@ namespace Soft64.MipsR4300
         {
             get { return m_CoreCycles; }
         }
-
-        public void 
     }
 }
