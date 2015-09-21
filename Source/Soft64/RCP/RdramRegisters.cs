@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace Soft64.RCP
 {
-    public sealed class RdramRegisters : RegisterMappedMemoryStream
+    public sealed class RdramRegisters : MmioStream
     {
         private const Int32 OFFSET_RDRAM_CONFIG_REG = 0;
         private const Int32 OFFSET_RDRAM_DEVICE_ID_REG = 4;

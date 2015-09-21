@@ -16,7 +16,7 @@ namespace Soft64.RCP
         Dp = 0x20
     };
 
-    public sealed class MipsInterface : RegisterMappedMemoryStream
+    public sealed class MipsInterface : MmioStream
     {
         private const Int32 OFFSET_MI_MODE_REG = 0;
         private const Int32 OFFSET_MI_VERSION_REG = 4;

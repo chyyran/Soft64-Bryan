@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Soft64.RCP
 {
-    public sealed class PerpherialInterfaceRegisters : RegisterMappedMemoryStream
+    public sealed class PerpherialInterfaceRegisters : MmioStream
     {
         private const Int32 OFFSET_PI_DRAM_ADDR_REG = 0;
         private const Int32 OFFSET_PI_CART_ADDR_REG = 4;

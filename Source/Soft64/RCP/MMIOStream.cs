@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Soft64.RCP
 {
-    public abstract class RegisterMappedMemoryStream : Stream
+    public abstract class MmioStream : Stream
     {
         private Int32 m_MemorySize;
         private Byte[] m_Buffer;
         private Int64 m_Position;
         
 
-        protected RegisterMappedMemoryStream(Int32 memorySize)
+        protected MmioStream(Int32 memorySize)
         {
             m_MemorySize = memorySize;
             m_Buffer = new Byte[memorySize];

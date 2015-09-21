@@ -31,6 +31,7 @@ namespace Soft64.MipsR4300
     public sealed class ExecutionState
     {
         private GPRRegisters m_Regs = new GPRRegisters();
+        private CoreClock m_Clock = new CoreClock();
 
         /// <summary>
         /// Specifies which mode the CPU is running in.  If true, then its running in 64bit else 32bit.
@@ -142,6 +143,8 @@ namespace Soft64.MipsR4300
         public Int64 BranchTarget { get; set; }
 
         public Int64 BranchDelaySlot { get; set; }
+
+        public CoreClock Clock { get; set; }
 
         public Int64 BranchPC
         {
