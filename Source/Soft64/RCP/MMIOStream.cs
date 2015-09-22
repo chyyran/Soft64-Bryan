@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,22 +13,24 @@ namespace Soft64.RCP
         private Int32 m_MemorySize;
         private Byte[] m_Buffer;
         private Int64 m_Position;
+        private IntPtr m_BufferPtr;
+        private GCHandle m_PtrHandle;
+        private Boolean m_Disposed;
         
 
         protected MmioStream(Int32 memorySize)
         {
             m_MemorySize = memorySize;
             m_Buffer = new Byte[memorySize];
+            m_PtrHandle = GCHandle.Alloc(m_Buffer, GCHandleType.Pinned);
+            m_BufferPtr = m_PtrHandle.AddrOfPinnedObject();
         }
 
         protected UInt32 ReadUInt32(Int32 offset)
         {
             unsafe
             {
-                fixed (byte * ptrBuffer = m_Buffer)
-                {
-                    return *(uint*)(byte *)(ptrBuffer + offset);
-                }
+                return *(uint*)(byte*)(m_BufferPtr + offset);
             }
         }
 
@@ -35,10 +38,7 @@ namespace Soft64.RCP
         {
             unsafe
             {
-                fixed (byte * ptrBuffer = m_Buffer)
-                {
-                    *((uint *)(byte *)(ptrBuffer + offset)) = value;
-                }
+                *((uint*)(byte*)(m_BufferPtr + offset)) = value;
             }
         }
 
@@ -56,10 +56,7 @@ namespace Soft64.RCP
         {
             unsafe
             {
-                fixed (byte* ptrBuffer = m_Buffer)
-                {
-                    return *(ushort*)(byte *)(ptrBuffer + offset);
-                }
+                return *(ushort*)(byte*)(m_BufferPtr + offset);
             }
         }
 
@@ -67,10 +64,7 @@ namespace Soft64.RCP
         {
             unsafe
             {
-                fixed (byte* ptrBuffer = m_Buffer)
-                {
-                    *((ushort*)(byte *)(ptrBuffer + offset)) = value;
-                }
+                *((ushort*)(byte*)(m_BufferPtr + offset)) = value;
             }
         }
 
@@ -155,6 +149,21 @@ namespace Soft64.RCP
             for (Int32 i = 0; i < count; i++)
             {
                 m_Buffer[(Int32)Position++] = buffer[offset + i];
+            }
+        }
+
+        protected override void Dispose(Boolean disposing)
+        {
+            if (!m_Disposed)
+            {
+                if (disposing)
+                {
+                    base.Dispose(disposing);
+                }
+
+                m_PtrHandle.Free();
+
+                m_Disposed = true;
             }
         }
     }

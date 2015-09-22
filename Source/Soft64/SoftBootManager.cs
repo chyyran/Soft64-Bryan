@@ -21,6 +21,8 @@ using System;
 using System.IO;
 using NLog;
 using Soft64.MipsR4300;
+using Soft64.RCP;
+using Soft64.PI;
 
 namespace Soft64
 {
@@ -68,18 +70,20 @@ namespace Soft64
                     /* Code taken from mupen64plus-core on github */
                     ExecutionState state = Machine.Current.DeviceCPU.State;
                     state.PC = 0xA4000040;
-                    state.CP0Regs[CP0RegName.SR] = 0x34000000;
-                    state.CP0Regs[CP0RegName.Config] = 0x0006e463;
+
+                    /* PI Setup */
+                    PIRegisters piRegs = Machine.Current.DeviceRCP.MMIO_PI;
+                    PiBusSpeedConfig config = Cartridge.Current.RomImage.BusConfig;
+                    piRegs.Domain1Latency = (UInt32)config.DeviceLatency;
+                    piRegs.Domain1PageSize = (UInt32)config.PageSize;
+                    piRegs.Domain1PulseWidth = (UInt32)config.PulseWidth;
+                    piRegs.Domain1Release = (UInt32)config.ReleaseTime;
+                    piRegs.Status = 0;
+                    
+                    
 
                     /* sp_register.sp_status_reg = 1;
                         rsp_register.rsp_pc = 0;
-
-                        uint32_t bsd_dom1_config = *(uint32_t*)rom;
-                        pi_register.pi_bsd_dom1_lat_reg = (bsd_dom1_config      ) & 0xff;
-                        pi_register.pi_bsd_dom1_pwd_reg = (bsd_dom1_config >>  8) & 0xff;
-                        pi_register.pi_bsd_dom1_pgs_reg = (bsd_dom1_config >> 16) & 0x0f;
-                        pi_register.pi_bsd_dom1_rls_reg = (bsd_dom1_config >> 20) & 0x03;
-                        pi_register.read_pi_status_reg = 0;
 
                         ai_register.ai_dram_addr = 0;
                         ai_register.ai_len = 0;

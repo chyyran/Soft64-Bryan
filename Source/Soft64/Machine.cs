@@ -180,7 +180,7 @@ namespace Soft64
 
             try
             {
-                /* Initialize N64 componenets */
+                /* Hardware Init */
                 DevicePIF.Initialize();
                 DeviceRCP.Initialize();
                 DeviceCPU.Initialize();

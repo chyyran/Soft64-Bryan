@@ -79,28 +79,27 @@ namespace Soft64.MipsR4300
             if (m_ExecEngine == null)
                 throw new InvalidOperationException("Execution engine cannot be null");
 
-            /* First the MIPS initializes */
-            m_State.CP0Regs.Clear();
-            m_State.Fpr.Clear();
+            /* MIPS Registers */
             m_State.GPRRegs.Clear();
-
             m_State.LLBit = false;
             m_State.Hi = 0;
             m_State.Lo = 0;
-            m_State.FCR0 = 0x511;
-            m_State.FCR31.RegisterValue = 0;
 
             /* Setup Cop0 Registers */
-            m_State.CP0Regs[CP0RegName.Cause] = 0x5C;
-            m_State.CP0Regs[CP0RegName.SR] = 0x34000000;
-            m_State.CP0Regs[CP0RegName.Config] = 0x0006E463;
-            m_State.CP0Regs[CP0RegName.PRId] = 0xB00;
-            m_State.CP0Regs[CP0RegName.Count] = 0x5000;
-            m_State.CP0Regs[CP0RegName.Context] = 0x7FFFF0;
-            m_State.CP0Regs[CP0RegName.EPC] = 0xFFFFFFFF;
-            m_State.CP0Regs[CP0RegName.ErrorEPC] = 0xFFFFFFFF;
+            m_State.CP0Regs.Cause = 0x5C;
+            m_State.CP0Regs.Status = 0x34000000;
+            m_State.CP0Regs.Config = 0x0006E463;
+            m_State.CP0Regs.PRId = 0xB00;
+            m_State.CP0Regs.Count = 0x5000;
+            m_State.CP0Regs.Context = 0x7FFFF0;
+            m_State.CP0Regs.ErrorEPC = 0xFFFFFFFF;
+            m_State.CP0Regs.EPC = 0xFFFFFFFF;
 
-            /* TODO: Setup Cop1 Registers */
+            /* Setup Cop1 Registers */
+            m_State.FCR0 = 0x511;
+            m_State.FCR31.RegisterValue = 0;
+            m_State.Fpr.Clear();
+            FPUHardware.SetRoundingMode(m_State.FCR31.RM);
 
             /* Initialize the execution engine */
             m_ExecEngine.SetParent(this);

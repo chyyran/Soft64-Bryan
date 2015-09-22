@@ -156,14 +156,34 @@ namespace Soft64.MipsR4300
     };
 
     [Serializable]
-    public sealed class CP0Registers : IEnumerable<CP0RegName>
+    public sealed class CP0Registers
     {
         private UInt64[] m_Regs;
         private StatusRegister m_SR;
         private CauseRegister m_CauseReg;
-        private UInt64 m_Condition;
         private UInt32 m_Count;
         private UInt32 m_Compare;
+        private UInt64 m_BadVAddress;
+        private UInt64 m_EntryHi;
+        private UInt64 m_EntryLo0;
+        private UInt64 m_EntryLo1;
+        private UInt64 m_Index;
+        private UInt64 m_PageMask;
+        private UInt64 m_Random;
+        private UInt64 m_Wired;
+        private UInt64 m_Context;
+        private UInt64 m_EPC;
+        private UInt64 m_Prid;
+        private UInt64 m_Config;
+        private UInt64 m_LLAddr;
+        private UInt64 m_WatchLo;
+        private UInt64 m_WatchHi;
+        private UInt64 m_XContext;
+        private UInt64 m_ECC;
+        private UInt64 m_CacheErr;
+        private UInt64 m_TagLo;
+        private UInt64 m_TagHi;
+        private UInt64 m_ErrorEPC;
 
         public CP0Registers()
         {
@@ -172,23 +192,38 @@ namespace Soft64.MipsR4300
             m_CauseReg = new CauseRegister();
         }
 
-        public UInt64 this[CP0RegName index]
+        public UInt64 this[Int32 index]
         {
             get
             {
                 switch (index)
                 {
-                    case CP0RegName.BadVAddr: return m_Regs[8];
-                    case CP0RegName.EntryHi: return m_Regs[10];
-                    case CP0RegName.EntryLo0: return m_Regs[2];
-                    case CP0RegName.EntryLo1: return m_Regs[3];
-                    case CP0RegName.Index: return m_Regs[0];
-                    case CP0RegName.PageMask: return m_Regs[5];
-                    case CP0RegName.Random: return m_Regs[1];
-                    case CP0RegName.Wired: return m_Regs[6];
-                    case CP0RegName.SR: return m_Regs[12];
-                    case CP0RegName.Cause: return m_CauseReg.RegisterValue64;
-                    default: return m_Regs[(int)index];
+                    default: return 0;
+                    case 0: return m_Index;
+                    case 1: return m_Random;
+                    case 2: return m_EntryLo0;
+                    case 3: return m_EntryLo1;
+                    case 4: return m_Context;
+                    case 5: return m_PageMask;
+                    case 6: return m_Wired;
+                    case 8: return m_BadVAddress;
+                    case 9: return m_Count;
+                    case 10: return m_EntryHi;
+                    case 11: return m_Compare;
+                    case 12: return m_SR.RegisterValue64;
+                    case 13: return m_CauseReg.RegisterValue64;
+                    case 14: return m_EPC;
+                    case 15: return m_Prid;
+                    case 16: return m_Config;
+                    case 17: return m_LLAddr;
+                    case 18: return m_WatchLo;
+                    case 19: return m_WatchHi;
+                    case 20: return m_XContext;
+                    case 26: return m_ECC;
+                    case 27: return m_CacheErr;
+                    case 28: return m_TagLo;
+                    case 29: return m_TagHi;
+                    case 30: return m_ErrorEPC;
                 }
             }
 
@@ -196,44 +231,31 @@ namespace Soft64.MipsR4300
             {
                 switch (index)
                 {
-                    case CP0RegName.BadVAddr: m_Regs[8] = value; break;
-                    case CP0RegName.EntryHi: m_Regs[10] = value; break;
-                    case CP0RegName.EntryLo0: m_Regs[2] = value; break;
-                    case CP0RegName.EntryLo1: m_Regs[3] = value; break;
-                    case CP0RegName.Index: m_Regs[0] = value; break;
-                    case CP0RegName.PageMask: m_Regs[5] = value; break;
-                    case CP0RegName.Wired: m_Regs[6] = value; break;
-                    case CP0RegName.Random: m_Regs[1] = value; break;
-                    case CP0RegName.SR: m_Regs[12] = value; m_SR.RegisterValue64 = value; break;
-                    case CP0RegName.Cause: m_CauseReg.RegisterValue64 = value; break;
-                    default: m_Regs[(int)index] = value; break;
+                    default: return;
+                    case 0: m_Index = value; break;
+                    case 2: m_EntryLo0 = value; break;
+                    case 3: m_EntryLo1 = value; break;
+                    case 4: m_Context = value; break;
+                    case 5: m_PageMask = value; break;
+                    case 9: m_Count = (UInt32)value; break;
+                    case 10: m_EntryHi = value; break;
+                    case 11: m_Compare = (UInt32)value; break;
+                    case 12: m_SR.RegisterValue64 = value; break;
+                    case 13: m_CauseReg.RegisterValue64 = value; break;
+                    case 14: m_EPC = value; break;
+                    case 15: m_Prid = value; break;
+                    case 16: m_Config = value; break;
+                    case 17: m_LLAddr = value; break;
+                    case 18: m_WatchLo = value; break;
+                    case 19: m_WatchHi = value; break;
+                    case 20: m_XContext = value; break;
+                    case 26: m_ECC = value; break;
+                    case 27: m_CacheErr = value; break;
+                    case 28: m_TagLo = value; break;
+                    case 29: m_TagHi = value; break;
+                    case 30: m_ErrorEPC = value; break;
                 }
             }
-        }
-
-        public UInt64 this[Int32 index]
-        {
-            get { return m_Regs[index]; }
-            set { m_Regs[index] = value; }
-        }
-
-        public IEnumerator<CP0RegName> GetEnumerator()
-        {
-            foreach (var index in Enum.GetValues(typeof(CP0RegName)))
-            {
-                yield return (CP0RegName)index;
-            }
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public RingMode GetCurrentRingMode(out WordSize size)
-        {
-            size = WordSize.MIPS32;
-            return RingMode.User;
         }
 
         public StatusRegister StatusReg
@@ -246,59 +268,52 @@ namespace Soft64.MipsR4300
             get { return m_CauseReg; }
         }
 
-
-
-        public void Clear()
-        {
-            Array.Clear(m_Regs, 0, m_Regs.Length);
-            m_SR.RegisterValue = 0;
-            m_CauseReg.RegisterValue = 0;
-        }
-
         public UInt64 Index
         {
-            get { return this[CP0RegName.Index]; }
-            set { this[CP0RegName.Index] = value; }
+            get { return m_Index; }
+            set { m_Index = value; }
         }
 
         public UInt64 Random
         {
-            get { return this[CP0RegName.Random]; }
+            get { return m_Random; }
+            set { m_Random = value; }
         }
 
         public UInt64 EntryLo0
         {
-            get { return this[CP0RegName.EntryLo0]; }
-            set { this[CP0RegName.EntryLo0] = value; }
+            get { return m_EntryLo0; }
+            set { m_EntryLo0 = value; }
         }
 
         public UInt64 EntryLo1
         {
-            get { return this[CP0RegName.EntryLo1]; }
-            set { this[CP0RegName.EntryLo1] = value; }
+            get { return m_EntryLo1; }
+            set { m_EntryLo1 = value; }
         }
 
         public UInt64 Context
         {
-            get { return this[CP0RegName.Context]; }
-            set { this[CP0RegName.Context] = value; }
+            get { return m_Context; }
+            set { m_Context = value; }
         }
 
         public UInt64 PageMask
         {
-            get { return this[CP0RegName.PageMask]; }
-            set { this[CP0RegName.PageMask] = value; }
+            get { return m_PageMask; }
+            set { m_PageMask = value; }
         }
 
         public UInt64 Wired
         {
-            get { return this[CP0RegName.Wired]; }
-            set { this[CP0RegName.Wired] = value; }
+            get { return m_Wired; }
+            set { m_Wired = value; }
         }
 
         public UInt64 BadVAddr
         {
-            get { return this[CP0RegName.BadVAddr]; }
+            get { return m_BadVAddress; }
+            set { m_BadVAddress = value; }
         }
 
         public UInt32 Count
@@ -309,20 +324,14 @@ namespace Soft64.MipsR4300
 
         public UInt64 EntryHi
         {
-            get { return this[CP0RegName.EntryHi]; }
-            set { this[CP0RegName.EntryHi] = value; }
+            get { return m_EntryHi; }
+            set { m_EntryHi = value; }
         }
 
         public UInt32 Compare
         {
             get { return m_Compare; }
             set { m_Compare = value; m_Count = 0; }
-        }
-
-        public UInt64 SR
-        {
-            get { return this[CP0RegName.SR]; }
-            set { this[CP0RegName.SR] = value; }
         }
 
         public UInt64 Cause
@@ -339,80 +348,74 @@ namespace Soft64.MipsR4300
 
         public UInt64 EPC
         {
-            get { return this[CP0RegName.EPC]; }
-            set { this[CP0RegName.EPC] = value; }
+            get { return m_EPC; }
+            set { m_EPC = value; }
         }
 
         public UInt64 PRId
         {
-            get { return this[CP0RegName.PRId]; }
-            set { this[CP0RegName.PRId] = value; }
+            get { return m_Prid; }
+            set { m_Prid = value; }
         }
 
         public UInt64 Config
         {
-            get { return this[CP0RegName.Config]; }
-            set { this[CP0RegName.Config] = value; }
+            get { return m_Config; }
+            set { m_Config = value; }
         }
 
         public UInt64 LLAddr
         {
-            get { return this[CP0RegName.LLAddr]; }
-            set { this[CP0RegName.LLAddr] = value; }
+            get { return m_LLAddr; }
+            set { m_LLAddr = value; }
         }
 
         public UInt64 WatchLo
         {
-            get { return this[CP0RegName.WatchLo]; }
-            set { this[CP0RegName.WatchLo] = value; }
+            get { return m_WatchLo; }
+            set { m_WatchLo = value; }
         }
 
         public UInt64 WatchHi
         {
-            get { return this[CP0RegName.WatchHi]; }
-            set { this[CP0RegName.WatchHi] = value; }
+            get { return m_WatchHi; }
+            set { m_WatchHi = value; }
         }
 
         public UInt64 XContext
         {
-            get { return this[CP0RegName.XContext]; }
-            set { this[CP0RegName.XContext] = value; }
+            get { return m_XContext; }
+            set { m_XContext = value; }
         }
 
         public UInt64 ECC
         {
-            get { return this[CP0RegName.ECC]; }
-            set { this[CP0RegName.ECC] = value; }
+            get { return m_ECC; }
+            set { m_ECC = value; }
         }
 
         public UInt64 CacheErr
         {
-            get { return this[CP0RegName.CacheErr]; }
-            set { this[CP0RegName.CacheErr] = value; }
+            get { return m_CacheErr; }
+            set { m_CacheErr = value; }
         }
 
         public UInt64 TagLo
         {
-            get { return this[CP0RegName.TagLo]; }
-            set { this[CP0RegName.TagLo] = value; }
+            get { return m_TagLo; }
+            set { m_TagLo = value; }
         }
 
         public UInt64 TagHi
         {
-            get { return this[CP0RegName.TagHi]; }
-            set { this[CP0RegName.TagHi] = value; }
+            get { return m_TagHi; }
+            set { m_TagHi = value; }
         }
 
         public UInt64 ErrorEPC
         {
-            get { return this[CP0RegName.ErrorEPC]; }
-            set { this[CP0RegName.ErrorEPC] = value; }
-        }
-
-        public UInt64 Condition
-        {
-            get { return m_Condition; }
-            set { m_Condition = value; }
+            get { return m_ErrorEPC; }
+            set { m_ErrorEPC = value; }
         }
     }
 }

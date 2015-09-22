@@ -59,7 +59,7 @@ namespace Soft64.RCP
 
         /* IO Interfaces */
         private PerpherialInterface m_PIInterface;
-        private PerpherialInterfaceRegisters m_PIRegs;
+        private PIRegisters m_PIRegs;
         private RdramRegisters m_RdramRegs;
 
         /* Memory Devices */
@@ -76,7 +76,7 @@ namespace Soft64.RCP
 
             /* Initailize interfaces of the RCP */
             m_PIInterface = new PerpherialInterface();
-            m_PIRegs = new PerpherialInterfaceRegisters();
+            m_PIRegs = new PIRegisters();
             m_RdramRegs = new RdramRegisters();
         }
 
@@ -111,6 +111,16 @@ namespace Soft64.RCP
         public PerpherialInterface DevicePI
         {
             get { return m_PIInterface; }
+        }
+
+        public PIRegisters MMIO_PI
+        {
+            get { return m_PIRegs; }
+        }
+
+        public RdramRegisters MMIO_RI
+        {
+            get { return m_RdramRegs; }
         }
 
         internal RCPBusStream PhysicalMemoryStream

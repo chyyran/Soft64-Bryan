@@ -85,7 +85,7 @@
     <Compile Include="MipsR4300\OpcodeHookAttribute.cs" />
     <Compile Include="RCP\MipsInterface.cs" />
     <Compile Include="RCP\RdramRegisters.cs" />
-    <Compile Include="RCP\PerpherialInterfaceRegisters.cs" />
+    <Compile Include="RCP\PIRegisters.cs" />
     <Compile Include="RCP\MmioStream.cs" />
     <Compile Include="MachineEvent.cs" />
     <Compile Include="MachineEventType.cs" />

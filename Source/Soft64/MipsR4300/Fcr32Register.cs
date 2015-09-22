@@ -36,7 +36,7 @@ namespace Soft64.MipsR4300
         {
             get
             {
-                Int32 rm = AutoRegisterProps.RM;
+                Int32 rm = AutoRegisterProps.GetRM();
                 switch (rm)
                 {
                     default:
@@ -52,120 +52,120 @@ namespace Soft64.MipsR4300
                 switch (value)
                 {
                     default:
-                    case FPURoundMode.Near: AutoRegisterProps.RM = 0; break;
-                    case FPURoundMode.Chop: AutoRegisterProps.RM = 1; break;
-                    case FPURoundMode.Up: AutoRegisterProps.RM = 2; break;
-                    case FPURoundMode.Down: AutoRegisterProps.RM = 3; break;
+                    case FPURoundMode.Near: AutoRegisterProps.SetRM(0); break;
+                    case FPURoundMode.Chop: AutoRegisterProps.SetRM(1); break;
+                    case FPURoundMode.Up: AutoRegisterProps.SetRM(2); break;
+                    case FPURoundMode.Down: AutoRegisterProps.SetRM(3); break;
                 }
             }
         }
 
         public Boolean FlagInexact
         {
-            get { return AutoRegisterProps.FLAG_I; }
-            set { AutoRegisterProps.FLAG_I = value; }
+            get { return AutoRegisterProps.GetFLAG_I(); }
+            set { AutoRegisterProps.SetFLAG_I(value); }
         }
 
         public Boolean FlagUnderflow
         {
-            get { return AutoRegisterProps.FLAG_U; }
-            set { AutoRegisterProps.FLAG_U = value; }
+            get { return AutoRegisterProps.GetFLAG_U(); }
+            set { AutoRegisterProps.SetFLAG_U(value); }
         }
 
         public Boolean FlagOverflow
         {
-            get { return AutoRegisterProps.FLAG_O; }
-            set { AutoRegisterProps.FLAG_O = value; }
+            get { return AutoRegisterProps.GetFLAG_O(); }
+            set { AutoRegisterProps.SetFLAG_O(value); }
         }
 
         public Boolean FlagDivideByZero
         {
-            get { return AutoRegisterProps.FLAG_Z; }
-            set { AutoRegisterProps.FLAG_Z = value; }
+            get { return AutoRegisterProps.GetFLAG_Z(); }
+            set { AutoRegisterProps.SetFLAG_Z(value); }
         }
 
         public Boolean FlagInvalidOperation
         {
-            get { return AutoRegisterProps.FLAG_V; }
-            set { AutoRegisterProps.FLAG_V = value; }
+            get { return AutoRegisterProps.GetFLAG_V(); }
+            set { AutoRegisterProps.SetFLAG_V(value); }
         }
 
         public Boolean EnableInexact
         {
-            get { return AutoRegisterProps.ENABLE_I; }
-            set { AutoRegisterProps.ENABLE_I = value; }
+            get { return AutoRegisterProps.GetENABLE_I; }
+            set { AutoRegisterProps.SetENABLE_I(value); }
         }
 
         public Boolean EnableUnderflow
         {
-            get { return AutoRegisterProps.ENABLE_U; }
-            set { AutoRegisterProps.ENABLE_U = value; }
+            get { return AutoRegisterProps.GetENABLE_U(); }
+            set { AutoRegisterProps.SetENABLE_U(value); }
         }
 
         public Boolean EnableOverflow
         {
-            get { return AutoRegisterProps.ENABLE_O; }
-            set { AutoRegisterProps.ENABLE_O = value; }
+            get { return AutoRegisterProps.GetENABLE_O(); }
+            set { AutoRegisterProps.SetENABLE_O(value); }
         }
 
         public Boolean EnableDivideByZero
         {
-            get { return AutoRegisterProps.ENABLE_Z; }
-            set { AutoRegisterProps.ENABLE_Z = value; }
+            get { return AutoRegisterProps.GetENABLE_Z(); }
+            set { AutoRegisterProps.SetENABLE_Z(value); }
         }
 
         public Boolean EnableInvalidOperation
         {
-            get { return AutoRegisterProps.ENABLE_V; }
-            set { AutoRegisterProps.ENABLE_V = value; }
+            get { return AutoRegisterProps.GetENABLE_V(); }
+            set { AutoRegisterProps.SetENABLE_V(value); }
         }
 
         public Boolean CauseInexact
         {
-            get { return AutoRegisterProps.CAUSE_I; }
-            set { AutoRegisterProps.CAUSE_I = value; }
+            get { return AutoRegisterProps.GetCAUSE_I(); }
+            set { AutoRegisterProps.SetCAUSE_I(value); }
         }
 
         public Boolean CauseUnderflow
         {
-            get { return AutoRegisterProps.CAUSE_U; }
-            set { AutoRegisterProps.CAUSE_U = value; }
+            get { return AutoRegisterProps.GetCAUSE_U(); }
+            set { AutoRegisterProps.SetCAUSE_U(value); }
         }
 
         public Boolean CauseOverflow
         {
-            get { return AutoRegisterProps.CAUSE_O; }
-            set { AutoRegisterProps.CAUSE_O = value; }
+            get { return AutoRegisterProps.GetCAUSE_O(); }
+            set { AutoRegisterProps.SetCAUSE_O(value); }
         }
 
         public Boolean CauseDivideByZero
         {
-            get { return AutoRegisterProps.CAUSE_Z; }
-            set { AutoRegisterProps.CAUSE_Z = value; }
+            get { return AutoRegisterProps.GetCAUSE_Z(); }
+            set { AutoRegisterProps.SetCAUSE_Z(value); }
         }
 
         public Boolean CauseInvalidOperation
         {
-            get { return AutoRegisterProps.CAUSE_V; }
-            set { AutoRegisterProps.CAUSE_V = value; }
+            get { return AutoRegisterProps.GetCAUSE_V(); }
+            set { AutoRegisterProps.SetCAUSE_V(value); }
         }
 
         public Boolean CauseUnimplemented
         {
-            get { return AutoRegisterProps.CAUSE_E; }
-            set { AutoRegisterProps.CAUSE_E = value; }
+            get { return AutoRegisterProps.GetCAUSE_E(); }
+            set { AutoRegisterProps.SetCAUSE_E(value); }
         }
 
         public Boolean Condition
         {
-            get { return AutoRegisterProps.C; }
-            set { AutoRegisterProps.C = value; }
+            get { return AutoRegisterProps.GetC(); }
+            set { AutoRegisterProps.SetC(value); }
         }
 
         public Boolean FS
         {
-            get { return AutoRegisterProps.FS; }
-            set { AutoRegisterProps.FS = value; }
+            get { return AutoRegisterProps.GetFS(); }
+            set { AutoRegisterProps.SetFS(value); }
         }
     }
 }

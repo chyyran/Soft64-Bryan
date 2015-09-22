@@ -134,7 +134,7 @@ namespace Soft64.MipsR4300
         /// <summary>
         /// FPU Status and Control register
         /// </summary>
-        public Fcr32Register FCR31 { get; set; }
+        public Fcr32Register FCR31 { get; private set; }
 
         public Boolean NullifyEnabled { get; set; }
 
@@ -181,6 +181,7 @@ namespace Soft64.MipsR4300
 
         public ExecutionState()
         {
+            FCR31 = new Fcr32Register();
             CP0Regs = new CP0Registers();
             Fpr = new FpuRegisters();
             m_Regs = new GPRRegisters();
