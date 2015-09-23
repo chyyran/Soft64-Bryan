@@ -26,7 +26,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BNE")]
         private void Inst_Bne(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranch(MipsState.ReadGPR32Unsigned(inst.Rs) != MipsState.ReadGPR32Unsigned(inst.Rt), inst);
             }
@@ -52,7 +52,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BEQL")]
         private void Inst_Beql(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranchLikely(MipsState.ReadGPR32Unsigned(inst.Rs) == MipsState.ReadGPR32Unsigned(inst.Rt), inst);
             }
@@ -65,7 +65,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BEQ")]
         private void Inst_Beq(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranch(MipsState.ReadGPR32Unsigned(inst.Rs) == MipsState.ReadGPR32Unsigned(inst.Rt), inst);
             }
@@ -91,7 +91,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BNEL")]
         private void Inst_Bnel(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranchLikely(MipsState.ReadGPR32Unsigned(inst.Rs) != MipsState.ReadGPR32Unsigned(inst.Rt), inst);
             }
@@ -104,7 +104,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BLEZ")]
         private void Inst_Blez(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranch(MipsState.ReadGPR32Unsigned(inst.Rs) <= MipsState.ReadGPR32Unsigned(inst.Rt), inst);
             }
@@ -117,7 +117,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BLEZL")]
         private void Inst_Blezl(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranchLikely(MipsState.ReadGPR32Unsigned(inst.Rs) <= MipsState.ReadGPR32Unsigned(inst.Rt), inst);
             }
@@ -130,7 +130,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BGTZ")]
         private void Inst_Bgtz(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranch(MipsState.ReadGPR32Signed(inst.Rs) > 0, inst);
             }
@@ -143,7 +143,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BGTZL")]
         private void Inst_Bgtzl(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranchLikely(MipsState.ReadGPR32Signed(inst.Rs) > 0, inst);
             }
@@ -156,7 +156,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BGEZ")]
         private void Inst_Bgez(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranch(MipsState.ReadGPR32Signed(inst.Rs) >= 0, inst);
             }
@@ -169,7 +169,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BGEZL")]
         private void Inst_Bgezl(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranchLikely(MipsState.ReadGPR32Signed(inst.Rs) >= 0, inst);
             }
@@ -182,7 +182,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BLTZ")]
         private void Inst_Bltz(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranch(MipsState.ReadGPR32Signed(inst.Rs) < 0, inst);
             }
@@ -195,7 +195,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("BLTZL")]
         private void Inst_Bltzl(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 DoBranchLikely(MipsState.ReadGPR32Signed(inst.Rs) < 0, inst);
             }

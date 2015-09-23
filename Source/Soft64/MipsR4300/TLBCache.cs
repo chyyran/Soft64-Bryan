@@ -29,6 +29,7 @@ namespace Soft64.MipsR4300
     public class TLBCache : IEnumerable<TLBEntryInfo>, IList<TLBEntry>
     {
         private CP0Registers m_Cp0Regs;
+        private ExecutionState m_MipsState;
         private TLBEntry[] m_Entries;
         private Dictionary<VirtualPageNumber2, TLBEntry> m_VPN2Dictionary = new Dictionary<VirtualPageNumber2, TLBEntry>();
         private Dictionary<VirtualPageNumber2, TLBEntry> m_GlobalVPN2Dictionary = new Dictionary<VirtualPageNumber2, TLBEntry>();
@@ -39,9 +40,10 @@ namespace Soft64.MipsR4300
 
         public event EventHandler<TLBCacheChangeEventArgs> CacheChanged;
 
-        public TLBCache(CP0Registers cp0Regs)
+        public TLBCache(ExecutionState state)
         {
-            m_Cp0Regs = cp0Regs;
+            m_MipsState = state;
+            m_Cp0Regs = state.CP0Regs;
             m_Entries = new TLBEntry[48];
         }
 
@@ -262,7 +264,7 @@ namespace Soft64.MipsR4300
 
         private TLBEntry CreateEntryFromRegs()
         {
-            TLBEntry entry = new TLBEntry(Machine.Current.DeviceCPU.State.WordSizeMode);
+            TLBEntry entry = new TLBEntry(m_MipsState.Addressing64BitMode);
             entry.PageMask = m_Cp0Regs.PageMask;
             entry.VPN2 = new VirtualPageNumber2(m_Cp0Regs.EntryHi);
             entry.PfnOdd = m_Cp0Regs.EntryLo0;

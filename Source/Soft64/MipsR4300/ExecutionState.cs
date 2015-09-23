@@ -152,31 +152,42 @@ namespace Soft64.MipsR4300
             set;
         }
 
-        public WordSize WordSizeMode
+        public Boolean Operating64BitMode
         {
             get
             {
-                //switch (CP0Regs.HLStatusRegister.KSUMode)
-                //{
-                //    case RingMode.Kernel: return !CP0Regs.HLStatusRegister.KernelX ? WordSize.MIPS32 : WordSize.MIPS64;
-                //    case RingMode.Supervisor: return !CP0Regs.HLStatusRegister.SupervisorX ? WordSize.MIPS32 : WordSize.MIPS64;
-                //    case RingMode.User: return !CP0Regs.HLStatusRegister.UserX ? WordSize.MIPS32 : WordSize.MIPS64;
-                //    default: return WordSize.MIPS64;
-                //}
-
-                /* Above may only be configuration for virtual memory management */
-                return WordSize.MIPS64;
+                if (CP0Regs.StatusReg.RingFlags == RingMode.Kernel)
+                {
+                    return true;
+                }
+                else if (CP0Regs.StatusReg.RingFlags == RingMode.Supervisor)
+                {
+                    return CP0Regs.StatusReg.SupervisorAddressingMode;
+                }
+                else
+                {
+                    return CP0Regs.StatusReg.UserAddressingMode;
+                }
             }
         }
 
-        public Boolean Is32BitMode()
+        public Boolean Addressing64BitMode
         {
-            return WordSizeMode == WordSize.MIPS32;
-        }
-
-        public Boolean Is64BitMode()
-        {
-            return WordSizeMode == WordSize.MIPS64;
+            get
+            {
+                if (CP0Regs.StatusReg.RingFlags == RingMode.Kernel)
+                {
+                    return CP0Regs.StatusReg.KernelAddressingMode;
+                }
+                else if (CP0Regs.StatusReg.RingFlags == RingMode.Supervisor)
+                {
+                    return CP0Regs.StatusReg.SupervisorAddressingMode;
+                }
+                else
+                {
+                    return CP0Regs.StatusReg.UserAddressingMode;
+                }
+            }
         }
 
         public ExecutionState()

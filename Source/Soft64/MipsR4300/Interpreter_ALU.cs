@@ -27,7 +27,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SLT")]
         private void Inst_Slt(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 if (MipsState.ReadGPR32Signed(inst.Rs) < MipsState.ReadGPR32Signed(inst.Rt))
                 {
@@ -54,7 +54,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SLTU")]
         private void Inst_Sltu(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 if (MipsState.ReadGPR32Unsigned(inst.Rs) < MipsState.ReadGPR32Unsigned(inst.Rt))
                 {
@@ -83,7 +83,7 @@ namespace Soft64.MipsR4300
         {
             unchecked
             {
-                if (MipsState.Is32BitMode())
+                if (!MipsState.Operating64BitMode)
                 {
                     MipsState.WriteGPR32Unsigned(inst.Rt, MipsState.ReadGPR32Unsigned(inst.Rs) + (UInt32)(Int32)(Int16)inst.Immediate);
                 }
@@ -102,7 +102,7 @@ namespace Soft64.MipsR4300
         {
             unchecked
             {
-                if (MipsState.Is32BitMode())
+                if (!MipsState.Operating64BitMode)
                 {
                     MipsState.WriteGPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rs) + MipsState.ReadGPR32Unsigned(inst.Rt));
                 }
@@ -119,7 +119,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("ADD")]
         private void Inst_Add(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 try
                 {
@@ -150,7 +150,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("ADDI")]
         private void Inst_Addi(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 try
                 {
@@ -177,7 +177,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DADD")]
         private void Inst_Dadd(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 try
                 {
@@ -197,7 +197,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DADDI")]
         private void Inst_Dadid(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 try
                 {
@@ -217,7 +217,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DADDU")]
         private void Inst_Daddu(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 CauseException = ExceptionCode.ReservedInstruction;
             }
@@ -233,7 +233,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DADDIU")]
         private void Inst_Daddiu(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 CauseException = ExceptionCode.ReservedInstruction;
             }
@@ -249,7 +249,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("ORI")]
         private void Inst_Ori(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 MipsState.WriteGPR32Unsigned(inst.Rt, MipsState.ReadGPR32Unsigned(inst.Rs) | (UInt32)inst.Immediate);
             else
                 MipsState.WriteGPRUnsigned(inst.Rt, MipsState.ReadGPRUnsigned(inst.Rs) | (UInt64)inst.Immediate);
@@ -258,7 +258,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("OR")]
         private void Inst_Or(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 MipsState.WriteGPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rs) | MipsState.ReadGPR32Unsigned(inst.Rt));
             else
                 MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rs) | MipsState.ReadGPR32Unsigned(inst.Rt));
@@ -267,7 +267,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SLTI")]
         private void Inst_Slti(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 Boolean condition = MipsState.ReadGPR32Signed(inst.Rs) < ((Int32)(Int16)inst.Immediate);
                 MipsState.WriteGPR32Unsigned(inst.Rt, condition ? 1U : 0U);
@@ -282,7 +282,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SLTIU")]
         private void Inst_Sltiu(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 Boolean condition = MipsState.ReadGPR32Unsigned(inst.Rs) < ((UInt32)(Int32)(Int16)inst.Immediate);
                 MipsState.WriteGPR32Unsigned(inst.Rt, condition ? 1U : 0U);
@@ -297,7 +297,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("ANDI")]
         private void Inst_Andi(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Unsigned(inst.Rt, MipsState.ReadGPR32Unsigned(inst.Rs) & (UInt32)inst.Immediate);
             }
@@ -310,7 +310,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("AND")]
         private void Inst_And(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rs) & MipsState.ReadGPR32Unsigned(inst.Rt));
             }
@@ -325,7 +325,7 @@ namespace Soft64.MipsR4300
         {
             UInt32 result = MipsState.ReadGPR32Unsigned(inst.Rt) << inst.ShiftAmount;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Unsigned(inst.Rd, result);
             }
@@ -340,7 +340,7 @@ namespace Soft64.MipsR4300
         {
             Int32 shiftAmount = MipsState.ReadGPR32Signed(inst.Rs) & 0x1F;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rt) << shiftAmount);
             }
@@ -366,7 +366,7 @@ namespace Soft64.MipsR4300
         {
             UInt32 result = MipsState.ReadGPR32Unsigned(inst.Rt) >> inst.ShiftAmount;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Unsigned(inst.Rd, result);
             }
@@ -379,7 +379,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DDIV")]
         private void Inst_Ddiv(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 try
                 {
@@ -400,7 +400,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DDIVU")]
         private void Inst_Ddivu(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 unchecked
                 {
@@ -421,7 +421,7 @@ namespace Soft64.MipsR4300
             {
                 unchecked
                 {
-                    if (MipsState.Is32BitMode() || (MipsState.ReadGPRUnsigned(inst.Rs).IsSigned32() && MipsState.ReadGPRUnsigned(inst.Rt).IsSigned32()))
+                    if (!MipsState.Addressing64BitMode|| (MipsState.ReadGPRUnsigned(inst.Rs).IsSigned32() && MipsState.ReadGPRUnsigned(inst.Rt).IsSigned32()))
                     {
                         /* Data input is always the size of a MIPS word */
                         MipsState.Hi = (UInt64)(MipsState.ReadGPR32Signed(inst.Rs) / MipsState.ReadGPR32Signed(inst.Rt));
@@ -444,7 +444,7 @@ namespace Soft64.MipsR4300
             {
                 unchecked
                 {
-                    if (MipsState.Is32BitMode() || (MipsState.ReadGPRUnsigned(inst.Rs).IsSigned32() && MipsState.ReadGPRUnsigned(inst.Rt).IsSigned32()))
+                    if (!MipsState.Operating64BitMode || (MipsState.ReadGPRUnsigned(inst.Rs).IsSigned32() && MipsState.ReadGPRUnsigned(inst.Rt).IsSigned32()))
                     {
                         /* Data input is always the size of a MIPS word */
                         MipsState.Hi = (UInt64)(MipsState.ReadGPR32Unsigned(inst.Rs) / MipsState.ReadGPR32Unsigned(inst.Rt));
@@ -463,7 +463,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DMULT")]
         private void Inst_Dmult(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 BigInteger product = BigInteger.Multiply(
                     new BigInteger(MipsState.ReadGPRSigned(inst.Rs)),
@@ -481,7 +481,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DMULTU")]
         private void Inst_Dmultu(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 BigInteger product = BigInteger.Multiply(
                     new BigInteger(MipsState.ReadGPRUnsigned(inst.Rs)),
@@ -499,7 +499,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSLL")]
         private void Inst_Dsll(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRUnsigned(inst.Rs, MipsState.ReadGPRUnsigned(inst.Rt) << inst.ShiftAmount);
             }
@@ -512,7 +512,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSLLV")]
         private void Inst_Dsllv(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) << (Int32)(MipsState.ReadGPR32Unsigned(inst.Rs) & 0x3FUL));
             }
@@ -525,7 +525,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSLL32")]
         private void Inst_Dsll32(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) << (32 + inst.ShiftAmount));
             }
@@ -538,7 +538,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSRA")]
         private void Inst_Dsra(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRUnsigned(inst.Rd, (UInt64)(MipsState.ReadGPRSigned(inst.Rt) >> inst.ShiftAmount));
             }
@@ -551,7 +551,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSRAV")]
         private void Inst_Dsrav(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRSigned(inst.Rd, MipsState.ReadGPRSigned(inst.Rt) >> (MipsState.ReadGPR32Signed(inst.Rs) & 0x3F));
             }
@@ -564,7 +564,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSRA32")]
         private void Inst_Dsra32(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRSigned(inst.Rd, (MipsState.ReadGPRSigned(inst.Rt) >> (32 + inst.ShiftAmount)));
             }
@@ -577,7 +577,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSRL")]
         private void Inst_Dsrl(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) >> inst.ShiftAmount);
             }
@@ -590,7 +590,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSRLV")]
         private void Inst_Dsrlv(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) >> (Int32)(MipsState.ReadGPR32Unsigned(inst.Rs) & 0x3FUL));
             }
@@ -603,7 +603,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSRL32")]
         private void Inst_Dsrl32(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRUnsigned(inst.Rd, MipsState.ReadGPRUnsigned(inst.Rt) >> (32 + inst.ShiftAmount));
             }
@@ -616,7 +616,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSUB")]
         private void Inst_Dsub(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 try
                 {
@@ -636,7 +636,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DSUBU")]
         private void Inst_Dsubu(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 unchecked
                 {
@@ -652,7 +652,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("MULT")]
         private void Inst_Mult(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 Int64 product = MipsState.ReadGPR32Signed(inst.Rs) * MipsState.ReadGPR32Signed(inst.Rt);
                 MipsState.Hi = (UInt64)(product >> 32);
@@ -669,7 +669,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("MULTU")]
         private void Inst_Multu(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 UInt64 product = MipsState.ReadGPR32Unsigned(inst.Rs) * MipsState.ReadGPR32Unsigned(inst.Rt);
                 MipsState.Hi = product >> 32;
@@ -694,7 +694,7 @@ namespace Soft64.MipsR4300
         {
             Int32 result = MipsState.ReadGPR32Signed(inst.Rt) >> inst.ShiftAmount;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Signed(inst.Rd, result);
             }
@@ -709,7 +709,7 @@ namespace Soft64.MipsR4300
         {
             Int32 result = MipsState.ReadGPR32Signed(inst.Rt) >> (MipsState.ReadGPR32Signed(inst.Rs) & 0x1F);
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Signed(inst.Rd, result);
             }
@@ -724,7 +724,7 @@ namespace Soft64.MipsR4300
         {
             UInt32 result = MipsState.ReadGPR32Unsigned(inst.Rt) >> MipsState.ReadGPR32Signed(inst.Rs) & 0x1F;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Unsigned(inst.Rd, result);
             }
@@ -759,7 +759,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("XOR")]
         private void Inst_Xor(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Unsigned(inst.Rd, MipsState.ReadGPR32Unsigned(inst.Rs) ^ MipsState.ReadGPR32Unsigned(inst.Rt));
             }
@@ -772,7 +772,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("XORI")]
         private void Inst_Xori(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Signed(inst.Rt, MipsState.ReadGPR32Signed(inst.Rs) ^ (Int32)(Int16)inst.Immediate);
             }

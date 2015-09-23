@@ -8,11 +8,6 @@ namespace Soft64.MipsR4300
 {
     public static class InterpreterExtensions
     {
-        public static Int64 ResolveAddress(this Int64 address)
-        {
-            return (Int64)(UInt32)address;
-        }
-
         public static Boolean IsSigned32(this UInt64 value)
         {
             UInt32 val = (UInt32)(value >> 32);

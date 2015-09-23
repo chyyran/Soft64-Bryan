@@ -24,7 +24,7 @@ using NLog;
 using Soft64.IO;
 using Soft64.MipsR4300;
 
-/* Notes: CPU Memory addressing regions
+/* N64 CPU 32-bit kernel mode virtual memory address space map
  * ------------------
  * 0x00000000 - 0x7FFFFFFF: TLB Mapped
  * 0x80000000 - 0x9FFFFFFF: Directly mapped to physical memory but uses cache
@@ -49,6 +49,7 @@ namespace Soft64.MipsR4300
         private ReadOp ReadOperationHandler;
         private WriteOp WriteOperationHandler;
         private MipsR4300Core m_Core;
+        private Int64 m_Position;
 
         delegate Int32 ReadOp(Byte[] buffer, Int32 offset, Int32 count);
         delegate void WriteOp(Byte[] buffer, Int32 offset, Int32 count);
@@ -58,7 +59,7 @@ namespace Soft64.MipsR4300
         {
             m_Core = core;
             m_Cp0Regs = core.State.CP0Regs;
-            m_TLBCache = new TLBCache(m_Cp0Regs);
+            m_TLBCache = new TLBCache(core.State);
             SetupOperations(false);
         }
 
@@ -93,11 +94,25 @@ namespace Soft64.MipsR4300
             }
         }
 
+        public override long Position
+        {
+            get
+            {
+                return m_Position;
+            }
+
+            set
+            {
+                m_Position = value;
+            }
+        }
+
         public void Initialize()
         {
             m_TLBCache.Initialize();
             logger.Trace("TLB Cache Intialized");
 
+            /* 32bit kernel map */
             Add(0x00000000, new TLBMapStream(m_TLBCache, 0x80000000));
             Add(0x80000000, new PhysicalMapStream());
             Add(0xA0000000, new PhysicalMapStream());
@@ -118,6 +133,8 @@ namespace Soft64.MipsR4300
 
         public override int Read(byte[] buffer, int offset, int count)
         {
+            base.Position = MapAddress(m_Position);
+
             try
             {
                 return ReadOperationHandler(buffer, offset, count);
@@ -136,6 +153,8 @@ namespace Soft64.MipsR4300
 
         public override void Write(byte[] buffer, int offset, int count)
         {
+            base.Position = MapAddress(m_Position);
+
             try
             {
                 WriteOperationHandler(buffer, offset, count);
@@ -147,6 +166,18 @@ namespace Soft64.MipsR4300
                     case TLBExceptionType.Mod: Machine.Current.DeviceCPU.State.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbMod; break;
                     default: Machine.Current.DeviceCPU.State.CP0Regs.CauseReg.ExceptionType = ExceptionCode.TlbStore; break;
                 }
+            }
+        }
+
+        private Int64 MapAddress(Int64 address)
+        {
+            if (m_Core.State.Addressing64BitMode)
+            {
+                return address;
+            }
+            else
+            {
+                return (UInt32)address;
             }
         }
 

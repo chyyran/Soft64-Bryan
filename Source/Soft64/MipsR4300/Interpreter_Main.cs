@@ -76,7 +76,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Unsigned(inst.Rs) == MipsState.ReadGPR32Unsigned(inst.Rt);
             else
                 condition = MipsState.ReadGPRUnsigned(inst.Rs) == MipsState.ReadGPRUnsigned(inst.Rt);
@@ -90,7 +90,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Signed(inst.Rs) == (Int32)(Int16)inst.Immediate;
             else
                 condition = MipsState.ReadGPRSigned(inst.Rs) == (Int64)(Int16)inst.Immediate;
@@ -104,7 +104,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Signed(inst.Rs) >= MipsState.ReadGPR32Signed(inst.Rt);
             else
                 condition = MipsState.ReadGPRSigned(inst.Rs) >= MipsState.ReadGPRSigned(inst.Rt);
@@ -118,7 +118,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Signed(inst.Rs) >= (Int32)(Int16)inst.Immediate;
             else
                 condition = MipsState.ReadGPRSigned(inst.Rs) >= (Int64)(Int16)inst.Immediate;
@@ -132,7 +132,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Unsigned(inst.Rs) >= (UInt32)(Int32)(Int16)inst.Immediate;
             else
                 condition = MipsState.ReadGPRUnsigned(inst.Rs) >= (UInt64)(Int64)(Int16)inst.Immediate;
@@ -146,7 +146,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Unsigned(inst.Rs) >= MipsState.ReadGPR32Unsigned(inst.Rt);
             else
                 condition = MipsState.ReadGPRUnsigned(inst.Rs) >= MipsState.ReadGPRUnsigned(inst.Rt);
@@ -160,7 +160,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Signed(inst.Rs) < MipsState.ReadGPR32Signed(inst.Rt);
             else
                 condition = MipsState.ReadGPRSigned(inst.Rs) < MipsState.ReadGPRSigned(inst.Rt);
@@ -174,7 +174,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Signed(inst.Rs) < (Int32)(Int16)inst.Immediate;
             else
                 condition = MipsState.ReadGPRSigned(inst.Rs) < (Int64)(Int16)inst.Immediate;
@@ -188,7 +188,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Unsigned(inst.Rs) < (UInt32)(Int32)(Int16)inst.Immediate;
             else
                 condition = MipsState.ReadGPRUnsigned(inst.Rs) < (UInt64)(Int64)(Int16)inst.Immediate;
@@ -202,7 +202,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Unsigned(inst.Rs) < MipsState.ReadGPR32Unsigned(inst.Rt);
             else
                 condition = MipsState.ReadGPRUnsigned(inst.Rs) < MipsState.ReadGPRUnsigned(inst.Rt);
@@ -216,7 +216,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Unsigned(inst.Rs) != MipsState.ReadGPR32Unsigned(inst.Rt);
             else
                 condition = MipsState.ReadGPRUnsigned(inst.Rs) != MipsState.ReadGPRUnsigned(inst.Rt);
@@ -230,7 +230,7 @@ namespace Soft64.MipsR4300
         {
             Boolean condition;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 condition = MipsState.ReadGPR32Signed(inst.Rs) != (Int32)(Int16)inst.Immediate;
             else
                 condition = MipsState.ReadGPRSigned(inst.Rs) != (Int64)(Int16)inst.Immediate;

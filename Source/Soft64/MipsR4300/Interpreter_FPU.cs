@@ -187,7 +187,7 @@ namespace Soft64.MipsR4300
                 return;
             }
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Unsigned(inst.Rt, MipsState.Fpr.ReadFPR32Unsigned(inst.Fs));
             }

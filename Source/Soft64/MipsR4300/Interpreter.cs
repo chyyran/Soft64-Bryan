@@ -275,7 +275,7 @@ namespace Soft64.MipsR4300
         {
             MipsState.BranchEnabled = true;
             MipsState.BranchDelaySlot = MipsState.PC + 4;
-            MipsState.BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate).ResolveAddress() : MipsState.PC + 8;
+            MipsState.BranchTarget = condition ? BranchComputeTargetAddress(inst.Address, inst.Immediate): MipsState.PC + 8;
         }
 
         protected void DoBranchLikely(Boolean condition, MipsInstruction inst)
@@ -288,7 +288,7 @@ namespace Soft64.MipsR4300
         {
             MipsState.BranchEnabled = true;
             MipsState.BranchDelaySlot = MipsState.PC + 4;
-            MipsState.BranchTarget = addressTarget.ResolveAddress();
+            MipsState.BranchTarget = addressTarget;
         }
 
         protected Int64 ComputeAddress32(MipsInstruction inst)
@@ -298,7 +298,7 @@ namespace Soft64.MipsR4300
 
         protected Int64 ComputeAddress64(MipsInstruction inst)
         {
-            return (((Int64)(Int16)inst.Immediate) + MipsState.ReadGPRSigned(inst.Rs)).ResolveAddress();
+            return (((Int64)(Int16)inst.Immediate) + MipsState.ReadGPRSigned(inst.Rs));
         }
 
         private Boolean CheckCop1Usable()

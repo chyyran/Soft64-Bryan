@@ -96,7 +96,6 @@
     <Compile Include="Engines\SingleCoreScheduler.cs" />
     <Compile Include="Engines\CoreTaskScheduler.cs" />
     <Compile Include="MipsR4300\CauseRegister.cs" />
-    <Compile Include="MipsR4300\MipsExceptionHandler.cs" />
     <Compile Include="MipsR4300\TLBCacheChangeEventArgs.cs" />
     <Compile Include="MipsR4300\Debugging\Dog\CodeDog.cs" />
     <Compile Include="MipsR4300\Debugging\DebugInstructionReader.cs" />

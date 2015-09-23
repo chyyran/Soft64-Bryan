@@ -78,10 +78,10 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SD")]
         private void Inst_Sd(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
                 throw new InvalidOperationException("Instruction reserved");
 
-            Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate).ResolveAddress();
+            Int64 address = (MipsState.ReadGPRSigned(inst.Rs) + (Int64)inst.Immediate);
 
             if ((address & 7) != 0)
             {
@@ -119,7 +119,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SDL")]
         private void Inst_Sdl(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 /* Thanks to PJ64 implementation */
                 Int64 address = ComputeAddress64(inst);
@@ -138,7 +138,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("SDR")]
         private void Inst_Sdr(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 /* Thanks to PJ64 implementation */
                 Int64 address = ComputeAddress64(inst);

@@ -39,7 +39,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DMFC0")]
         private void Inst_Dmfc0(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPRUnsigned(inst.Rt, MipsState.CP0Regs[inst.Rd]);
             }
@@ -52,7 +52,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("DMTC0")]
         private void Inst_Dmtc0(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 MipsState.CP0Regs[inst.Rd] = MipsState.ReadGPRUnsigned(inst.Rt);
             }
@@ -67,7 +67,7 @@ namespace Soft64.MipsR4300
         {
             if (MipsState.CP0Regs.StatusReg.CopUsable0)
             {
-                if (MipsState.Is32BitMode())
+                if (!MipsState.Operating64BitMode)
                 {
                     MipsState.WriteGPR32Unsigned(inst.Rt, (UInt32)MipsState.CP0Regs[inst.Rd]);
                 }

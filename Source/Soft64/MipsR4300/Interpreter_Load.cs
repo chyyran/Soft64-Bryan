@@ -48,7 +48,7 @@ namespace Soft64.MipsR4300
         {
             UInt32 word = ((UInt32)inst.Immediate) << 16;
 
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 MipsState.WriteGPR32Unsigned(inst.Rt, word);
             }
@@ -69,7 +69,7 @@ namespace Soft64.MipsR4300
             }
             else
             {
-                if (MipsState.Is32BitMode())
+                if (!MipsState.Operating64BitMode)
                     MipsState.WriteGPR32Unsigned(inst.Rt, DataManipulator.LoadWordUnsigned(address));
                 else
                     MipsState.WriteGPRSigned(inst.Rt, DataManipulator.LoadWordSigned(address));
@@ -79,7 +79,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("LWU")]
         private void Inst_Lwu(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 CauseException = ExceptionCode.ReservedInstruction;
                 return;
@@ -100,7 +100,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("LD")]
         private void Inst_Ld(MipsInstruction inst)
         {
-            if (MipsState.Is32BitMode())
+            if (!MipsState.Operating64BitMode)
             {
                 CauseException = ExceptionCode.ReservedInstruction;
             }
@@ -124,7 +124,7 @@ namespace Soft64.MipsR4300
         {
             try
             {
-                if (MipsState.Is32BitMode())
+                if (!MipsState.Operating64BitMode)
                 {
                     MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.LoadByteSigned(ComputeAddress32(inst)));
                 }
@@ -150,7 +150,7 @@ namespace Soft64.MipsR4300
         {
             try
             {
-                if (MipsState.Is32BitMode())
+                if (!MipsState.Operating64BitMode)
                 {
                     MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.LoadByteUnsigned(ComputeAddress32(inst)));
                 }
@@ -174,7 +174,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("LDL")]
         private void Inst_Ldl(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 /* Thanks to PJ64 Implementation */
                 Int64 address = ComputeAddress64(inst);
@@ -192,7 +192,7 @@ namespace Soft64.MipsR4300
         [OpcodeHook("LDR")]
         private void Inst_Ldr(MipsInstruction inst)
         {
-            if (MipsState.Is64BitMode())
+            if (MipsState.Operating64BitMode)
             {
                 /* Thanks to PJ64 Implementation */
                 Int64 address = ComputeAddress64(inst);
@@ -220,7 +220,7 @@ namespace Soft64.MipsR4300
                     return;
                 }
 
-                if (MipsState.Is32BitMode())
+                if (!MipsState.Operating64BitMode)
                 {
                     MipsState.WriteGPR32Signed(inst.Rt, DataManipulator.LoadHalfwordSigned(address));
                 }
@@ -254,7 +254,7 @@ namespace Soft64.MipsR4300
                     return;
                 }
 
-                if (MipsState.Is32BitMode())
+                if (!MipsState.Operating64BitMode)
                 {
                     MipsState.WriteGPR32Unsigned(inst.Rt, DataManipulator.LoadHalfwordUnsigned(address));
                 }

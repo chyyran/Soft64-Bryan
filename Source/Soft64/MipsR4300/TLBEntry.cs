@@ -33,19 +33,19 @@ namespace Soft64.MipsR4300
         private PageSize m_PageSize; // This simply stores the mask values used in TLB read operations
         private PageFrameNumber m_EntryOdd; // Odd physical page entry
         private PageFrameNumber m_EntryEven; // Even physical page entry
-        private WordSize m_AddressingMode;
+        private Boolean m_AddressingMode;
 
-        public TLBEntry(WordSize addressingMode, Byte asid, Int64 virtualAddress, PageSize size)
-            : this(addressingMode)
+        public TLBEntry(Boolean addressMode, Byte asid, Int64 virtualAddress, PageSize size)
+            : this(addressMode)
         {
             /* This is a hack to create entries without using the TLB regs */
             m_Vpn2 = new VirtualPageNumber2(asid, (UInt64)virtualAddress & size.AddressBaseMask);
             m_PageSize = size;
         }
 
-        public TLBEntry(WordSize addressingMode = WordSize.MIPS32)
+        public TLBEntry(Boolean addressMode = false)
         {
-            m_AddressingMode = addressingMode;
+            m_AddressingMode = addressMode;
             m_PageSize = new PageSize(NamedPageSize.Size4KB);
             m_Vpn2 = new VirtualPageNumber2();
             m_EntryEven = new PageFrameNumber();
